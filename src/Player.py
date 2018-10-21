@@ -32,7 +32,7 @@ class Player(object):
          
       return scores
 
-   def getMove(board, score):
+   def getMove(self, board, score):
       """Get the next move given current board and score."""
       raise NotImplementedError
 
