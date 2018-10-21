@@ -8,3 +8,5 @@ script:
   - cd ${cwd}/src/
   # run Model Test
   - python ModelTest.py
+  # run Player Test
+  - python PlayerTest.py
