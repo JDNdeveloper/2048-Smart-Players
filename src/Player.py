@@ -38,6 +38,7 @@ class Player(object):
 
    @staticmethod
    def _printScoreStats(scores):
+      """Output basic statistics about the scores."""
       npScores = np.array(scores)
       print (', '.join([
          "Total runs: %d",
@@ -82,4 +83,3 @@ if __name__ == '__main__':
    """Run interactive player."""
    p = InteractivePlayer()
    p.run()
-
