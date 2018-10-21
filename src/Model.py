@@ -24,7 +24,7 @@ class Model(object):
       Returns:
       (board, score): Current board and score.
       """
-      return (copy.deepcopy(self.board), self.score)
+      return (self.board, self.score)
 
    def makeMove(self, move):
       """Executes a move.
