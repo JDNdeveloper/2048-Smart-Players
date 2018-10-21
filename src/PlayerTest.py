@@ -8,7 +8,8 @@ class BaselineRandomPlayerTest(unittest.TestCase):
       self.p = Player.BaselineRandomPlayer()
 
    def testRun(self):
-      scores = self.p.run(numIters=10)
+      """Check that it's performing as expected."""
+      scores = self.p.run(numIters=10, printStats=True)
       assert len(scores) == 10
       assert min(scores) > 0
       assert max(scores) < 20000

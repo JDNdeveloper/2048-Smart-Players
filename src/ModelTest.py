@@ -145,7 +145,6 @@ class ModelTest(unittest.TestCase):
       self.m.board = [[2 ** (col + 1)
                        for col in range(self.m.SIZE)]
                       for row in range(self.m.SIZE)]
-      print self.m
       assert not self.m.isGameOver()
 
       # verify full board with possible left/right compression
@@ -153,14 +152,12 @@ class ModelTest(unittest.TestCase):
       self.m.board = [[2 ** (row + 1)
                        for col in range(self.m.SIZE)]
                       for row in range(self.m.SIZE)]
-      print self.m
       assert not self.m.isGameOver()
 
       # verify full board with no compression is game over
       self.m.board = [[2 ** ((row + col) % 2 + 1)
                        for col in range(self.m.SIZE)]
                       for row in range(self.m.SIZE)]
-      print self.m
       assert self.m.isGameOver()
 
 if __name__ == '__main__':
