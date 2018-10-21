@@ -91,6 +91,32 @@ class Model(object):
       if boardChanged[0]:
          self._randomFill()
 
+   def isGameOver(self):
+      """True if game is over."""
+      if len(self._getOpenPositions()) > 0:
+         return False
+
+      for i in range(self.SIZE):
+         # check for consecutive numbers in all rows and cols
+         prevRowVal = None
+         prevColVal = None
+         for j in range(self.SIZE):
+            # check row
+            val = self.board[i][j]
+            if val == prevRowVal:
+               return False
+            else:
+               prevRowVal = val
+
+            # check col
+            val = self.board[j][i]
+            if val == prevColVal:
+               return False
+            else:
+               prevColVal = val
+
+      return True
+
    def reset(self):
       """Resets the game."""
       self.board = [[None] * self.SIZE for _ in range(self.SIZE)]

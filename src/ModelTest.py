@@ -136,5 +136,32 @@ class ModelTest(unittest.TestCase):
       verifyBoard(fixedRowValues={0: 2}, randomFillExpected=False)
       assert self.m.score == 0
 
+   def testIsGameOver(self):
+      # verify new board is not game over
+      assert not self.m.isGameOver()
+
+      # verify full board with possible up/down compression
+      # is not game over
+      self.m.board = [[2 ** (col + 1)
+                       for col in range(self.m.SIZE)]
+                      for row in range(self.m.SIZE)]
+      print self.m
+      assert not self.m.isGameOver()
+
+      # verify full board with possible left/right compression
+      # is not game over
+      self.m.board = [[2 ** (row + 1)
+                       for col in range(self.m.SIZE)]
+                      for row in range(self.m.SIZE)]
+      print self.m
+      assert not self.m.isGameOver()
+
+      # verify full board with no compression is game over
+      self.m.board = [[2 ** ((row + col) % 2 + 1)
+                       for col in range(self.m.SIZE)]
+                      for row in range(self.m.SIZE)]
+      print self.m
+      assert self.m.isGameOver()
+
 if __name__ == '__main__':
    unittest.main()
