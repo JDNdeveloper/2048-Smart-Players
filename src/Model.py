@@ -56,6 +56,7 @@ class Model(object):
             if val == prevVal:
                index -= 1
                newVal = 2 * val
+               self.score += newVal
                prevVal = None
             else:
                newVal = val
