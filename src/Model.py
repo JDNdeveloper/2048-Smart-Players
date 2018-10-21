@@ -118,6 +118,10 @@ class Model(object):
 
       return True
 
+   def maxTile(self):
+      """Returns value of maximum tile on the board."""
+      return max(val for row in self.board for val in row)
+
    def reset(self):
       """Resets the game."""
       self.board = [[None] * self.SIZE for _ in range(self.SIZE)]

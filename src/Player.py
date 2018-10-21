@@ -14,8 +14,12 @@ class Player(object):
       Args:
       numIters: The number of times to run the game.
       printStats: If True, stats for scores are outputted.
+
+      Returns:
+      (scores, maxTiles): Scores and maxTiles lists from all runs.
       """
       scores = []
+      maxTiles = []
 
       for i in range(numIters):
          self.m.reset()
@@ -26,32 +30,46 @@ class Player(object):
             self.m.makeMove(move)
 
          scores.append(self.m.score)
+         maxTiles.append(self.m.maxTile())
 
       if printStats:
          self._printScoreStats(scores)
+         self._printMaxTileStats(maxTiles)
          
-      return scores
+      return (scores, maxTiles)
 
    def getMove(self, board, score):
       """Get the next move given current board and score."""
       raise NotImplementedError
 
    @staticmethod
+   def _printStats(data, dataName):
+      """Outputs stastics about the given data."""
+      npData = np.array(data)
+      print (dataName + ' ::: ' + ', '.join([
+         "Total runs: %d",
+         "Max: %d",
+         "Min: %d",
+         "Median: %d",
+         "Average: %d",
+         "Stdev: %d",
+      ]) % (len(data),
+            max(data),
+            min(data),
+            np.median(npData),
+            npData.mean(),
+            npData.std(),
+      ))
+
+   @staticmethod
    def _printScoreStats(scores):
       """Output basic statistics about the scores."""
-      npScores = np.array(scores)
-      print (', '.join([
-         "Total runs: %d",
-         "Max score: %d",
-         "Min score: %d",
-         "Average score: %d",
-         "Stdev: %d",
-      ]) % (len(scores),
-            max(scores),
-            min(scores),
-            npScores.mean(),
-            npScores.std(),
-      ))
+      Player._printStats(scores, 'SCORES')
+
+   @staticmethod
+   def _printMaxTileStats(maxTiles):
+      """Output stastics about the max tiles."""
+      Player._printStats(maxTiles, 'MAX TILES')
 
 class BaselineRandomPlayer(Player):
    def getMove(self, board, score):
