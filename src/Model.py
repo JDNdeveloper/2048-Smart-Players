@@ -45,28 +45,34 @@ class Model(object):
          linePositions: List of (row, col) position indices.
          """
          # attempt to compress to the left
-         line = [self.board[row][col] for (row, col) in linePositions]         
-         cLine = []
+         index = 0
          prevVal = None
-         for val in line:
+         for (row, col) in linePositions:
+            val = self.board[row][col]
+
             if val is None:
                continue
+
             if val == prevVal:
+               index -= 1
                newVal = 2 * val
-               cLine[-1] = newVal
-               self.score += newVal
                prevVal = None
             else:
-               cLine.append(val)
+               newVal = val
                prevVal = val
-         # pad with "None's" at the end if needed
-         cLine.extend([None] * (len(line) - len(cLine)))
 
-         if line != cLine:
-            # if line changed, update the row in the board
-            boardChanged[0] = True
-            for ((row, col), newVal) in zip(linePositions, cLine):
-               self.board[row][col] = newVal
+            (newRow, newCol) = linePositions[index]
+            if self.board[newRow][newCol] != newVal:
+               boardChanged[0] = True
+               self.board[newRow][newCol] = newVal
+
+            index += 1
+
+         # pad with "None's" at the end if needed
+         while index < self.SIZE:
+            (newRow, newCol) = linePositions[index]
+            self.board[newRow][newCol] = None
+            index += 1
 
       if move in [Move.UP, Move.LEFT]:
          lineIndices = range(self.SIZE)
