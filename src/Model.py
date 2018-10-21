@@ -68,23 +68,17 @@ class Model(object):
             for ((row, col), newVal) in zip(linePositions, cLine):
                self.board[row][col] = newVal
 
-      pos = range(self.SIZE)
-      rPos = list(reversed(pos))
+      if move in [Move.UP, Move.LEFT]:
+         lineIndices = range(self.SIZE)
+      elif move in [Move.DOWN, Move.RIGHT]:
+         lineIndices = list(reversed(range(self.SIZE)))
 
       if move in [Move.UP, Move.DOWN]:
          for col in range(self.SIZE):
-            if move == Move.UP:
-               rows = pos
-            elif move == Move.DOWN:
-               rows = rPos
-            compressLine(zip(rows, [col] * self.SIZE))
+            compressLine(zip(lineIndices, [col] * self.SIZE))
       elif move in [Move.LEFT, Move.RIGHT]:
          for row in range(self.SIZE):
-            if move == Move.LEFT:
-               cols = pos
-            elif move == Move.RIGHT:
-               cols = rPos
-            compressLine(zip([row] * self.SIZE, cols))
+            compressLine(zip([row] * self.SIZE, lineIndices))
 
       # if the move actually changed the game board,
       # we do a random fill
