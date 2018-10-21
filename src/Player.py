@@ -20,23 +20,28 @@ class Player(object):
       """
       scores = []
       maxTiles = []
+      numMoves = []
 
       for i in range(numIters):
          self.m.reset()
-         
+
+         count = 0
          while not self.m.isGameOver():
             board, score = self.m.getState()
             move = self.getMove(board, score)
             self.m.makeMove(move)
+            count += 1
 
          scores.append(self.m.score)
          maxTiles.append(self.m.maxTile())
+         numMoves.append(count)
 
       if printStats:
          self._printScoreStats(scores)
          self._printMaxTileStats(maxTiles)
+         self._printMoveStats(numMoves)
          
-      return (scores, maxTiles)
+      return (scores, maxTiles, numMoves)
 
    def getMove(self, board, score):
       """Get the next move given current board and score."""
@@ -70,6 +75,11 @@ class Player(object):
    def _printMaxTileStats(maxTiles):
       """Output stastics about the max tiles."""
       Player._printStats(maxTiles, 'MAX TILES')
+
+   @staticmethod
+   def _printMoveStats(numMoves):
+      """Output stastics about the number of moves."""
+      Player._printStats(numMoves, 'MOVES')
 
 class BaselineRandomPlayer(Player):
    def getMove(self, board, score):
