@@ -42,76 +42,30 @@ class Model(object):
       boardChanged = False
       moveScore = 0
 
-      # execute the move
-      def compressLine(linePositions):
-         """Compresses line to the left.
+      for i in range(self.SIZE):
+         if move == Move.UP:
+            primaryIndices = range(self.SIZE)
+            secondaryIndices = [i] * self.SIZE
+         elif move == Move.DOWN:
+            primaryIndices = list(reversed(range(self.SIZE)))
+            secondaryIndices = [i] * self.SIZE
+         elif move == Move.LEFT:
+            primaryIndices = [i] * self.SIZE
+            secondaryIndices = range(self.SIZE)
+         elif move == Move.RIGHT:
+            primaryIndices = [i] * self.SIZE
+            secondaryIndices = list(reversed(range(self.SIZE)))
 
-         Sets boardChanged to True if compressed line is different
-         than original line.
+         rowColPairs = zip(primaryIndices, secondaryIndices)
 
-         Args:
-         linePositions: List of (row, col) position indices.
-
-         Returns:
-         lineScore: The points made from compressing this line.
-         lineChanged: True if move would/did make the line change.
-         """
-         # attempt to compress to the left
-         lineScore = 0
-         lineChanged = False
-         index = 0
-         prevVal = None
-         for (row, col) in linePositions:
-            val = self.board[row][col]
-
-            if val is None:
-               continue
-
-            if val == prevVal:
-               index -= 1
-               newVal = 2 * val
-               lineScore += newVal
-               prevVal = None
-            else:
-               newVal = val
-               prevVal = val
-
-            (newRow, newCol) = linePositions[index]
-            if self.board[newRow][newCol] != newVal:
-               lineChanged = True
-               if modifyState:
-                  self.board[newRow][newCol] = newVal
-
-            index += 1
-
-         # pad with "None's" at the end if needed
-         while index < self.SIZE:
-            (newRow, newCol) = linePositions[index]
+         line = [self.board[row][col] for (row, col) in rowColPairs]
+         (newLine, lineScore) = self._compressLine(line)
+         if newLine != line:
+            boardChanged = True
+            moveScore += lineScore
             if modifyState:
-               self.board[newRow][newCol] = None
-            index += 1
-
-         return (lineScore, lineChanged)
-
-      if move in [Move.UP, Move.LEFT]:
-         lineIndices = range(self.SIZE)
-      elif move in [Move.DOWN, Move.RIGHT]:
-         lineIndices = list(reversed(range(self.SIZE)))
-
-      if move in [Move.UP, Move.DOWN]:
-         for col in range(self.SIZE):
-            (lineScore, lineChanged) = compressLine(
-               zip(lineIndices, [col] * self.SIZE))
-            moveScore += lineScore
-            if lineChanged:
-               boardChanged = True
-      elif move in [Move.LEFT, Move.RIGHT]:
-         for row in range(self.SIZE):
-            (lineScore, lineChanged) = compressLine(
-               zip([row] * self.SIZE, lineIndices))
-            moveScore += lineScore
-            if lineChanged:
-               boardChanged = True
+               for (val, (row, col)) in zip(newLine, rowColPairs):
+                  self.board[row][col] = val
 
       if modifyState:
          if boardChanged:
@@ -160,6 +114,38 @@ class Model(object):
       # add the initial two tiles
       self._randomFill()
       self._randomFill()
+
+   @staticmethod
+   def _compressLine(line):
+      """Compresses line to the left.
+
+      Args:
+      line: The original line.
+
+      Returns:
+      newLine: The compressed line.
+      lineScore: The points made from compressing this line.
+      """
+      newLine = []
+      lineScore = 0
+      prevVal = None
+      for val in line:
+         if val is None:
+            continue
+
+         if val == prevVal:
+            newVal = 2 * val
+            newLine[-1] = newVal
+            lineScore += newVal
+            prevVal = None
+         else:
+            newLine.append(val)
+            prevVal = val
+
+      if len(newLine) < Model.SIZE:
+         newLine += [None] * (Model.SIZE - len(newLine))
+
+      return (newLine, lineScore)
 
    def _getOpenPositions(self):
       """Retrieve open positions.
