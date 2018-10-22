@@ -33,10 +33,10 @@ class Model(object):
       move: The move to execute.
       """
       boardChanged = [False]
-      
+
       # execute the move
       def compressLine(linePositions):
-         """Compresses line to the left. 
+         """Compresses line to the left.
 
          Sets boardChanged to True if compressed line is different
          than original line.

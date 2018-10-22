@@ -40,7 +40,7 @@ class Player(object):
          self._printScoreStats(scores)
          self._printMaxTileStats(maxTiles)
          self._printMoveStats(numMoves)
-         
+
       return (scores, maxTiles, numMoves)
 
    def getMove(self, board, score):
@@ -95,7 +95,7 @@ class InteractivePlayer(Player):
    def getMove(self, board, score):
       print self.m
       print "Score: %d\n" % score
-      
+
       moves = {
          '1': Model.Move.UP,
          '2': Model.Move.DOWN,
