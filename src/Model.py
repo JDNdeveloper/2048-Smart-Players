@@ -10,8 +10,10 @@ class Move:
 class Model(object):
    """Board is 4x4."""
    SIZE = 4
-   """Fill values, using value repetition as a probability distribution"""
+   """Fill values, using value repetition as a probability distribution."""
    FILL_VALUES = [2] * 9 + [4] * 1
+   """All possible moves."""
+   MOVES = (Move.UP, Move.DOWN, Move.LEFT, Move.RIGHT)
 
    def __init__(self):
       self.board = None
@@ -26,13 +28,19 @@ class Model(object):
       """
       return (self.board, self.score)
 
-   def makeMove(self, move):
+   def makeMove(self, move, modifyState=True):
       """Executes a move.
 
       Args:
       move: The move to execute.
+      modifyState: If False the board and score are not updated with the move.
+
+      Returns:
+      moveScore: The points made from the given move.
+      boardChanged: True if the move would/did make the board change.
       """
-      boardChanged = [False]
+      boardChanged = False
+      moveScore = 0
 
       # execute the move
       def compressLine(linePositions):
@@ -43,8 +51,14 @@ class Model(object):
 
          Args:
          linePositions: List of (row, col) position indices.
+
+         Returns:
+         lineScore: The points made from compressing this line.
+         lineChanged: True if move would/did make the line change.
          """
          # attempt to compress to the left
+         lineScore = 0
+         lineChanged = False
          index = 0
          prevVal = None
          for (row, col) in linePositions:
@@ -56,7 +70,7 @@ class Model(object):
             if val == prevVal:
                index -= 1
                newVal = 2 * val
-               self.score += newVal
+               lineScore += newVal
                prevVal = None
             else:
                newVal = val
@@ -64,16 +78,20 @@ class Model(object):
 
             (newRow, newCol) = linePositions[index]
             if self.board[newRow][newCol] != newVal:
-               boardChanged[0] = True
-               self.board[newRow][newCol] = newVal
+               lineChanged = True
+               if modifyState:
+                  self.board[newRow][newCol] = newVal
 
             index += 1
 
          # pad with "None's" at the end if needed
          while index < self.SIZE:
             (newRow, newCol) = linePositions[index]
-            self.board[newRow][newCol] = None
+            if modifyState:
+               self.board[newRow][newCol] = None
             index += 1
+
+         return (lineScore, lineChanged)
 
       if move in [Move.UP, Move.LEFT]:
          lineIndices = range(self.SIZE)
@@ -82,15 +100,27 @@ class Model(object):
 
       if move in [Move.UP, Move.DOWN]:
          for col in range(self.SIZE):
-            compressLine(zip(lineIndices, [col] * self.SIZE))
+            (lineScore, lineChanged) = compressLine(
+               zip(lineIndices, [col] * self.SIZE))
+            moveScore += lineScore
+            if lineChanged:
+               boardChanged = True
       elif move in [Move.LEFT, Move.RIGHT]:
          for row in range(self.SIZE):
-            compressLine(zip([row] * self.SIZE, lineIndices))
+            (lineScore, lineChanged) = compressLine(
+               zip([row] * self.SIZE, lineIndices))
+            moveScore += lineScore
+            if lineChanged:
+               boardChanged = True
 
-      # if the move actually changed the game board,
-      # we do a random fill
-      if boardChanged[0]:
-         self._randomFill()
+      if modifyState:
+         if boardChanged:
+            # if the move actually changed the game board,
+            # we do a random fill
+            self._randomFill()
+         self.score += moveScore
+
+      return (moveScore, boardChanged)
 
    def isGameOver(self):
       """True if game is over."""

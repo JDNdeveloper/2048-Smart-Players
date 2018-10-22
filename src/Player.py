@@ -81,6 +81,20 @@ class Player(object):
       """Output stastics about the number of moves."""
       Player._printStats(numMoves, 'MOVES')
 
+class BaselineGreedyPlayer(Player):
+   def getMove(self, board, score):
+      """Player chooses move that yields maximum points for that turn."""
+      maxScore = -1
+      maxMove = None
+      for move in self.m.MOVES:
+         # choose move that maximizes score and would actually changed the board
+         moveScore, boardChanged = self.m.makeMove(move, modifyState=False)
+         if boardChanged:
+            if moveScore > maxScore:
+               maxMove = move
+               maxScore = moveScore
+      return maxMove
+
 class BaselineRandomPlayer(Player):
    def getMove(self, board, score):
       """Gives a random move."""

@@ -104,6 +104,13 @@ class ModelTest(unittest.TestCase):
       verifyBoard(fixedRowValues={0: 4})
       assert self.m.score == 4 * self.m.SIZE
 
+      # two items without changing state
+      self.m.reset()
+      self.m.board = copy.deepcopy(twoMergeBoard)
+      self.m.makeMove(Model.Move.UP, modifyState=False)
+      verifyBoard(fixedRowValues={0: 2, 1: 2}, randomFillExpected=False)
+      assert self.m.score == 0
+
       # four items
       fourMergeBoard = [[2 if row in [0, 1, 2, 3] else None
                          for col in range(self.m.SIZE)]
