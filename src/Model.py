@@ -150,10 +150,14 @@ class Model(object):
 
    def __str__(self):
       """Return string representation of the board."""
+      rowBreak = '---------------------------------\n'
+
       s = ''
       for row in range(self.SIZE):
+         s += rowBreak
          for col in range(self.SIZE):
             val = self.board[row][col]
-            s += '%s\t' % str(val if val is not None else 0)
-         s += '\n'
+            s += '| %s\t' % str(val if val is not None else '')
+         s += '|\n'
+      s += rowBreak
       return s
