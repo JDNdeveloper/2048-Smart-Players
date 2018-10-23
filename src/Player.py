@@ -83,7 +83,14 @@ class Player(object):
 
 class BaselineGreedyPlayer(Player):
    def getMove(self, board, score):
-      """Player chooses move that yields maximum points for that turn."""
+      """Player chooses move that yields maximum points for that turn.
+
+      If scores are the same (which they always are for up/down and left/right)
+      it selects in the following order: UP, LEFT, DOWN, RIGHT
+
+      Note that in the above ordering moves are only considered if they cause the
+      board to change.
+      """
       maxScore = 0
       maxMove = None
       validMoves = []
@@ -107,7 +114,21 @@ class BaselineGreedyPlayer(Player):
 
       for move in [Model.Move.DOWN, Model.Move.RIGHT]:
          # if up and left were not valid, return the first valid of down and right
-         (moveScore, boardChanged) = self.m.makeMove(move, modifyState=False)
+         (_, boardChanged) = self.m.makeMove(move, modifyState=False)
+         if boardChanged:
+            return move
+
+class BaselineCornerPlayer(Player):
+   def getMove(self, board, score):
+      """Always returns a playable move in the following order:
+      UP, LEFT, DOWN, RIGHT.
+
+      This approach concentrates the pieces in the corners, and should behave
+      better than the random player.
+      """
+      for move in [Model.Move.UP, Model.Move.LEFT,
+                   Model.Move.DOWN, Model.Move.RIGHT]:
+         (_, boardChanged) = self.m.makeMove(move, modifyState=False)
          if boardChanged:
             return move
 

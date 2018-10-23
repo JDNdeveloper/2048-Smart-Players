@@ -4,7 +4,7 @@ import argparse
 import Player
 
 DEFAULT_ITERS = 100
-PLAYER_NAMES = ['GREEDY', 'RANDOM']
+PLAYER_NAMES = ['GREEDY', 'CORNER', 'RANDOM']
 DEFAULT_PLAYER_NAME = PLAYER_NAMES[0]
 
 def main(playerName, numIters):
@@ -15,6 +15,10 @@ def main(playerName, numIters):
       p = Player.BaselineGreedyPlayer()
       p.run(numIters=numIters, printStats=True)
    elif playerName == PLAYER_NAMES[1]:
+      # run the baseline corner player
+      p = Player.BaselineCornerPlayer()
+      p.run(numIters=numIters, printStats=True)
+   elif playerName == PLAYER_NAMES[2]:
       # run the baseline random player
       p = Player.BaselineRandomPlayer()
       p.run(numIters=numIters, printStats=True)
