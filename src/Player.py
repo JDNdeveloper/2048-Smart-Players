@@ -84,16 +84,32 @@ class Player(object):
 class BaselineGreedyPlayer(Player):
    def getMove(self, board, score):
       """Player chooses move that yields maximum points for that turn."""
-      maxScore = -1
+      maxScore = 0
       maxMove = None
-      for move in self.m.MOVES:
-         # choose move that maximizes score and would actually changed the board
+      validMoves = []
+
+      for move in [Model.Move.UP, Model.Move.LEFT]:
+         # choose move that maximizes score and would actually change the board
          (moveScore, boardChanged) = self.m.makeMove(move, modifyState=False)
          if boardChanged:
+            validMoves.append(move)
             if moveScore > maxScore:
                maxMove = move
                maxScore = moveScore
-      return maxMove
+
+      if maxMove:
+         # if one or both of the scores were non-zero, return the max score move
+         return maxMove
+
+      if validMoves:
+         # if there were no moves with non-zero score, just return a valid one
+         return validMoves[0]
+
+      for move in [Model.Move.DOWN, Model.Move.RIGHT]:
+         # if up and left were not valid, return the first valid of down and right
+         (moveScore, boardChanged) = self.m.makeMove(move, modifyState=False)
+         if boardChanged:
+            return move
 
 class BaselineRandomPlayer(Player):
    def getMove(self, board, score):

@@ -149,6 +149,18 @@ class ModelTest(unittest.TestCase):
                  expectedMoveScore=expectedFourMergeScore, reset=False)
       verifyBoard(fixedRowValues={0: 8}, randomFillExpected=2)
 
+      # verify score for up/down and left/right are the same
+      sameScoreBoard = [
+         [2, None, None, None],
+         [None, None, None, 2],
+         [None, None, None, 2],
+         [None, None, 4, 2],
+      ]
+      verifyMove(sameScoreBoard, Model.Move.UP, 4)
+      verifyMove(sameScoreBoard, Model.Move.DOWN, 4)
+      verifyMove(sameScoreBoard, Model.Move.LEFT, 0)
+      verifyMove(sameScoreBoard, Model.Move.RIGHT, 0)
+
    def testIsGameOver(self):
       # verify new board is not game over
       self.assertFalse(self.m.isGameOver())
