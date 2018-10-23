@@ -20,12 +20,13 @@ class BaselineGreedyPlayerTest(unittest.TestCase):
    def testRun(self):
       """Check that it's performing as expected."""
       (scores, maxTiles, numMoves) = self.p.run(numIters=NUM_ITERS, printStats=True)
+      print ''
       self.assertEquals(len(scores), NUM_ITERS)
       self.assertEquals(len(maxTiles), NUM_ITERS)
       self.assertEquals(len(numMoves), NUM_ITERS)
 
       # check scores
-      verifyRanges(self, scores, ((100, 2000), (3000, 20000)))
+      verifyRanges(self, scores, ((100, 4000), (3000, 20000)))
 
       # check max tiles
       verifyRanges(self, maxTiles, ((64, 512), (128, 2048)))
@@ -40,6 +41,7 @@ class BaselineCornerPlayerTest(unittest.TestCase):
    def testRun(self):
       """Check that it's performing as expected."""
       (scores, maxTiles, numMoves) = self.p.run(numIters=NUM_ITERS, printStats=True)
+      print ''
       self.assertEquals(len(scores), NUM_ITERS)
       self.assertEquals(len(maxTiles), NUM_ITERS)
       self.assertEquals(len(numMoves), NUM_ITERS)
@@ -60,6 +62,7 @@ class BaselineRandomPlayerTest(unittest.TestCase):
    def testRun(self):
       """Check that it's performing as expected."""
       (scores, maxTiles, numMoves) = self.p.run(numIters=NUM_ITERS, printStats=True)
+      print ''
       self.assertEquals(len(scores), NUM_ITERS)
       self.assertEquals(len(maxTiles), NUM_ITERS)
       self.assertEquals(len(numMoves), NUM_ITERS)

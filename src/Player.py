@@ -8,7 +8,7 @@ class Player(object):
    def __init__(self):
       self.m = Model.Model()
 
-   def run(self, numIters=1, printStats=False):
+   def run(self, numIters=1, printStats=False, printAtCheckpoints=False):
       """Runs the game.
 
       Args:
@@ -22,7 +22,21 @@ class Player(object):
       maxTiles = []
       numMoves = []
 
+      def printAllStats():
+         print 'Total runs: %d' % len(scores)
+         self._printScoreStats(scores)
+         self._printMaxTileStats(maxTiles)
+         self._printMoveStats(numMoves)
+
+      checkpoint = 1
+
       for i in range(numIters):
+         if i == checkpoint:
+            checkpoint *= 10
+            if printAtCheckpoints:
+               printAllStats()
+               print ''
+
          self.m.reset()
 
          count = 0
@@ -37,9 +51,7 @@ class Player(object):
          numMoves.append(count)
 
       if printStats:
-         self._printScoreStats(scores)
-         self._printMaxTileStats(maxTiles)
-         self._printMoveStats(numMoves)
+         printAllStats()
 
       return (scores, maxTiles, numMoves)
 
@@ -52,14 +64,12 @@ class Player(object):
       """Outputs stastics about the given data."""
       npData = np.array(data)
       print (dataName + ' ::: ' + ', '.join([
-         "Total runs: %d",
          "Max: %d",
          "Min: %d",
          "Median: %d",
          "Average: %d",
          "Stdev: %d",
-      ]) % (len(data),
-            max(data),
+      ]) % (max(data),
             min(data),
             np.median(npData),
             npData.mean(),

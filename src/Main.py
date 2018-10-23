@@ -13,15 +13,15 @@ def main(playerName, numIters):
    if playerName == PLAYER_NAMES[0]:
       # run the baseline greedy player
       p = Player.BaselineGreedyPlayer()
-      p.run(numIters=numIters, printStats=True)
+      p.run(numIters=numIters, printStats=True, printAtCheckpoints=True)
    elif playerName == PLAYER_NAMES[1]:
       # run the baseline corner player
       p = Player.BaselineCornerPlayer()
-      p.run(numIters=numIters, printStats=True)
+      p.run(numIters=numIters, printStats=True, printAtCheckpoints=True)
    elif playerName == PLAYER_NAMES[2]:
       # run the baseline random player
       p = Player.BaselineRandomPlayer()
-      p.run(numIters=numIters, printStats=True)
+      p.run(numIters=numIters, printStats=True, printAtCheckpoints=True)
 
 if __name__ == '__main__':
    parser = argparse.ArgumentParser()
