@@ -86,7 +86,7 @@ class BaselineGreedyPlayer(Player):
       """Player chooses move that yields maximum points for that turn.
 
       If scores are the same (which they always are for up/down and left/right)
-      it selects in the following order: UP, LEFT, DOWN, RIGHT
+      it selects in the following order: UP, LEFT, RIGHT, DOWN
 
       Note that in the above ordering moves are only considered if they cause the
       board to change.
@@ -112,8 +112,8 @@ class BaselineGreedyPlayer(Player):
          # if there were no moves with non-zero score, just return a valid one
          return validMoves[0]
 
-      for move in [Model.Move.DOWN, Model.Move.RIGHT]:
-         # if up and left were not valid, return the first valid of down and right
+      for move in [Model.Move.RIGHT, Model.Move.DOWN]:
+         # if up and left were not valid, return the first valid of right and down
          (_, boardChanged) = self.m.makeMove(move, modifyState=False)
          if boardChanged:
             return move
