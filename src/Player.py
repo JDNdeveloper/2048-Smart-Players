@@ -88,7 +88,7 @@ class BaselineGreedyPlayer(Player):
       maxMove = None
       for move in self.m.MOVES:
          # choose move that maximizes score and would actually changed the board
-         moveScore, boardChanged = self.m.makeMove(move, modifyState=False)
+         (moveScore, boardChanged) = self.m.makeMove(move, modifyState=False)
          if boardChanged:
             if moveScore > maxScore:
                maxMove = move
