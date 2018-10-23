@@ -30,13 +30,13 @@ class ModelTest(unittest.TestCase):
                          for row in range(self.m.SIZE)
                          for col in range(self.m.SIZE)
                          if self.m.board[row][col] is not None]
-         assert set(filledValues) in expectedFilledValues
+         self.assertIn(set(filledValues), expectedFilledValues)
          occurrences[expectedFilledValues.index(set(filledValues))] += 1
-         assert len(filledValues) == 2
-         assert self.m.score == 0
-      assert (occurrences[0] > occurrences[1] and
-              occurrences[1] > occurrences[2] and
-              occurrences[2] > 0)
+         self.assertEquals(len(filledValues), 2)
+         self.assertEquals(self.m.score, 0)
+      self.assertGreater(occurrences[0], occurrences[1])
+      self.assertGreater(occurrences[1], occurrences[2])
+      self.assertGreater(occurrences[2], 0)
 
    def testMakeMove(self):
       ## Direction Tests
@@ -48,49 +48,59 @@ class ModelTest(unittest.TestCase):
       def verifyBoard(fixedRowColValues=None,
                       fixedRowValues=None,
                       fixedColValues=None,
-                      randomFillExpected=True):
-         randomFillFound = not randomFillExpected
+                      randomFillExpected=1):
+         """Verifies board has expected values."""
+         randomFillFound = 0
 
          for row in range(self.m.SIZE):
             for col in range(self.m.SIZE):
                val = self.m.board[row][col]
 
                if fixedRowColValues and (row, col) in fixedRowColValues:
-                  assert val == fixedRowColValues[(row, col)]
+                  self.assertEqual(val, fixedRowColValues[(row, col)])
                elif fixedRowValues and row in fixedRowValues:
-                  assert val == fixedRowValues[row]
+                  self.assertEqual(val, fixedRowValues[row])
                elif fixedColValues and col in fixedColValues:
-                  assert val == fixedColValues[col]
+                  self.assertEqual(val, fixedColValues[col])
                else:
                   if val is not None:
-                     assert not randomFillFound
-                     randomFillFound = True
+                     randomFillFound += 1
 
-         assert randomFillFound
+         self.assertEquals(randomFillFound, randomFillExpected)
+
+      def verifyMove(initialBoard, move, expectedScore,
+                     expectedMoveScore=None, reset=True,
+                     expectedBoardToChange=True,
+                     modifyState=True):
+         """Sets up initial board and verifies move and resulting state."""
+         if reset:
+            self.m.reset()
+         if expectedMoveScore is None:
+            expectedMoveScore = expectedScore
+
+         self.m.board = copy.deepcopy(initialBoard)
+         (moveScore, boardChanged) = self.m.makeMove(
+            move, modifyState=modifyState)
+
+         self.assertEqual(moveScore, expectedMoveScore)
+         self.assertEqual(boardChanged, expectedBoardToChange)
+         self.assertEqual(self.m.score, expectedScore)
 
       # UP
-      self.m.board = copy.deepcopy(diagonalBoard)
-      self.m.makeMove(Model.Move.UP)
+      verifyMove(diagonalBoard, Model.Move.UP, 0)
       verifyBoard(fixedRowValues={0: 2})
-      assert self.m.score == 0
 
       # DOWN
-      self.m.board = copy.deepcopy(diagonalBoard)
-      self.m.makeMove(Model.Move.DOWN)
+      verifyMove(diagonalBoard, Model.Move.DOWN, 0)
       verifyBoard(fixedRowValues={self.m.SIZE - 1: 2})
-      assert self.m.score == 0
 
       # LEFT
-      self.m.board = copy.deepcopy(diagonalBoard)
-      self.m.makeMove(Model.Move.LEFT)
+      verifyMove(diagonalBoard, Model.Move.LEFT, 0)
       verifyBoard(fixedColValues={0: 2})
-      assert self.m.score == 0
 
       # RIGHT
-      self.m.board = copy.deepcopy(diagonalBoard)
-      self.m.makeMove(Model.Move.RIGHT)
+      verifyMove(diagonalBoard, Model.Move.RIGHT, 0)
       verifyBoard(fixedColValues={self.m.SIZE - 1: 2})
-      assert self.m.score == 0
 
       ## Merging Tests
 
@@ -98,38 +108,30 @@ class ModelTest(unittest.TestCase):
       twoMergeBoard = [[2 if row in [0, 1] else None
                         for col in range(self.m.SIZE)]
                        for row in range(self.m.SIZE)]
-      self.m.reset()
-      self.m.board = copy.deepcopy(twoMergeBoard)
-      self.m.makeMove(Model.Move.UP)
+      expectedTwoMergeScore = 4 * self.m.SIZE
+      verifyMove(twoMergeBoard, Model.Move.UP, expectedTwoMergeScore)
       verifyBoard(fixedRowValues={0: 4})
-      assert self.m.score == 4 * self.m.SIZE
 
       # two items without changing state
-      self.m.reset()
-      self.m.board = copy.deepcopy(twoMergeBoard)
-      self.m.makeMove(Model.Move.UP, modifyState=False)
-      verifyBoard(fixedRowValues={0: 2, 1: 2}, randomFillExpected=False)
-      assert self.m.score == 0
+      verifyMove(twoMergeBoard, Model.Move.UP, 0,
+                 expectedMoveScore=expectedTwoMergeScore, modifyState=False)
+      verifyBoard(fixedRowValues={0: 2, 1: 2}, randomFillExpected=0)
 
       # four items
       fourMergeBoard = [[2 if row in [0, 1, 2, 3] else None
                          for col in range(self.m.SIZE)]
                         for row in range(self.m.SIZE)]
-      self.m.reset()
-      self.m.board = copy.deepcopy(fourMergeBoard)
-      self.m.makeMove(Model.Move.UP)
+      expectedFourMergeScore = 2 * expectedTwoMergeScore
+      verifyMove(fourMergeBoard, Model.Move.UP, expectedFourMergeScore)
       verifyBoard(fixedRowValues={0: 4, 1: 4})
-      assert self.m.score == 2 * (4 * self.m.SIZE)
 
       # three items (third item should not merge)
       threeMergeBoard = [[2 if row in [0, 1, 2] else None
                          for col in range(self.m.SIZE)]
                         for row in range(self.m.SIZE)]
-      self.m.reset()
-      self.m.board = copy.deepcopy(threeMergeBoard)
-      self.m.makeMove(Model.Move.UP)
+      expectedThreeMergeScore = expectedTwoMergeScore
+      verifyMove(threeMergeBoard, Model.Move.UP, expectedThreeMergeScore)
       verifyBoard(fixedRowValues={0: 4, 1: 2})
-      assert self.m.score == 4 * self.m.SIZE
 
       ## Edge Case Tests
 
@@ -137,35 +139,39 @@ class ModelTest(unittest.TestCase):
       upFixedBoard = [[2 if row in [0] else None
                        for col in range(self.m.SIZE)]
                       for row in range(self.m.SIZE)]
-      self.m.reset()
-      self.m.board = copy.deepcopy(upFixedBoard)
-      self.m.makeMove(Model.Move.UP)
-      verifyBoard(fixedRowValues={0: 2}, randomFillExpected=False)
-      assert self.m.score == 0
+      verifyMove(upFixedBoard, Model.Move.UP, 0, expectedBoardToChange=False)
+      verifyBoard(fixedRowValues={0: 2}, randomFillExpected=0)
+
+      # two moves in a row, both with merges
+      verifyMove(fourMergeBoard, Model.Move.UP, expectedFourMergeScore)
+      verifyBoard(fixedRowValues={0: 4, 1: 4})
+      verifyMove(self.m.board, Model.Move.UP, 2 * expectedFourMergeScore,
+                 expectedMoveScore=expectedFourMergeScore, reset=False)
+      verifyBoard(fixedRowValues={0: 8}, randomFillExpected=2)
 
    def testIsGameOver(self):
       # verify new board is not game over
-      assert not self.m.isGameOver()
+      self.assertFalse(self.m.isGameOver())
 
       # verify full board with possible up/down compression
       # is not game over
       self.m.board = [[2 ** (col + 1)
                        for col in range(self.m.SIZE)]
                       for row in range(self.m.SIZE)]
-      assert not self.m.isGameOver()
+      self.assertFalse(self.m.isGameOver())
 
       # verify full board with possible left/right compression
       # is not game over
       self.m.board = [[2 ** (row + 1)
                        for col in range(self.m.SIZE)]
                       for row in range(self.m.SIZE)]
-      assert not self.m.isGameOver()
+      self.assertFalse(self.m.isGameOver())
 
       # verify full board with no compression is game over
       self.m.board = [[2 ** ((row + col) % 2 + 1)
                        for col in range(self.m.SIZE)]
                       for row in range(self.m.SIZE)]
-      assert self.m.isGameOver()
+      self.assertTrue(self.m.isGameOver())
 
 if __name__ == '__main__':
    unittest.main()
