@@ -42,22 +42,20 @@ class Model(object):
       boardChanged = False
       moveScore = 0
 
-      for i in range(self.SIZE):
-         if move == Move.UP:
-            primaryIndices = range(self.SIZE)
-            secondaryIndices = [i] * self.SIZE
-         elif move == Move.DOWN:
-            primaryIndices = list(reversed(range(self.SIZE)))
-            secondaryIndices = [i] * self.SIZE
-         elif move == Move.LEFT:
-            primaryIndices = [i] * self.SIZE
-            secondaryIndices = range(self.SIZE)
-         elif move == Move.RIGHT:
-            primaryIndices = [i] * self.SIZE
-            secondaryIndices = list(reversed(range(self.SIZE)))
+      if move == Move.UP:
+         allRowColPairs = [zip(range(self.SIZE), [i] * self.SIZE)
+                           for i in range(self.SIZE)]
+      elif move == Move.DOWN:
+         allRowColPairs = [zip(list(reversed(range(self.SIZE))), [i] * self.SIZE)
+                           for i in range(self.SIZE)]
+      elif move == Move.LEFT:
+         allRowColPairs = [zip([i] * self.SIZE, range(self.SIZE))
+                           for i in range(self.SIZE)]
+      elif move == Move.RIGHT:
+         allRowColPairs = [zip([i] * self.SIZE, list(reversed(range(self.SIZE))))
+                           for i in range(self.SIZE)]
 
-         rowColPairs = zip(primaryIndices, secondaryIndices)
-
+      for rowColPairs in allRowColPairs:
          line = [self.board[row][col] for (row, col) in rowColPairs]
          (newLine, lineScore) = self._compressLine(line)
          if newLine != line:
