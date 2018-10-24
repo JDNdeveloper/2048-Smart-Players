@@ -167,8 +167,3 @@ class InteractivePlayer(Player):
       while move not in moves:
          move = raw_input("Enter move: 1=UP, 2=DOWN, 3=LEFT, 4=RIGHT: ")
       return moves[move]
-
-if __name__ == '__main__':
-   """Run interactive player."""
-   p = InteractivePlayer()
-   p.run()
