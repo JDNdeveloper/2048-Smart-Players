@@ -1,6 +1,8 @@
 import copy
 import random
 
+DEFAULT_SIZE = 4
+
 class Move:
    UP = 1
    DOWN = 2
@@ -9,7 +11,7 @@ class Move:
 
 class Model(object):
    """Board is 4x4."""
-   SIZE = 4
+   SIZE = DEFAULT_SIZE
    """Fill values, using value repetition as a probability distribution."""
    FILL_VALUES = [2] * 9 + [4] * 1
    """All possible moves."""
@@ -164,7 +166,7 @@ class Model(object):
 
    def __str__(self):
       """Return string representation of the board."""
-      rowBreak = '---------------------------------\n'
+      rowBreak = '--------' * self.SIZE + '-\n'
 
       s = ''
       for row in range(self.SIZE):

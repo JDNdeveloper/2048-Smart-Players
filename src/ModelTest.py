@@ -161,6 +161,17 @@ class ModelTest(unittest.TestCase):
       verifyMove(sameScoreBoard, Model.Move.LEFT, 0)
       verifyMove(sameScoreBoard, Model.Move.RIGHT, 0)
 
+      # test a 5x5 board
+      Model.Model.SIZE = 5
+      fiveBoard = [[2 if row in [0, 1, 2, 3] else None
+                    for col in range(self.m.SIZE)]
+                   for row in range(self.m.SIZE)]
+      expectedFiveBoardScore = 2 * 4 * self.m.SIZE
+      verifyMove(fiveBoard, Model.Move.UP, expectedFiveBoardScore)
+      verifyBoard(fixedRowValues={0: 4, 1: 4})
+      # set size back to default
+      Model.Model.SIZE = Model.DEFAULT_SIZE
+
    def testIsGameOver(self):
       # verify new board is not game over
       self.assertFalse(self.m.isGameOver())
