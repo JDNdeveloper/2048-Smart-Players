@@ -4,7 +4,7 @@ import argparse
 import Model
 import Player
 
-DEFAULT_ITERS = 100
+DEFAULT_ITERS = 1
 PLAYER_NAMES = ['INTERACTIVE', 'GREEDY', 'CORNER', 'RANDOM']
 DEFAULT_PLAYER_NAME = PLAYER_NAMES[0]
 
@@ -17,7 +17,7 @@ def main(playerName, numIters, size):
    if playerName == PLAYER_NAMES[0]:
       # run the interactive player
       p = Player.InteractivePlayer()
-      p.run()
+      p.run(numIters=numIters)
    elif playerName == PLAYER_NAMES[1]:
       # run the baseline greedy player
       p = Player.BaselineGreedyPlayer()
