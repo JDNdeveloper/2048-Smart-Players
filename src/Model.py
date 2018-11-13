@@ -30,16 +30,18 @@ class Model(object):
       """
       return (self.board, self.score)
 
-   def makeMove(self, move, modifyState=True):
+   def makeMove(self, move, modifyState=True, returnBoard=False):
       """Executes a move.
 
       Args:
       move: The move to execute.
       modifyState: If False the board and score are not updated with the move.
+      returnBoard: allows you to get the new board
 
       Returns:
       moveScore: The points made from the given move.
       boardChanged: True if the move would/did make the board change.
+      (optional) newBoard: copy of changed board without _randomFill - used for expectimax
       """
       boardChanged = False
       moveScore = 0
@@ -57,6 +59,8 @@ class Model(object):
          allRowColPairs = [zip([i] * self.SIZE, list(reversed(range(self.SIZE))))
                            for i in range(self.SIZE)]
 
+      newBoard = [[None] * self.SIZE for _ in range(self.SIZE)]
+
       for rowColPairs in allRowColPairs:
          line = [self.board[row][col] for (row, col) in rowColPairs]
          (newLine, lineScore) = self._compressLine(line)
@@ -66,6 +70,9 @@ class Model(object):
             if modifyState:
                for (val, (row, col)) in zip(newLine, rowColPairs):
                   self.board[row][col] = val
+            if returnBoard:
+               for (val, (row, col)) in zip(newLine, rowColPairs):
+                  newBoard[row][col] = val
 
       if modifyState:
          if boardChanged:
@@ -73,7 +80,8 @@ class Model(object):
             # we do a random fill
             self._randomFill()
          self.score += moveScore
-
+      
+      if returnBoard: return (moveScore, boardChanged, newBoard)
       return (moveScore, boardChanged)
 
    def isGameOver(self):

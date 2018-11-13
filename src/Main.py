@@ -3,12 +3,14 @@
 import argparse
 import Model
 import Player
+import ExpectiMaxPlayer
 
 DEFAULT_ITERS = 1
-PLAYER_NAMES = ['INTERACTIVE', 'GREEDY', 'CORNER', 'RANDOM']
+DEFAULT_DEPTH = 3
+PLAYER_NAMES = ['INTERACTIVE', 'GREEDY', 'CORNER', 'RANDOM', 'EXPECTIMAX']
 DEFAULT_PLAYER_NAME = PLAYER_NAMES[0]
 
-def main(playerName, numIters, size):
+def main(playerName, numIters, size, depth):
    """Primary test harness."""
 
    # set the board size
@@ -30,6 +32,10 @@ def main(playerName, numIters, size):
       # run the baseline random player
       p = Player.BaselineRandomPlayer()
       p.run(numIters=numIters, printStats=True, printAtCheckpoints=True)
+   elif playerName == PLAYER_NAMES[4]:
+      # run the expectimax player
+      p = ExpectiMaxPlayer.ExpectiMaxPlayer(depth=depth)
+      p.run(numIters=numIters, printStats=True, printAtCheckpoints=True)
 
 if __name__ == '__main__':
    parser = argparse.ArgumentParser()
@@ -41,6 +47,8 @@ if __name__ == '__main__':
                              (' or '.join(PLAYER_NAMES), DEFAULT_PLAYER_NAME)))
    parser.add_argument('--size', default=Model.DEFAULT_SIZE,
                        help=('dimension of board, default %d' % Model.DEFAULT_SIZE))
+   parser.add_argument('--depth', default=DEFAULT_DEPTH,
+                       help=('depth of search for expectimax, default %d' % DEFAULT_DEPTH))
    args = parser.parse_args()
 
-   main(args.player.upper(), int(args.numIters), int(args.size))
+   main(args.player.upper(), int(args.numIters), int(args.size), int(args.depth))
