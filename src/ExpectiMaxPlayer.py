@@ -121,9 +121,9 @@ class ExpectiMaxPlayer(Player):
         self.adjustLegalMoves(board)
         bestMove = recurse(self.m.getState()[0], 0, self.depth)
         self.lastMove = bestMove[0]
-        print board
-        print board[0][0]
-        print "BestMove: {}".format(bestMove[0])
+        # print board
+        # print board[0][0]
+        # print "BestMove: {}".format(bestMove[0])
         return self.lastMove
     
     def evalFunction(self, board): #Todo
