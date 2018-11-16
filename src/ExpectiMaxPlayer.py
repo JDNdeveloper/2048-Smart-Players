@@ -58,14 +58,13 @@ class ExpectiMaxPlayer(Player):
     def generateNextMove(self, board, index, move):
         """Simulate next move for agent or rand"""
         if index == 0:
-            return self.m.makeMove(move, modifyState=False, returnBoard=True)[2]
+            return (self.m.makeMove(move, modifyState=False, returnBoard=True)[2], move)
         else: 
             row, col = move[1]
             val = move[0]
-            board[row][col] = val
-            return board
-            
-
+            new_board = copy.deepcopy(board)
+            new_board[row][col] = val
+            return (new_board, move[0])
 
     def adjustLegalMoves(self, board):
         """Disallows forbidden moves"""
@@ -87,6 +86,8 @@ class ExpectiMaxPlayer(Player):
         Runs an expectimax algorithm to try and get the next best move
         [More to follow]
         """ 
+
+        movePlayed = ['', 'UP', 'DOWN', 'LEFT', 'RIGHT']
         #######################################
         def recurse(board, index, depth):
             ###################### Base cases
@@ -95,44 +96,50 @@ class ExpectiMaxPlayer(Player):
             if self.isGameOver(board):
                 return ("", self.getScore(board), index)
             ######################
-            # legalMoves = self.legalMoves_agent if index == 0 else [(2, random.choice(self.getOpenPos(board)))] + [(4, random.choice(self.getOpenPos(board)))]
-            
-            # if len(self.getOpenPos(board)) < 8 and index != 0:
-            #     legalMoves = [(2, pos) for pos in self.getOpenPos(board)] + [(4, pos) for pos in self.getOpenPos(board)] #based on player vs. random gen
-                
-            # print legalMoves
-
             legalMoves = self.legalMoves_agent if index == 0 else [(2, pos) for pos in self.getOpenPos(board)] + [(4, pos) for pos in self.getOpenPos(board)]
             newBoards = [self.generateNextMove(board, index, move) for move in legalMoves]
-            
             if index == 0: #agent case
-                moveRewards = [recurse(newBoard, index+1, depth)[1] for newBoard in newBoards]
+                moveRewards = [recurse(newBoard[0], index+1, depth)[1] for newBoard in newBoards]
             else: #rand case
-                moveRewards = [recurse(newBoard, 0, depth-1)[1] for newBoard in newBoards]
-            
+                moveRewards_2 = [recurse(newBoard[0], 0, depth-1)[1] for newBoard in newBoards if newBoard[1] == 2]
+                moveRewards_4 = [recurse(newBoard[0], 0, depth-1)[1] for newBoard in newBoards if newBoard[1] == 4]
             if index == 0:
                 maxIdx = moveRewards.index(max(moveRewards))
                 return (legalMoves[maxIdx], max(moveRewards), index)
             else:
-                return ("", (0.9*moveRewards[0] + 0.1*moveRewards[1]), index)
+                return ("", (0.9*sum(moveRewards_2) + 0.1*sum(moveRewards_4))/len(moveRewards_2), index)
             assert False
 
         #######################################
         self.adjustLegalMoves(board)
         bestMove = recurse(self.m.getState()[0], 0, self.depth)
         self.lastMove = bestMove[0]
-        print board
-        print board[0][0]
-        print "BestMove: {}".format(bestMove[0])
+        # print "BestMove: {}".format(movePlayed[bestMove[0]])
+        # self.printBoard(board)
         return self.lastMove
     
     def evalFunction(self, board): #Todo
-        retVal = len(self.getOpenPos(board))
-        if self.maxTile(board) == board[0][0]:
-            retVal *= 1000
-        elif not (self.maxTile(board) in [board[i][0] for i in range(len(board))]):
-            retVal /= self.maxTile(board)
-        return retVal #+0.2*self.getScore(board)
+        score = self.getScore(board)
+        numNone = len(self.getOpenPos(board))**2
+        maxTilePosCorrect = 100 if self.maxTile(board) == board[0][0] else 0
+        maxTileColCorrect = 10 if self.maxTile(board) in board[0] else 0
+        phi = [score, numNone, maxTilePosCorrect, maxTileColCorrect]
+        weights = [0, 50, 100, 2]
+        return sum([weights[i]*phi[i] for i in range(len(phi))])
+
+    def printBoard(self, board):
+      """Return string representation of the board."""
+      rowBreak = '--------' * self.m.SIZE + '-\n'
+
+      s = ''
+      for row in range(self.m.SIZE):
+         s += rowBreak
+         for col in range(self.m.SIZE):
+            val = board[row][col]
+            s += '| %s\t' % str(val if val is not None else '')
+         s += '|\n'
+      s += rowBreak
+      print s
         
         
         
