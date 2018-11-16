@@ -2,9 +2,9 @@ from Player import Player
 import random
 import copy
 
-########################################################################################################################
+##########################################################################
 # TODO: implement heuristics
-########################################################################################################################
+##########################################################################
 class ExpectiMaxPlayer(Player):
     """Plays with an expectimax algorithm"""
 
@@ -43,7 +43,8 @@ class ExpectiMaxPlayer(Player):
         return sum([sum(filter(None, list)) for list in board])
 
     def getOpenPos(self, board):
-        return [(row, col) for row in range(self.m.SIZE) for col in range(self.m.SIZE) if board[row][col] == None]
+        return [(row, col) for row in range(self.m.SIZE)
+                for col in range(self.m.SIZE) if board[row][col] == None]
 
     def randomFill(self, board, move):
         """Randomly fill an open position on the board.
@@ -76,7 +77,7 @@ class ExpectiMaxPlayer(Player):
             self.lastBoard = copy.deepcopy(board)
             self.legalMoves_agent = self.m.MOVES
         return
-    
+
     def maxTile(self, board):
       """Returns value of maximum tile on the board."""
       return max(val for row in board for val in row)
@@ -91,13 +92,18 @@ class ExpectiMaxPlayer(Player):
         #######################################
         def recurse(board, index, depth):
             ###################### Base cases
-            if depth == 0: 
+            if depth == 0:
                 return ("", self.evalFunction(board), index)
             if self.isGameOver(board):
                 return ("", self.getScore(board), index)
             ######################
-            legalMoves = self.legalMoves_agent if index == 0 else [(2, pos) for pos in self.getOpenPos(board)] + [(4, pos) for pos in self.getOpenPos(board)]
-            newBoards = [self.generateNextMove(board, index, move) for move in legalMoves]
+            legalMoves = (self.legalMoves_agent
+                          if index == 0
+                          else ([(2, pos) for pos in self.getOpenPos(board)] +
+                               [(4, pos) for pos in self.getOpenPos(board)]))
+
+            newBoards = [self.generateNextMove(board, index, move) 
+                         for move in legalMoves]
             if index == 0: #agent case
                 moveRewards = [recurse(newBoard[0], index+1, depth)[1] for newBoard in newBoards]
             else: #rand case
@@ -117,7 +123,7 @@ class ExpectiMaxPlayer(Player):
         # print "BestMove: {}".format(movePlayed[bestMove[0]])
         # self.printBoard(board)
         return self.lastMove
-    
+
     def evalFunction(self, board): #Todo
         score = self.getScore(board)
         numNone = len(self.getOpenPos(board))**2

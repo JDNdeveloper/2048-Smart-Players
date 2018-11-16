@@ -80,7 +80,7 @@ class Model(object):
             # we do a random fill
             self._randomFill()
          self.score += moveScore
-      
+
       if returnBoard: return (moveScore, boardChanged, newBoard)
       return (moveScore, boardChanged)
 
