@@ -8,8 +8,8 @@ import copy
 class ExpectiMaxPlayer(Player):
     """Plays with an expectimax algorithm"""
 
-    def __init__(self, depth=3):
-        super(ExpectiMaxPlayer, self).__init__()
+    def __init__(self, debug=False, depth=3):
+        super(ExpectiMaxPlayer, self).__init__(debug)
         self.depth = depth
         self.legalMoves_agent = self.m.MOVES
         self.lastBoard = None
@@ -59,8 +59,9 @@ class ExpectiMaxPlayer(Player):
     def generateNextMove(self, board, index, move):
         """Simulate next move for agent or rand"""
         if index == 0:
-            return (self.m.makeMove(move, modifyState=False, returnBoard=True)[2], move)
-        else: 
+            return (self.m.makeMove(move, modifyState=False, returnBoard=True)[2],
+                    move)
+        else:
             row, col = move[1]
             val = move[0]
             new_board = copy.deepcopy(board)
@@ -86,7 +87,7 @@ class ExpectiMaxPlayer(Player):
         """
         Runs an expectimax algorithm to try and get the next best move
         [More to follow]
-        """ 
+        """
 
         movePlayed = ['', 'UP', 'DOWN', 'LEFT', 'RIGHT']
         #######################################
@@ -102,26 +103,31 @@ class ExpectiMaxPlayer(Player):
                           else ([(2, pos) for pos in self.getOpenPos(board)] +
                                [(4, pos) for pos in self.getOpenPos(board)]))
 
-            newBoards = [self.generateNextMove(board, index, move) 
+            newBoards = [self.generateNextMove(board, index, move)
                          for move in legalMoves]
             if index == 0: #agent case
-                moveRewards = [recurse(newBoard[0], index+1, depth)[1] for newBoard in newBoards]
+                moveRewards = [recurse(newBoard[0], index+1, depth)[1]
+                               for newBoard in newBoards]
             else: #rand case
-                moveRewards_2 = [recurse(newBoard[0], 0, depth-1)[1] for newBoard in newBoards if newBoard[1] == 2]
-                moveRewards_4 = [recurse(newBoard[0], 0, depth-1)[1] for newBoard in newBoards if newBoard[1] == 4]
+                moveRewards_2 = [recurse(newBoard[0], 0, depth-1)[1]
+                                 for newBoard in newBoards if newBoard[1] == 2]
+                moveRewards_4 = [recurse(newBoard[0], 0, depth-1)[1]
+                                 for newBoard in newBoards if newBoard[1] == 4]
             if index == 0:
                 maxIdx = moveRewards.index(max(moveRewards))
                 return (legalMoves[maxIdx], max(moveRewards), index)
             else:
-                return ("", (0.9*sum(moveRewards_2) + 0.1*sum(moveRewards_4))/len(moveRewards_2), index)
+                return ("", (0.9*sum(moveRewards_2) +
+                             0.1*sum(moveRewards_4))/len(moveRewards_2), index)
             assert False
 
         #######################################
         self.adjustLegalMoves(board)
         bestMove = recurse(self.m.getState()[0], 0, self.depth)
         self.lastMove = bestMove[0]
-        print "BestMove: {}".format(movePlayed[bestMove[0]])
-        self.printBoard(board)
+        if self.debug:
+            print "BestMove: {}".format(movePlayed[bestMove[0]])
+            self.printBoard(board)
         return self.lastMove
 
     def evalFunction(self, board): #Todo
@@ -129,8 +135,10 @@ class ExpectiMaxPlayer(Player):
         numNone = len(self.getOpenPos(board))**2
         maxTilePosCorrect = 100 if self.maxTile(board) == board[0][0] else -10
         maxTileColCorrect = 10 if self.maxTile(board) in board[0] else 0
-        topRowDecreasing = sum([(len(board[0]) - i)*10 for i in range(len(board[0])) if board[0][i] > board[0][(i+1)%len(board[0])]])
-        phi = [score, numNone, maxTilePosCorrect, maxTileColCorrect, topRowDecreasing]
+        topRowDecreasing = sum([(len(board[0]) - i)*10 for i in range(len(board[0]))
+                                if board[0][i] > board[0][(i+1)%len(board[0])]])
+        phi = [score, numNone, maxTilePosCorrect, maxTileColCorrect,
+               topRowDecreasing]
         weights = [0, 1.4, 2, 0, 2]
         return sum([weights[i]*phi[i] for i in range(len(phi))])
 
@@ -147,8 +155,3 @@ class ExpectiMaxPlayer(Player):
          s += '|\n'
       s += rowBreak
       print s
-        
-        
-        
-        
-        

@@ -4,8 +4,9 @@ import random
 import Model
 
 class Player(object):
-   def __init__(self):
+   def __init__(self, debug=False):
       self.m = Model.Model()
+      self.debug = debug
 
    def run(self, numIters=1, printStats=False, printAtCheckpoints=False):
       """Runs the game.
