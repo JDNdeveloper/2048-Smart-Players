@@ -15,47 +15,6 @@ class ExpectiMaxPlayer(Player):
         self.lastBoard = None
         self.lastMove = None
 
-    def isGameOver(self, board):
-        """Check if Game is over"""
-        if len(self.getOpenPos(board)) > 0:
-            return False
-        for i in range(self.m.SIZE):
-            # check for consecutive numbers in all rows and cols
-            prevRowVal = None
-            prevColVal = None
-            for j in range(self.m.SIZE):
-                # check row
-                val = board[i][j]
-                if val == prevRowVal:
-                    return False
-                else:
-                    prevRowVal = val
-                # check col
-                val = board[j][i]
-                if val == prevColVal:
-                    return False
-                else:
-                    prevColVal = val
-        return True
-
-    def getScore(self, board):
-        """Get Current sum of elements on the board"""
-        return sum([sum(filter(None, list)) for list in board])
-
-    def getOpenPos(self, board):
-        return [(row, col) for row in range(self.m.SIZE)
-                for col in range(self.m.SIZE) if board[row][col] == None]
-
-    def randomFill(self, board, move):
-        """Randomly fill an open position on the board.
-        The fill values and probability distribution is defined above.
-        """
-        openPos = self.getOpenPos(board)
-        if len(openPos) == 0: return board
-        (row, col) = random.choice(openPos)
-        board[row][col] = move
-        return board
-
     def generateNextMove(self, board, index, move):
         """Simulate next move for agent or rand"""
         if index == 0:
@@ -79,10 +38,6 @@ class ExpectiMaxPlayer(Player):
             self.legalMoves_agent = self.m.MOVES
         return
 
-    def maxTile(self, board):
-      """Returns value of maximum tile on the board."""
-      return max(val for row in board for val in row)
-
     def getMove(self, board, score):
         """
         Runs an expectimax algorithm to try and get the next best move
@@ -95,13 +50,15 @@ class ExpectiMaxPlayer(Player):
             ###################### Base cases
             if depth == 0:
                 return ("", self.evalFunction(board), index)
-            if self.isGameOver(board):
-                return ("", self.getScore(board), index)
+            if self.m.isBoardGameOver(board):
+                return ("", self.m.getBoardScore(board), index)
             ######################
             legalMoves = (self.legalMoves_agent
                           if index == 0
-                          else ([(2, pos) for pos in self.getOpenPos(board)] +
-                               [(4, pos) for pos in self.getOpenPos(board)]))
+                          else ([(2, pos) for pos in
+                                 self.m.getBoardOpenPositions(board)] +
+                               [(4, pos) for pos in
+                                self.m.getBoardOpenPositions(board)]))
 
             newBoards = [self.generateNextMove(board, index, move)
                          for move in legalMoves]
@@ -127,14 +84,16 @@ class ExpectiMaxPlayer(Player):
         self.lastMove = bestMove[0]
         if self.debug:
             print "BestMove: {}".format(movePlayed[bestMove[0]])
-            print self.m.boardString(board)
+            print self.m.getBoardString(board)
         return self.lastMove
 
     def evalFunction(self, board): #Todo
-        score = self.getScore(board)
-        numNone = len(self.getOpenPos(board))**2
-        maxTilePosCorrect = 100 if self.maxTile(board) == board[0][0] else -10
-        maxTileColCorrect = 10 if self.maxTile(board) in board[0] else 0
+        score = self.m.getBoardScore(board)
+        numNone = len(self.m.getBoardOpenPositions(board))**2
+        maxTilePosCorrect = (100 if self.m.getBoardMaxTile(board) == board[0][0]
+                             else -10)
+        maxTileColCorrect = (10 if self.m.getBoardMaxTile(board) in board[0]
+                             else 0)
         topRowDecreasing = sum([(len(board[0]) - i)*10 for i in range(len(board[0]))
                                 if board[0][i] > board[0][(i+1)%len(board[0])]])
         phi = [score, numNone, maxTilePosCorrect, maxTileColCorrect,

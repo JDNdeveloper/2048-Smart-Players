@@ -84,25 +84,26 @@ class Model(object):
       if returnBoard: return (moveScore, boardChanged, newBoard)
       return (moveScore, boardChanged)
 
-   def isGameOver(self):
+   @staticmethod
+   def isBoardGameOver(board):
       """True if game is over."""
-      if len(self._getOpenPositions()) > 0:
+      if len(Model.getBoardOpenPositions(board)) > 0:
          return False
 
-      for i in range(self.SIZE):
+      for i in range(Model.SIZE):
          # check for consecutive numbers in all rows and cols
          prevRowVal = None
          prevColVal = None
-         for j in range(self.SIZE):
+         for j in range(Model.SIZE):
             # check row
-            val = self.board[i][j]
+            val = board[i][j]
             if val == prevRowVal:
                return False
             else:
                prevRowVal = val
 
             # check col
-            val = self.board[j][i]
+            val = board[j][i]
             if val == prevColVal:
                return False
             else:
@@ -110,9 +111,16 @@ class Model(object):
 
       return True
 
-   def maxTile(self):
+   def isGameOver(self):
+      return self.isBoardGameOver(self.board)
+
+   @staticmethod
+   def getBoardMaxTile(board):
       """Returns value of maximum tile on the board."""
-      return max(val for row in self.board for val in row)
+      return max(val for row in board for val in row)
+
+   def maxTile(self):
+      return self.getBoardMaxTile(self.board)
 
    def reset(self):
       """Resets the game."""
@@ -155,25 +163,37 @@ class Model(object):
 
       return (newLine, lineScore)
 
-   def _getOpenPositions(self):
+   @staticmethod
+   def getBoardScore(board):
+      """Get sum of elements on the board"""
+      return sum([sum(filter(None, row)) for row in board])
+
+   @staticmethod
+   def getBoardOpenPositions(board):
       """Retrieve open positions.
 
       Returns:
       openPositions: List of open (row, col) positions.
       """
-      return [(row, col) for row in range(self.SIZE) for col in range(self.SIZE)
-              if self.board[row][col] == None]
+      return [(row, col) for row in range(Model.SIZE) for col in range(Model.SIZE)
+              if board[row][col] == None]
 
-   def _randomFill(self):
+   @staticmethod
+   def doBoardRandomFill(board):
       """Randomly fill an open position on the board.
 
       The fill values and probability distribution is defined above.
       """
-      (row, col) = random.choice(self._getOpenPositions())
-      self.board[row][col] = random.choice(self.FILL_VALUES)
+      openPositions = Model.getBoardOpenPositions(board)
+      if openPositions:
+         (row, col) = random.choice(openPositions)
+         board[row][col] = random.choice(Model.FILL_VALUES)
+
+   def _randomFill(self):
+      self.doBoardRandomFill(self.board)
 
    @staticmethod
-   def boardString(board):
+   def getBoardString(board):
       """Return string representation of the board."""
       rowBreak = '--------' * Model.SIZE + '-\n'
 
@@ -188,4 +208,4 @@ class Model(object):
       return s
 
    def __str__(self):
-      return self.boardString(self.board)
+      return self.getBoardString(self.board)
