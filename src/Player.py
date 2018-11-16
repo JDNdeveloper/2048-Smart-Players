@@ -1,3 +1,4 @@
+import collections
 import numpy as np
 import random
 import Model
@@ -24,6 +25,7 @@ class Player(object):
          print 'Total runs: %d' % len(scores)
          self._printScoreStats(scores)
          self._printMaxTileStats(maxTiles)
+         self._printMaxTileHistogram(maxTiles)
          self._printMoveStats(numMoves)
 
       checkpoint = 1
@@ -88,6 +90,23 @@ class Player(object):
    def _printMoveStats(numMoves):
       """Output stastics about the number of moves."""
       Player._printStats(numMoves, 'MOVES')
+
+   @staticmethod
+   def _printHistogram(data, dataName):
+      """Outputs histogram for the given data."""
+      histogram = collections.defaultdict(int)
+      for d in data:
+         histogram[d] += 1
+
+      print (dataName + ' histogram' + ' ::: ' + ', '.join([
+         '%d: %d' % (value, occurrences)
+         for value, occurrences in sorted(histogram.iteritems())
+      ]))
+
+   @staticmethod
+   def _printMaxTileHistogram(maxTiles):
+      """Outputs histogram for max tiles."""
+      Player._printHistogram(maxTiles, 'MAX TILES')
 
 class BaselineGreedyPlayer(Player):
    def getMove(self, board, score):
