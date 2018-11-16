@@ -127,7 +127,7 @@ class ExpectiMaxPlayer(Player):
         self.lastMove = bestMove[0]
         if self.debug:
             print "BestMove: {}".format(movePlayed[bestMove[0]])
-            self.printBoard(board)
+            print self.m.boardString(board)
         return self.lastMove
 
     def evalFunction(self, board): #Todo
@@ -141,17 +141,3 @@ class ExpectiMaxPlayer(Player):
                topRowDecreasing]
         weights = [0, 1.4, 2, 0, 2]
         return sum([weights[i]*phi[i] for i in range(len(phi))])
-
-    def printBoard(self, board):
-      """Return string representation of the board."""
-      rowBreak = '--------' * self.m.SIZE + '-\n'
-
-      s = ''
-      for row in range(self.m.SIZE):
-         s += rowBreak
-         for col in range(self.m.SIZE):
-            val = board[row][col]
-            s += '| %s\t' % str(val if val is not None else '')
-         s += '|\n'
-      s += rowBreak
-      print s

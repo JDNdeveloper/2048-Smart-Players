@@ -172,16 +172,20 @@ class Model(object):
       (row, col) = random.choice(self._getOpenPositions())
       self.board[row][col] = random.choice(self.FILL_VALUES)
 
-   def __str__(self):
+   @staticmethod
+   def boardString(board):
       """Return string representation of the board."""
-      rowBreak = '--------' * self.SIZE + '-\n'
+      rowBreak = '--------' * Model.SIZE + '-\n'
 
       s = ''
-      for row in range(self.SIZE):
+      for row in range(Model.SIZE):
          s += rowBreak
-         for col in range(self.SIZE):
-            val = self.board[row][col]
+         for col in range(Model.SIZE):
+            val = board[row][col]
             s += '| %s\t' % str(val if val is not None else '')
          s += '|\n'
       s += rowBreak
       return s
+
+   def __str__(self):
+      return self.boardString(self.board)
