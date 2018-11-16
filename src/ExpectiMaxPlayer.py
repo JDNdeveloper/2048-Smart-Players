@@ -120,17 +120,18 @@ class ExpectiMaxPlayer(Player):
         self.adjustLegalMoves(board)
         bestMove = recurse(self.m.getState()[0], 0, self.depth)
         self.lastMove = bestMove[0]
-        # print "BestMove: {}".format(movePlayed[bestMove[0]])
-        # self.printBoard(board)
+        print "BestMove: {}".format(movePlayed[bestMove[0]])
+        self.printBoard(board)
         return self.lastMove
 
     def evalFunction(self, board): #Todo
         score = self.getScore(board)
         numNone = len(self.getOpenPos(board))**2
-        maxTilePosCorrect = 100 if self.maxTile(board) == board[0][0] else 0
+        maxTilePosCorrect = 100 if self.maxTile(board) == board[0][0] else -10
         maxTileColCorrect = 10 if self.maxTile(board) in board[0] else 0
-        phi = [score, numNone, maxTilePosCorrect, maxTileColCorrect]
-        weights = [0, 50, 100, 2]
+        topRowDecreasing = sum([(len(board[0]) - i)*10 for i in range(len(board[0])) if board[0][i] > board[0][(i+1)%len(board[0])]])
+        phi = [score, numNone, maxTilePosCorrect, maxTileColCorrect, topRowDecreasing]
+        weights = [0, 1.4, 2, 0, 2]
         return sum([weights[i]*phi[i] for i in range(len(phi))])
 
     def printBoard(self, board):
