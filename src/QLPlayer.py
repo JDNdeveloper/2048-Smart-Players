@@ -119,9 +119,10 @@ def featureExtractor(state, action):
 	return features
 
 class RLPlayer(Player.Player):
-	def __init__(self, debug=False, train=True, save=True):
+	def __init__(self, debug=False, train=True, load=True, save=True):
 		Player.Player.__init__(self, debug=debug)
 		self.train = train
+		self.load = load
 		self.save = save
 		self.previousAction = None
 		self.previousState = None
@@ -132,13 +133,13 @@ class RLPlayer(Player.Player):
 		self.totalMoves = 0
 		self.bannedActions = []
 
-		if not self.train:
+		if self.load:
 			self.rlAgent.loadWeights()
 
 		atexit.register(self._cleanup)
 
         def _cleanup(self):
-		if self.train and self.save:
+		if self.save:
 			self.rlAgent.saveWeights()
 
 	def getMoveAndTrainModel(self, state, score):
