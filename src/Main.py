@@ -4,10 +4,11 @@ import argparse
 import Model
 import Player
 import ExpectiMaxPlayer
+import QLPlayer
 
 DEFAULT_ITERS = 1
 DEFAULT_DEPTH = 3
-PLAYER_NAMES = ['INTERACTIVE', 'GREEDY', 'CORNER', 'RANDOM', 'EXPECTIMAX']
+PLAYER_NAMES = ['INTERACTIVE', 'GREEDY', 'CORNER', 'RANDOM', 'EXPECTIMAX', 'QL']
 DEFAULT_PLAYER_NAME = PLAYER_NAMES[0]
 
 def main(playerName, numIters, size, debug, depth):
@@ -35,6 +36,10 @@ def main(playerName, numIters, size, debug, depth):
    elif playerName == PLAYER_NAMES[4]:
       # run the expectimax player
       p = ExpectiMaxPlayer.ExpectiMaxPlayer(debug=debug, depth=depth)
+      p.run(numIters=numIters, printStats=True, printAtCheckpoints=True)
+  elif playerName == PLAYER_NAMES[5]:
+      # run the RL player
+      p = QLPlayer.QLPlayer()
       p.run(numIters=numIters, printStats=True, printAtCheckpoints=True)
 
 if __name__ == '__main__':
