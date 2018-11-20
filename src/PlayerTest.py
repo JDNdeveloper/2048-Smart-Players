@@ -8,6 +8,7 @@ import QLPlayer
 NUM_ITERS = 10
 DEPTH = 1
 TRAIN = True
+LOAD = False
 SAVE = False
 
 def verifyRanges(obj, data, ranges):
@@ -104,7 +105,7 @@ class ExpectiMaxPlayerTest(unittest.TestCase):
 
 class QLPlayerTest(unittest.TestCase):
    def setUp(self):
-      self.p = QLPlayer.RLPlayer(train=TRAIN, save=SAVE)
+      self.p = QLPlayer.RLPlayer(train=TRAIN, load=LOAD, save=SAVE)
 
    def testRun(self):
       """Check that it's performing as expected."""

@@ -119,7 +119,7 @@ def featureExtractor(state, action):
 	return features
 
 class RLPlayer(Player.Player):
-	def __init__(self, debug=False, train=True, load=True, save=True):
+	def __init__(self, debug=False, train=True, load=False, save=False):
 		Player.Player.__init__(self, debug=debug)
 		self.train = train
 		self.load = load
