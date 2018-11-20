@@ -37,9 +37,9 @@ def main(playerName, numIters, size, debug, depth):
       # run the expectimax player
       p = ExpectiMaxPlayer.ExpectiMaxPlayer(debug=debug, depth=depth)
       p.run(numIters=numIters, printStats=True, printAtCheckpoints=True)
-  elif playerName == PLAYER_NAMES[5]:
+   elif playerName == PLAYER_NAMES[5]:
       # run the RL player
-      p = QLPlayer.QLPlayer()
+      p = QLPlayer.RLPlayer()
       p.run(numIters=numIters, printStats=True, printAtCheckpoints=True)
 
 if __name__ == '__main__':
