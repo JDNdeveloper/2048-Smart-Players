@@ -196,5 +196,62 @@ class ModelTest(unittest.TestCase):
                       for row in range(self.m.SIZE)]
       self.assertTrue(self.m.isGameOver())
 
+   def testMaxTile(self):
+      # test empty board
+      self.m.board = [[None for _ in range(self.m.SIZE)]
+                      for _ in range(self.m.SIZE)]
+      self.assertEqual(self.m.maxTile(), None)
+
+      # test normal board
+      self.m.board = [
+         [2, None, None, None],
+         [None, None, None, 2],
+         [None, None, None, 2],
+         [None, None, 4, 2],
+      ]
+      self.assertEqual(self.m.maxTile(), 4)
+
+      # test full board with duplicate max's
+      self.m.board = [
+         [2, 8, 16, 256],
+         [8, 32, 4, 2],
+         [2, 256, 64, 2],
+         [16, 8, 4, 2],
+      ]
+      self.assertEqual(self.m.maxTile(), 256)
+
+   def testNumTiles(self):
+      # test empty board
+      self.m.board = [[None for _ in range(self.m.SIZE)]
+                      for _ in range(self.m.SIZE)]
+      self.assertEqual(self.m.numTiles(), 0)
+
+      # test board with two tiles
+      self.m.board = [
+         [2, None, None, None],
+         [None, 4, None, None],
+         [None, None, None, None],
+         [None, None, None, None],
+      ]
+      self.assertEqual(self.m.numTiles(), 2)
+
+      # test board with five tiles
+      self.m.board = [
+         [2, None, None, None],
+         [None, None, None, 2],
+         [None, None, None, 2],
+         [None, None, 4, 2],
+      ]
+      self.assertEqual(self.m.numTiles(), 5)
+
+      # test full board
+      self.m.board = [
+         [2, 8, 16, 256],
+         [8, 32, 4, 2],
+         [2, 4, 64, 2],
+         [16, 8, 4, 2],
+      ]
+      self.assertEqual(self.m.numTiles(), 16)
+
 if __name__ == '__main__':
    unittest.main()

@@ -1,9 +1,12 @@
 #!/usr/bin/python
 
 import unittest
+import ExpectiMaxPlayer
 import Player
+import QLPlayer
 
 NUM_ITERS = 10
+DEPTH = 1
 
 def verifyRanges(obj, data, ranges):
    """Check that results are within expected ranges."""
@@ -75,6 +78,48 @@ class BaselineRandomPlayerTest(unittest.TestCase):
 
       # check moves
       verifyRanges(self, numMoves, ((20, 200), (100, 1000)))
+
+class ExpectiMaxPlayerTest(unittest.TestCase):
+   def setUp(self):
+      self.p = ExpectiMaxPlayer.ExpectiMaxPlayer(depth=DEPTH)
+
+   def testRun(self):
+      """Check that it's performing as expected."""
+      (scores, maxTiles, numMoves) = self.p.run(numIters=NUM_ITERS, printStats=True)
+      print ''
+      self.assertEquals(len(scores), NUM_ITERS)
+      self.assertEquals(len(maxTiles), NUM_ITERS)
+      self.assertEquals(len(numMoves), NUM_ITERS)
+
+      # check scores
+      verifyRanges(self, scores, ((100, 1000), (1000, 10000)))
+
+      # check max tiles
+      verifyRanges(self, maxTiles, ((8, 128), (64, 1024)))
+
+      # check moves
+      verifyRanges(self, numMoves, ((20, 200), (100, 1000)))
+
+class QLPlayerTest(unittest.TestCase):
+   def setUp(self):
+      self.p = QLPlayer.RLPlayer()
+
+   def testRun(self):
+      """Check that it's performing as expected."""
+      (scores, maxTiles, numMoves) = self.p.run(numIters=NUM_ITERS, printStats=True)
+      print ''
+      self.assertEquals(len(scores), NUM_ITERS)
+      self.assertEquals(len(maxTiles), NUM_ITERS)
+      self.assertEquals(len(numMoves), NUM_ITERS)
+
+      # check scores
+      verifyRanges(self, scores, ((100, 2000), (700, 5000)))
+
+      # check max tiles
+      verifyRanges(self, maxTiles, ((8, 128), (32, 512)))
+
+      # check moves
+      verifyRanges(self, numMoves, ((20, 200), (80, 500)))
 
 if __name__ == '__main__':
    unittest.main()

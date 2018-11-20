@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
 import argparse
+import ExpectiMaxPlayer
 import Model
 import Player
-import ExpectiMaxPlayer
 import QLPlayer
 
 DEFAULT_ITERS = 1

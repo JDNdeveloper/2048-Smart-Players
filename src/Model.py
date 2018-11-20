@@ -85,6 +85,14 @@ class Model(object):
       return (moveScore, boardChanged)
 
    @staticmethod
+   def getBoardNumTiles(board):
+      """Returns number of tiles on the board"""
+      return sum(1 for row in board for val in row if val is not None)
+
+   def numTiles(self):
+      return self.getBoardNumTiles(self.board)
+
+   @staticmethod
    def isBoardGameOver(board):
       """True if game is over."""
       if len(Model.getBoardOpenPositions(board)) > 0:
