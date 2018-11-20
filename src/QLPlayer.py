@@ -128,7 +128,7 @@ class RLPlayer(Player.Player):
 		self.previousScore = None
 		self.rlAgent = QLearningAgent(self.getPossibleActions, 1,
 					      featureExtractor, explorationProb=0,
-					      debug=debug)
+					      debug=self.debug)
 		self.totalMoves = 0
 		self.bannedActions = []
 
