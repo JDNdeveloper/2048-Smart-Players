@@ -1,6 +1,7 @@
 import Player
 import Model
 
+import atexit
 import csv
 import collections, random, math
 from collections import defaultdict
@@ -11,20 +12,25 @@ import pickle
 #Algorithm
 class QLearningAgent():
 	def __init__(self, actions, discount, featureExtractor,
-                     explorationProb=0.2):
+                     explorationProb=0.2, debug=False):
 		self.actions = actions
 		self.discount = discount
 		self.featureExtractor = featureExtractor
 		self.explorationProb = explorationProb
+		self.debug = debug
 		self.weights = {}
 		self.numIters = 1
 		self.overallUpdateVal = 0
 
 	def saveWeights(self):
+		if self.debug:
+			print "SAVING WEIGHTS"
 		with open('weights.pkl', 'wb') as outfile:
 			pickle.dump(self.weights, outfile, pickle.HIGHEST_PROTOCOL)
 
 	def loadWeights(self):
+		if self.debug:
+			print "LOADING WEIGHTS"
 		with open('weights.pkl', 'r') as infile:
 			self.weights = pickle.load(infile)
 
@@ -113,15 +119,27 @@ def featureExtractor(state, action):
 	return features
 
 class RLPlayer(Player.Player):
-	def __init__(self):
-		Player.Player.__init__(self)
+	def __init__(self, debug=False, train=True, save=True):
+		Player.Player.__init__(self, debug=debug)
+		self.train = train
+		self.save = save
 		self.previousAction = None
 		self.previousState = None
 		self.previousScore = None
 		self.rlAgent = QLearningAgent(self.getPossibleActions, 1,
-                                              featureExtractor, explorationProb=0)
+					      featureExtractor, explorationProb=0,
+					      debug=debug)
 		self.totalMoves = 0
 		self.bannedActions = []
+
+		if not self.train:
+			self.rlAgent.loadWeights()
+
+		atexit.register(self._cleanup)
+
+        def _cleanup(self):
+		if self.train and self.save:
+			self.rlAgent.saveWeights()
 
 	def getMoveAndTrainModel(self, state, score):
 		if self.previousState != None and self.previousAction != None:
@@ -144,9 +162,6 @@ class RLPlayer(Player.Player):
 		self.previousScore = score
 		self.previousAction = action
 		self.previousState = copy.deepcopy(state)
-		if self.rlAgent.numIters % 1000000 == 0 and False:
-			print "SAVING WEIGHTS"
-			self.rlAgent.saveWeights()
 		return action
 
 	def getMoveFromTrainedModel(self, state, score):
@@ -161,11 +176,9 @@ class RLPlayer(Player.Player):
 		return action
 
 	def getMove(self, state, score):
-		if True:
+		if self.train:
 			return self.getMoveAndTrainModel(state, score)
 		else:
-			if len(self.rlAgent.weights) == 0:
-				self.rlAgent.loadWeights()
 			return self.getMoveFromTrainedModel(state, score)
 
 	def getPossibleActions(self):

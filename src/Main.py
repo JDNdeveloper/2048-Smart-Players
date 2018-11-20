@@ -11,7 +11,7 @@ DEFAULT_DEPTH = 3
 PLAYER_NAMES = ['INTERACTIVE', 'GREEDY', 'CORNER', 'RANDOM', 'EXPECTIMAX', 'QL']
 DEFAULT_PLAYER_NAME = PLAYER_NAMES[0]
 
-def main(playerName, numIters, size, debug, depth):
+def main(playerName, numIters, size, debug, depth, train, noSave):
    """Primary test harness."""
 
    # set the board size
@@ -39,7 +39,7 @@ def main(playerName, numIters, size, debug, depth):
       p.run(numIters=numIters, printStats=True, printAtCheckpoints=True)
    elif playerName == PLAYER_NAMES[5]:
       # run the RL player
-      p = QLPlayer.RLPlayer()
+      p = QLPlayer.RLPlayer(debug=debug, train=train, save=(not noSave))
       p.run(numIters=numIters, printStats=True, printAtCheckpoints=True)
 
 if __name__ == '__main__':
@@ -57,7 +57,11 @@ if __name__ == '__main__':
    parser.add_argument('--depth', default=DEFAULT_DEPTH,
                        help=('depth of search for expectimax, default %d' %
                              DEFAULT_DEPTH))
+   parser.add_argument('--train', action='store_true',
+                       help='runs player in training mode')
+   parser.add_argument('--no-save', action='store_true',
+                       help='prevents training mode from saving to file')
    args = parser.parse_args()
 
    main(args.player.upper(), int(args.numIters), int(args.size), args.debug,
-        int(args.depth))
+        int(args.depth), args.train, args.no_save)
