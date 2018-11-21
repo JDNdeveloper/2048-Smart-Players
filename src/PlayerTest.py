@@ -35,7 +35,7 @@ class BaselineGreedyPlayerTest(unittest.TestCase):
       verifyRanges(self, scores, ((100, 4000), (3000, 20000)))
 
       # check max tiles
-      verifyRanges(self, maxTiles, ((64, 512), (128, 2048)))
+      verifyRanges(self, maxTiles, ((32, 512), (128, 2048)))
 
       # check moves
       verifyRanges(self, numMoves, ((50, 300), (150, 1000)))
@@ -95,10 +95,10 @@ class ExpectiMaxPlayerTest(unittest.TestCase):
       self.assertEquals(len(numMoves), NUM_ITERS)
 
       # check scores
-      verifyRanges(self, scores, ((100, 1000), (1000, 10000)))
+      verifyRanges(self, scores, ((100, 4000), (1000, 10000)))
 
       # check max tiles
-      verifyRanges(self, maxTiles, ((8, 128), (64, 1024)))
+      verifyRanges(self, maxTiles, ((8, 256), (64, 1024)))
 
       # check moves
       verifyRanges(self, numMoves, ((20, 200), (100, 1000)))
