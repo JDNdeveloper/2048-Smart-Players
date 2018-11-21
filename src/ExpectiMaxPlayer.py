@@ -46,37 +46,45 @@ class ExpectiMaxPlayer(Player):
 
         movePlayed = ['', 'UP', 'DOWN', 'LEFT', 'RIGHT']
         #######################################
+        lookup = {}
         def recurse(board, index, depth):
+            state = (str(board), index, depth)
+            if state in lookup:
+                return lookup[state]
+            result = None
             ###################### Base cases
             if depth == 0:
-                return ("", self.evalFunction(board), index)
-            if self.m.isBoardGameOver(board):
-                return ("", self.m.getBoardScore(board), index)
-            ######################
-            legalMoves = (self.legalMoves_agent
-                          if index == 0
-                          else ([(2, pos) for pos in
-                                 self.m.getBoardOpenPositions(board)] +
-                               [(4, pos) for pos in
-                                self.m.getBoardOpenPositions(board)]))
-
-            newBoards = [self.generateNextMove(board, index, move)
-                         for move in legalMoves]
-            if index == 0: #agent case
-                moveRewards = [recurse(newBoard[0], index+1, depth)[1]
-                               for newBoard in newBoards]
-            else: #rand case
-                moveRewards_2 = [recurse(newBoard[0], 0, depth-1)[1]
-                                 for newBoard in newBoards if newBoard[1] == 2]
-                moveRewards_4 = [recurse(newBoard[0], 0, depth-1)[1]
-                                 for newBoard in newBoards if newBoard[1] == 4]
-            if index == 0:
-                maxIdx = moveRewards.index(max(moveRewards))
-                return (legalMoves[maxIdx], max(moveRewards), index)
+                result = ("", self.evalFunction(board), index)
+            elif self.m.isBoardGameOver(board):
+                result = ("", self.m.getBoardScore(board), index)
             else:
-                return ("", (0.9*sum(moveRewards_2) +
-                             0.1*sum(moveRewards_4))/len(moveRewards_2), index)
-            assert False
+                ######################
+                legalMoves = (self.legalMoves_agent
+                              if index == 0
+                              else ([(2, pos) for pos in
+                                     self.m.getBoardOpenPositions(board)] +
+                                   [(4, pos) for pos in
+                                    self.m.getBoardOpenPositions(board)]))
+
+                newBoards = [self.generateNextMove(board, index, move)
+                             for move in legalMoves]
+                if index == 0: #agent case
+                    moveRewards = [recurse(newBoard[0], index+1, depth)[1]
+                                   for newBoard in newBoards]
+                else: #rand case
+                    moveRewards_2 = [recurse(newBoard[0], 0, depth-1)[1]
+                                     for newBoard in newBoards if newBoard[1] == 2]
+                    moveRewards_4 = [recurse(newBoard[0], 0, depth-1)[1]
+                                     for newBoard in newBoards if newBoard[1] == 4]
+                if index == 0:
+                    maxIdx = moveRewards.index(max(moveRewards))
+                    result = (legalMoves[maxIdx], max(moveRewards), index)
+                else:
+                    result = ("", (0.9*sum(moveRewards_2) +
+                                 0.1*sum(moveRewards_4))/len(moveRewards_2), index)
+            assert result is not None
+            lookup[state] = result
+            return result
 
         #######################################
         self.adjustLegalMoves(board)
