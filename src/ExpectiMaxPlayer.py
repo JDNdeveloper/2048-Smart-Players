@@ -97,14 +97,16 @@ class ExpectiMaxPlayer(Player):
 
     def evalFunction(self, board):
         score = self.m.getBoardScore(board)
-        numNone = len(self.m.getBoardOpenPositions(board))**2
-        maxTilePosCorrect = (100 if self.m.getBoardMaxTile(board) == board[0][0]
-                             else -10)
-        maxTileColCorrect = (10 if self.m.getBoardMaxTile(board) in board[0]
-                             else 0)
-        topRowDecreasing = sum([(len(board[0]) - i)*10 for i in range(len(board[0]))
-                                if board[0][i] > board[0][(i+1)%len(board[0])]])
-        phi = [score, numNone, maxTilePosCorrect, maxTileColCorrect,
-               topRowDecreasing]
-        weights = [0, 1.4, 2, 0, 2]
-        return sum([weights[i]*phi[i] for i in range(len(phi))])
+        return score
+        # TODO fix the advanced heuristic
+        # numNone = len(self.m.getBoardOpenPositions(board))**2
+        # maxTilePosCorrect = (100 if self.m.getBoardMaxTile(board) == board[0][0]
+        #                      else -10)
+        # maxTileColCorrect = (10 if self.m.getBoardMaxTile(board) in board[0]
+        #                      else 0)
+        # topRowDecreasing = sum([(len(board[0]) - i)*10 for i in range(len(board[0]))
+        #                         if board[0][i] > board[0][(i+1)%len(board[0])]])
+        # phi = [score, numNone, maxTilePosCorrect, maxTileColCorrect,
+        #        topRowDecreasing]
+        # weights = [0, 1.4, 2, 0, 2]
+        # return sum([weights[i]*phi[i] for i in range(len(phi))])
