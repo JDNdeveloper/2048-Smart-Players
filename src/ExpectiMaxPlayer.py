@@ -11,32 +11,24 @@ class ExpectiMaxPlayer(Player):
     def __init__(self, debug=False, depth=3):
         super(ExpectiMaxPlayer, self).__init__(debug)
         self.depth = depth
-        self.legalMoves_agent = self.m.MOVES
         self.lastBoard = None
         self.lastMove = None
 
     def generateNextMove(self, board, index, move):
         """Simulate next move for agent or rand"""
         if index == 0:
-            return (self.m.makeMove(move, modifyState=False, returnBoard=True)[2],
-                    move)
+            (_, boardChanged, newBoard) = self.m.makeMove(move, modifyState=False,
+                                                          returnBoard=True)
+            if boardChanged:
+                return (newBoard, move)
+            else:
+                return None
         else:
             row, col = move[1]
             val = move[0]
             new_board = copy.deepcopy(board)
             new_board[row][col] = val
             return (new_board, move[0])
-
-    def adjustLegalMoves(self, board):
-        """Disallows forbidden moves"""
-        if self.lastBoard == board:
-            moves = list(self.legalMoves_agent)
-            moves.remove(self.lastMove)
-            self.legalMoves_agent = tuple(moves)
-        else:
-            self.lastBoard = copy.deepcopy(board)
-            self.legalMoves_agent = self.m.MOVES
-        return
 
     def getMove(self, board, score):
         """
@@ -59,17 +51,21 @@ class ExpectiMaxPlayer(Player):
                 result = ("", self.m.getBoardScore(board), index)
             else:
                 ######################
-                legalMoves = (self.legalMoves_agent
+                legalMoves = (self.m.MOVES
                               if index == 0
                               else ([(2, pos) for pos in
                                      self.m.getBoardOpenPositions(board)] +
                                    [(4, pos) for pos in
                                     self.m.getBoardOpenPositions(board)]))
 
-                newBoards = [self.generateNextMove(board, index, move)
-                             for move in legalMoves]
+                newBoards = [nextMoveResult
+                             for move in legalMoves
+                             for nextMoveResult in [self.generateNextMove(
+                                     board, index, move)]
+                             if nextMoveResult is not None]
                 if index == 0: #agent case
-                    moveRewards = [recurse(newBoard[0], index+1, depth)[1]
+                    moveRewards = [(recurse(newBoard[0], index+1, depth)[1],
+                                    newBoard[1])
                                    for newBoard in newBoards]
                 else: #rand case
                     moveRewards_2 = [recurse(newBoard[0], 0, depth-1)[1]
@@ -77,8 +73,8 @@ class ExpectiMaxPlayer(Player):
                     moveRewards_4 = [recurse(newBoard[0], 0, depth-1)[1]
                                      for newBoard in newBoards if newBoard[1] == 4]
                 if index == 0:
-                    maxIdx = moveRewards.index(max(moveRewards))
-                    result = (legalMoves[maxIdx], max(moveRewards), index)
+                    (maxReward, maxMove) = max(moveRewards)
+                    result = (maxMove, maxReward, index)
                 else:
                     result = ("", 0.9*sum(moveRewards_2) + 0.1*sum(moveRewards_4),
                               index)
@@ -87,11 +83,10 @@ class ExpectiMaxPlayer(Player):
             return result
 
         #######################################
-        self.adjustLegalMoves(board)
         bestMove = recurse(self.m.getState()[0], 0, self.depth)
         self.lastMove = bestMove[0]
         if self.debug:
-            print "BestMove: {}".format(movePlayed[bestMove[0]])
+            print "BestMove: {}".format(movePlayed[self.lastMove])
             print self.m.getBoardString(board)
         return self.lastMove
 
