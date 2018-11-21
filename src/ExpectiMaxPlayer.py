@@ -80,8 +80,8 @@ class ExpectiMaxPlayer(Player):
                     maxIdx = moveRewards.index(max(moveRewards))
                     result = (legalMoves[maxIdx], max(moveRewards), index)
                 else:
-                    result = ("", (0.9*sum(moveRewards_2) +
-                                 0.1*sum(moveRewards_4))/len(moveRewards_2), index)
+                    result = ("", 0.9*sum(moveRewards_2) + 0.1*sum(moveRewards_4),
+                              index)
             assert result is not None
             lookup[state] = result
             return result
@@ -95,7 +95,7 @@ class ExpectiMaxPlayer(Player):
             print self.m.getBoardString(board)
         return self.lastMove
 
-    def evalFunction(self, board): #Todo
+    def evalFunction(self, board):
         score = self.m.getBoardScore(board)
         numNone = len(self.m.getBoardOpenPositions(board))**2
         maxTilePosCorrect = (100 if self.m.getBoardMaxTile(board) == board[0][0]

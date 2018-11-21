@@ -41,7 +41,7 @@ class Model(object):
       Returns:
       moveScore: The points made from the given move.
       boardChanged: True if the move would/did make the board change.
-      (optional) newBoard: copy of changed board without _randomFill - used for expectimax
+      (optional) newBoard: copy of changed board without _randomFill
       """
       boardChanged = False
       moveScore = 0
@@ -59,7 +59,8 @@ class Model(object):
          allRowColPairs = [zip([i] * self.SIZE, list(reversed(range(self.SIZE))))
                            for i in range(self.SIZE)]
 
-      newBoard = [[None] * self.SIZE for _ in range(self.SIZE)]
+      if returnBoard:
+         newBoard = copy.deepcopy(self.board)
 
       for rowColPairs in allRowColPairs:
          line = [self.board[row][col] for (row, col) in rowColPairs]
@@ -81,7 +82,8 @@ class Model(object):
             self._randomFill()
          self.score += moveScore
 
-      if returnBoard: return (moveScore, boardChanged, newBoard)
+      if returnBoard:
+         return (moveScore, boardChanged, newBoard)
       return (moveScore, boardChanged)
 
    @staticmethod
