@@ -196,7 +196,7 @@ class Model(object):
    @staticmethod
    def getBoardRotated(board):
       """Return board rotated clockwise by 90 degrees"""
-      return zip(*board[::-1])
+      return [list(row) for row in zip(*board[::-1])]
 
    @staticmethod
    def getBoardMirrored(board):
