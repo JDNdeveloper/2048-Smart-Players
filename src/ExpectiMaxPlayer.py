@@ -164,7 +164,7 @@ class ExpectiMaxPlayer(Player):
             'score': 1.0,
             'maxTile': 0.0,
             'numEmptyTiles': 1.0,
-            'snaking': 0.0,
+            'snaking': 1.0,
             'maxTilePosCorrect': 1.0,
             'maxTileRowCorrect': 0.0,
         }
