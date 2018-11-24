@@ -76,7 +76,8 @@ class ExpectiMaxPlayer(Player):
                     (maxReward, maxMove) = max(moveRewards)
                     result = (maxMove, maxReward, index)
                 else:
-                    result = ("", 0.9*sum(moveRewards_2) + 0.1*sum(moveRewards_4),
+                    result = ("", (0.9*sum(moveRewards_2) + 0.1*sum(moveRewards_4) /
+                                   (len(newBoards) / 2.0)),
                               index)
             assert result is not None
             lookup[state] = result
