@@ -101,7 +101,7 @@ class ExpectiMaxPlayerTest(unittest.TestCase):
       verifyRanges(self, maxTiles, ((8, 256), (64, 1024)))
 
       # check moves
-      verifyRanges(self, numMoves, ((20, 200), (100, 1000)))
+      verifyRanges(self, numMoves, ((20, 500), (100, 1000)))
 
 class QLPlayerTest(unittest.TestCase):
    def setUp(self):
