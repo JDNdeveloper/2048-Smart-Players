@@ -92,21 +92,73 @@ class ExpectiMaxPlayer(Player):
         return self.lastMove
 
     def evalFunction(self, board):
+        def maxDescendingAndSnakingScore(board):
+            """Check if descending sorted values snake across
+            the board (left to right, top to bottom).
+
+            100,000 * (10 ^ N) reward where N is the number of
+            fully-formed snaked rows (if N is zero then reward zero).
+            """
+            values = self.m.getBoardSortedValues(board)
+            snakingRows = 0
+            for i, row in enumerate(board):
+                start = i * self.m.SIZE
+                end = start + self.m.SIZE
+                if values[start:end] == (row if i % 2 == 0 else row[::-1]):
+                    snakingRows += 1
+                else:
+                    break
+            return 100000 * (10 ** snakingRows) if snakingRows > 0 else 0
+
+        # board state
         score = self.m.getBoardScore(board)
-        maxTile = self.m.getBoardMaxTile(board) ** 2
-        numNone = len(self.m.getBoardOpenPositions(board))**2
-        maxTilePosCorrect = (100 if maxTile == board[0][0]
-                             else -10)
-        maxTileRowCorrect = (10 if maxTile in board[0]
-                             else 0)
-        topRowDecreasing = sum([(len(board[0]) - i)*10 for i in range(len(board[0]))
-                                if board[0][i] > board[0][(i+1)%len(board[0])]])
-        weights = {
-            score: 1.0,
-            maxTile: 1.0,
-            numNone: 0.3,
-            maxTilePosCorrect: 0.0,
-            maxTileRowCorrect: 0.0,
-            topRowDecreasing: 0.0,
+        maxTile = self.m.getBoardMaxTile(board)
+        openPositions = self.m.getBoardOpenPositions(board)
+
+        # state heuristics
+        scoreScore = score ** 1.2
+        maxTileScore = maxTile ** 1.3
+        numEmptyTiles = len(openPositions) ** 1.2
+
+        # positional heuristics
+        snaking = 0
+        maxTilePosCorrect = 0
+        maxTileRowCorrect = 0
+
+        # try for all four rotations of the board, and both mirrored versions
+        invertedBoard = board
+        for _ in range(2):
+            for _ in range(4):
+                # update positional heuristics if inverted board yields higher value
+                snaking = max(snaking,
+                              maxDescendingAndSnakingScore(invertedBoard))
+                maxTilePosCorrect = max(maxTilePosCorrect,
+                                        1000 if maxTile == invertedBoard[0][0]
+                                        else 0)
+                maxTileRowCorrect = max(maxTileRowCorrect,
+                                        100 if maxTile in invertedBoard[0]
+                                        else 0)
+
+                # rotate the board
+                invertedBoard = self.m.getBoardRotated(invertedBoard)
+            # mirror the board
+            invertedBoard = self.m.getBoardMirrored(invertedBoard)
+
+        featureValues = {
+            'score': scoreScore,
+            'maxTile': maxTile,
+            'numEmptyTiles': numEmptyTiles,
+            'snaking': snaking,
+            'maxTilePosCorrect': maxTilePosCorrect,
+            'maxTileRowCorrect': maxTileRowCorrect,
         }
-        return sum(feature * weight for (feature, weight) in weights.iteritems())
+        weights = {
+            'score': 1.0,
+            'maxTile': 1.0,
+            'numEmptyTiles': 1.0,
+            'snaking': 1.0,
+            'maxTilePosCorrect': 1.0,
+            'maxTileRowCorrect': 1.0,
+        }
+        return sum(featureValues[feature] * weights[feature]
+                   for feature in featureValues.iterkeys())

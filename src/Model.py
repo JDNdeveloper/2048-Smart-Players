@@ -189,6 +189,21 @@ class Model(object):
               if board[row][col] == None]
 
    @staticmethod
+   def getBoardSortedValues(board):
+      """Return tile values sorted in descending order"""
+      return list(reversed(sorted(val for row in board for val in row)))
+
+   @staticmethod
+   def getBoardRotated(board):
+      """Return board rotated clockwise by 90 degrees"""
+      return zip(*board[::-1])
+
+   @staticmethod
+   def getBoardMirrored(board):
+      """Return mirrored board"""
+      return [row[::-1] for row in board]
+
+   @staticmethod
    def doBoardRandomFill(board):
       """Randomly fill an open position on the board.
 
