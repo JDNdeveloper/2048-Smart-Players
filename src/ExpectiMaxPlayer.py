@@ -93,16 +93,20 @@ class ExpectiMaxPlayer(Player):
 
     def evalFunction(self, board):
         score = self.m.getBoardScore(board)
-        return score
-        # TODO fix the advanced heuristic
-        # numNone = len(self.m.getBoardOpenPositions(board))**2
-        # maxTilePosCorrect = (100 if self.m.getBoardMaxTile(board) == board[0][0]
-        #                      else -10)
-        # maxTileColCorrect = (10 if self.m.getBoardMaxTile(board) in board[0]
-        #                      else 0)
-        # topRowDecreasing = sum([(len(board[0]) - i)*10 for i in range(len(board[0]))
-        #                         if board[0][i] > board[0][(i+1)%len(board[0])]])
-        # phi = [score, numNone, maxTilePosCorrect, maxTileColCorrect,
-        #        topRowDecreasing]
-        # weights = [0, 1.4, 2, 0, 2]
-        # return sum([weights[i]*phi[i] for i in range(len(phi))])
+        maxTile = self.m.getBoardMaxTile(board) ** 2
+        numNone = len(self.m.getBoardOpenPositions(board))**2
+        maxTilePosCorrect = (100 if maxTile == board[0][0]
+                             else -10)
+        maxTileRowCorrect = (10 if maxTile in board[0]
+                             else 0)
+        topRowDecreasing = sum([(len(board[0]) - i)*10 for i in range(len(board[0]))
+                                if board[0][i] > board[0][(i+1)%len(board[0])]])
+        weights = {
+            score: 1.0,
+            maxTile: 1.0,
+            numNone: 0.3,
+            maxTilePosCorrect: 0.0,
+            maxTileRowCorrect: 0.0,
+            topRowDecreasing: 0.0,
+        }
+        return sum(feature * weight for (feature, weight) in weights.iteritems())
