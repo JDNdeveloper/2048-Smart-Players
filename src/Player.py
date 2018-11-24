@@ -125,7 +125,8 @@ class BaselineGreedyPlayer(Player):
 
       for move in [Model.Move.UP, Model.Move.LEFT]:
          # choose move that maximizes score and would actually change the board
-         (moveScore, boardChanged) = self.m.makeMove(move, modifyState=False)
+         (moveScore, boardChanged) = self.m.makeBoardMove(board, move,
+                                                          modifyState=False)
          if boardChanged:
             validMoves.append(move)
             if moveScore > maxScore:
@@ -142,7 +143,7 @@ class BaselineGreedyPlayer(Player):
 
       for move in [Model.Move.DOWN, Model.Move.RIGHT]:
          # if up and left were not valid, return the first valid of down and right
-         (_, boardChanged) = self.m.makeMove(move, modifyState=False)
+         (_, boardChanged) = self.m.makeBoardMove(board, move, modifyState=False)
          if boardChanged:
             return move
 
@@ -156,7 +157,7 @@ class BaselineCornerPlayer(Player):
       """
       for move in [Model.Move.UP, Model.Move.LEFT,
                    Model.Move.RIGHT, Model.Move.DOWN]:
-         (_, boardChanged) = self.m.makeMove(move, modifyState=False)
+         (_, boardChanged) = self.m.makeBoardMove(board, move, modifyState=False)
          if boardChanged:
             return move
 

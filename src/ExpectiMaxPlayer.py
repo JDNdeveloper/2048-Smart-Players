@@ -14,21 +14,30 @@ class ExpectiMaxPlayer(Player):
         self.lastBoard = None
         self.lastMove = None
 
+        self.getMoveRecurseLookup = {}
+        self.generateNextMoveLookup = {}
+
     def generateNextMove(self, board, index, move):
         """Simulate next move for agent or rand"""
+        state = (str(board), index, move)
+        if state in self.generateNextMoveLookup:
+            return self.generateNextMoveLookup[state]
+        result = None
         if index == 0:
-            (_, boardChanged, newBoard) = self.m.makeMove(move, modifyState=False,
-                                                          returnBoard=True)
+            (_, boardChanged, newBoard) = self.m.makeBoardMove(
+                board, move, modifyState=False, returnBoard=True)
             if boardChanged:
-                return (newBoard, move)
+                result = (newBoard, move)
             else:
-                return None
+                result = None
         else:
             row, col = move[1]
             val = move[0]
             new_board = copy.deepcopy(board)
             new_board[row][col] = val
-            return (new_board, move[0])
+            result = (new_board, move[0])
+        self.generateNextMoveLookup[state] = result
+        return result
 
     def getMove(self, board, score):
         """
@@ -38,11 +47,10 @@ class ExpectiMaxPlayer(Player):
 
         movePlayed = ['', 'UP', 'DOWN', 'LEFT', 'RIGHT']
         #######################################
-        lookup = {}
         def recurse(board, index, depth):
             state = (str(board), index, depth)
-            if state in lookup:
-                return lookup[state]
+            if state in self.getMoveRecurseLookup:
+                return self.getMoveRecurseLookup[state]
             result = None
             ###################### Base cases
             if depth == 0:
@@ -55,8 +63,8 @@ class ExpectiMaxPlayer(Player):
                               if index == 0
                               else ([(2, pos) for pos in
                                      self.m.getBoardOpenPositions(board)] +
-                                   [(4, pos) for pos in
-                                    self.m.getBoardOpenPositions(board)]))
+                                    [(4, pos) for pos in
+                                     self.m.getBoardOpenPositions(board)]))
 
                 newBoards = [nextMoveResult
                              for move in legalMoves
@@ -76,11 +84,11 @@ class ExpectiMaxPlayer(Player):
                     (maxReward, maxMove) = max(moveRewards)
                     result = (maxMove, maxReward, index)
                 else:
-                    result = ("", (0.9*sum(moveRewards_2) + 0.1*sum(moveRewards_4) /
-                                   (len(newBoards) / 2.0)),
+                    result = ("", ((0.9*sum(moveRewards_2) + 0.1*sum(moveRewards_4))
+                                   / (len(newBoards) / 2.0)),
                               index)
             assert result is not None
-            lookup[state] = result
+            self.getMoveRecurseLookup[state] = result
             return result
 
         #######################################
@@ -118,7 +126,7 @@ class ExpectiMaxPlayer(Player):
         # state heuristics
         scoreScore = score ** 1.2
         maxTileScore = maxTile ** 1.3
-        numEmptyTiles = len(openPositions) ** 1.2
+        numEmptyTiles = len(openPositions) ** 2.0
 
         # positional heuristics
         snaking = 0
@@ -133,7 +141,7 @@ class ExpectiMaxPlayer(Player):
                 snaking = max(snaking,
                               maxDescendingAndSnakingScore(invertedBoard))
                 maxTilePosCorrect = max(maxTilePosCorrect,
-                                        1000 if maxTile == invertedBoard[0][0]
+                                        10000000 if maxTile == invertedBoard[0][0]
                                         else 0)
                 maxTileRowCorrect = max(maxTileRowCorrect,
                                         100 if maxTile in invertedBoard[0]
@@ -154,11 +162,11 @@ class ExpectiMaxPlayer(Player):
         }
         weights = {
             'score': 1.0,
-            'maxTile': 1.0,
+            'maxTile': 0.0,
             'numEmptyTiles': 1.0,
-            'snaking': 1.0,
+            'snaking': 0.0,
             'maxTilePosCorrect': 1.0,
-            'maxTileRowCorrect': 1.0,
+            'maxTileRowCorrect': 0.0,
         }
         return sum(featureValues[feature] * weights[feature]
                    for feature in featureValues.iterkeys())

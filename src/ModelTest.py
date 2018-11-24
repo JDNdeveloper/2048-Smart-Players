@@ -70,8 +70,7 @@ class ModelTest(unittest.TestCase):
 
       def verifyMove(initialBoard, move, expectedScore,
                      expectedMoveScore=None, reset=True,
-                     expectedBoardToChange=True,
-                     modifyState=True):
+                     expectedBoardToChange=True):
          """Sets up initial board and verifies move and resulting state."""
          if reset:
             self.m.reset()
@@ -79,8 +78,7 @@ class ModelTest(unittest.TestCase):
             expectedMoveScore = expectedScore
 
          self.m.board = copy.deepcopy(initialBoard)
-         (moveScore, boardChanged) = self.m.makeMove(
-            move, modifyState=modifyState)
+         (moveScore, boardChanged) = self.m.makeMove(move)
 
          self.assertEqual(moveScore, expectedMoveScore)
          self.assertEqual(boardChanged, expectedBoardToChange)
@@ -111,11 +109,6 @@ class ModelTest(unittest.TestCase):
       expectedTwoMergeScore = 4 * self.m.SIZE
       verifyMove(twoMergeBoard, Model.Move.UP, expectedTwoMergeScore)
       verifyBoard(fixedRowValues={0: 4})
-
-      # two items without changing state
-      verifyMove(twoMergeBoard, Model.Move.UP, 0,
-                 expectedMoveScore=expectedTwoMergeScore, modifyState=False)
-      verifyBoard(fixedRowValues={0: 2, 1: 2}, randomFillExpected=0)
 
       # four items
       fourMergeBoard = [[2 if row in [0, 1, 2, 3] else None

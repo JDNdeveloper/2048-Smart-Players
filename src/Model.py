@@ -30,60 +30,69 @@ class Model(object):
       """
       return (self.board, self.score)
 
-   def makeMove(self, move, modifyState=True, returnBoard=False):
+   @staticmethod
+   def makeBoardMove(board, move, modifyState=True, returnBoard=False):
       """Executes a move.
 
       Args:
       move: The move to execute.
-      modifyState: If False the board and score are not updated with the move.
-      returnBoard: allows you to get the new board
+      modifyState: If False the board is not updated with the move.
+      returnBoard: Also returns the new board.
 
       Returns:
       moveScore: The points made from the given move.
       boardChanged: True if the move would/did make the board change.
-      (optional) newBoard: copy of changed board without _randomFill
+      (optional) newBoard: Board with the move performed.
       """
       boardChanged = False
       moveScore = 0
 
       if move == Move.UP:
-         allRowColPairs = [zip(range(self.SIZE), [i] * self.SIZE)
-                           for i in range(self.SIZE)]
+         allRowColPairs = [zip(range(Model.SIZE), [i] * Model.SIZE)
+                           for i in range(Model.SIZE)]
       elif move == Move.DOWN:
-         allRowColPairs = [zip(list(reversed(range(self.SIZE))), [i] * self.SIZE)
-                           for i in range(self.SIZE)]
+         allRowColPairs = [zip(list(reversed(range(Model.SIZE))), [i] * Model.SIZE)
+                           for i in range(Model.SIZE)]
       elif move == Move.LEFT:
-         allRowColPairs = [zip([i] * self.SIZE, range(self.SIZE))
-                           for i in range(self.SIZE)]
+         allRowColPairs = [zip([i] * Model.SIZE, range(Model.SIZE))
+                           for i in range(Model.SIZE)]
       elif move == Move.RIGHT:
-         allRowColPairs = [zip([i] * self.SIZE, list(reversed(range(self.SIZE))))
-                           for i in range(self.SIZE)]
+         allRowColPairs = [zip([i] * Model.SIZE, list(reversed(range(Model.SIZE))))
+                           for i in range(Model.SIZE)]
 
       if returnBoard:
-         newBoard = copy.deepcopy(self.board)
+         newBoard = copy.deepcopy(board)
 
       for rowColPairs in allRowColPairs:
-         line = [self.board[row][col] for (row, col) in rowColPairs]
-         (newLine, lineScore) = self._compressLine(line)
+         line = [board[row][col] for (row, col) in rowColPairs]
+         (newLine, lineScore) = Model._compressLine(line)
          if newLine != line:
             boardChanged = True
             moveScore += lineScore
             if modifyState:
                for (val, (row, col)) in zip(newLine, rowColPairs):
-                  self.board[row][col] = val
+                  board[row][col] = val
             if returnBoard:
                for (val, (row, col)) in zip(newLine, rowColPairs):
                   newBoard[row][col] = val
 
-      if modifyState:
-         if boardChanged:
-            # if the move actually changed the game board,
-            # we do a random fill
-            self._randomFill()
-         self.score += moveScore
-
       if returnBoard:
          return (moveScore, boardChanged, newBoard)
+      return (moveScore, boardChanged)
+
+   def makeMove(self, move):
+      """Performs move on the game board, performs random fill (if board changed),
+      updates score."""
+      (moveScore, boardChanged) = self.makeBoardMove(
+         self.board, move, modifyState=True, returnBoard=False)
+
+      if boardChanged:
+         # if the move actually changed the game board,
+         # we do a random fill
+         self._randomFill()
+
+      self.score += moveScore
+
       return (moveScore, boardChanged)
 
    @staticmethod
