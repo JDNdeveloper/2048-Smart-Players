@@ -1,6 +1,18 @@
 from Player import Player
 import random
 import copy
+import ctypes
+
+cLib = ctypes.cdll.LoadLibrary('./libExpectiMaxPlayer.so')
+
+class CExpectiMaxPlayer(object):
+    def __init__(self):
+        self.obj = cLib.ExpectiMaxPlayer_new()
+
+    def getMove(self, board):
+        # TODO implement vector interface, convert board to vector,
+        # and pass that in
+        return cLib.ExpectiMaxPlayer_getMove(self.obj)
 
 ##########################################################################
 # TODO: implement heuristics
@@ -13,6 +25,7 @@ class ExpectiMaxPlayer(Player):
         self.depth = depth
         self.lastBoard = None
         self.lastMove = None
+        self.cPlayer = CExpectiMaxPlayer()
 
         self.getMoveRecurseLookup = {}
         self.generateNextMoveLookup = {}
@@ -44,6 +57,9 @@ class ExpectiMaxPlayer(Player):
         Runs an expectimax algorithm to try and get the next best move
         [More to follow]
         """
+
+        # TODO get this implemented, then uncomment
+        # return self.cPlayer.getMove(board)
 
         movePlayed = ['', 'UP', 'DOWN', 'LEFT', 'RIGHT']
         #######################################
