@@ -9,6 +9,8 @@ notifications:
 script:
   - cwd=$(pwd)
   - cd ${cwd}/src/
+  # run make
+  - make
   # run Model Test
   - python ModelTest.py
   # run Player Test
