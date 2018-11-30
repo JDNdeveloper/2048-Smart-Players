@@ -7,19 +7,21 @@ from Player import Player
 cLib = ctypes.cdll.LoadLibrary('./libExpectiMaxPlayer.so')
 
 class CExpectiMaxPlayer(object):
-    def __init__(self, size, debug):
+    def __init__(self, size, debug, depth):
         self.size = size
         self.debug = debug
-        self.obj = cLib.ExpectiMaxPlayer_new(self.debug)
+        self.depth = depth
+        self.obj = cLib.ExpectiMaxPlayer_new(self.debug, self.depth)
         self.board = cLib.Board_new(size)
 
-    def _setBoard(self, board):
+    def _setBoard(self, board, score):
+        cLib.Board_setScore(self.board, score)
         for (row, rowList) in enumerate(board):
             for (col, val) in enumerate(rowList):
                 cLib.Board_setPos(self.board, row, col, val)
 
-    def getMove(self, board):
-        self._setBoard(board)
+    def getMove(self, board, score):
+        self._setBoard(board, score)
         return cLib.ExpectiMaxPlayer_getMove(self.obj, self.board)
 
     def __del__(self):
@@ -38,7 +40,7 @@ class ExpectiMaxPlayer(Player):
         self.depth = depth
         self.lastBoard = None
         self.lastMove = None
-        self.cPlayer = CExpectiMaxPlayer(Model.SIZE, self.debug)
+        self.cPlayer = CExpectiMaxPlayer(Model.SIZE, self.debug, self.depth)
 
         self.getMoveRecurseLookup = {}
         self.generateNextMoveLookup = {}
@@ -72,7 +74,7 @@ class ExpectiMaxPlayer(Player):
         """
 
         # TODO return this call once finished implementing
-        return self.cPlayer.getMove(board)
+        return self.cPlayer.getMove(board, score)
 
         #######################################
         def recurse(board, index, depth):

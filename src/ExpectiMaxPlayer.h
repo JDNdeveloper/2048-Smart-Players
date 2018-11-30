@@ -19,10 +19,10 @@ enum Player {
 
 class Result {
  public:
-   int score;
+   float score;
    Move move;
 
-   Result(int scoreArg, Move moveArg) {
+   Result(float scoreArg, Move moveArg) {
       score = scoreArg;
       move = moveArg;
    };
@@ -35,8 +35,11 @@ class Board {
    ~Board();
    void print();
    void setPos(int, int, int);
+   int getPos(int row, int col) { return boardVec->at(row)->at(col); };
+   int getSize() { return size; };
    int getTileSum();
    int getMaxTile();
+   void setScore(int scoreArg) { score = scoreArg; };
    int getScore() { return score; };
    int makeMove(Move);
  private:

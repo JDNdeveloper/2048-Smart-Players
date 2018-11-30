@@ -30,6 +30,10 @@ extern "C" {
    void Board_setPos(Board* board, int row, int col, int val) {
       board->setPos(row, col, val);
    }
+
+   void Board_setScore(Board* board, int score) {
+      board->setScore(score);
+   }
 }
 
 /* Board */
@@ -272,7 +276,7 @@ int tryMove(Board* board, Move move) {
    return moveScore;
 }
 
-int getHeuristicScore(Board* board) {
+float getHeuristicScore(Board* board) {
    return board->getScore();
 }
 
@@ -289,7 +293,7 @@ Result getMoveRecursive(Board* board, Player player, int depth) {
          int moveScore;
 
          Move maxMove;
-         int maxScore = -1;
+         float maxScore = -1;
 
          // move up
          move = UP;
@@ -297,7 +301,7 @@ Result getMoveRecursive(Board* board, Player player, int depth) {
          moveScore = newBoard->makeMove(move);
          if (moveScore != -1) {
             Result result = getMoveRecursive(newBoard, TILE_SPAWN, depth);
-            int score = result.score;
+            float score = result.score;
             if (score > maxScore) {
                maxScore = score;
                maxMove = move;
@@ -311,7 +315,7 @@ Result getMoveRecursive(Board* board, Player player, int depth) {
          moveScore = newBoard->makeMove(move);
          if (moveScore != -1) {
             Result result = getMoveRecursive(newBoard, TILE_SPAWN, depth);
-            int score = result.score;
+            float score = result.score;
             if (score > maxScore) {
                maxScore = score;
                maxMove = move;
@@ -325,7 +329,7 @@ Result getMoveRecursive(Board* board, Player player, int depth) {
          moveScore = newBoard->makeMove(move);
          if (moveScore != -1) {
             Result result = getMoveRecursive(newBoard, TILE_SPAWN, depth);
-            int score = result.score;
+            float score = result.score;
             if (score > maxScore) {
                maxScore = score;
                maxMove = move;
@@ -339,7 +343,7 @@ Result getMoveRecursive(Board* board, Player player, int depth) {
          moveScore = newBoard->makeMove(move);
          if (moveScore != -1) {
             Result result = getMoveRecursive(newBoard, TILE_SPAWN, depth);
-            int score = result.score;
+            float score = result.score;
             if (score > maxScore) {
                maxScore = score;
                maxMove = move;
@@ -352,7 +356,49 @@ Result getMoveRecursive(Board* board, Player player, int depth) {
       break;
    case TILE_SPAWN:
       {
-         return Result(getHeuristicScore(board), NO_MOVE);
+         float expectedScore = 0;
+         int emptySlots = 0;
+         float twoTileScores = 0;
+         float fourTileScores = 0;
+
+         int size = board->getSize();
+         for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+               if (board->getPos(row, col) == 0) {
+                  Board* newBoard;
+                  int tile;
+
+                  // spawn a 2 tile in the empty position
+                  tile = 2;
+                  newBoard = new Board(*board);
+                  newBoard->setPos(row, col, tile);
+                  {
+                     Result result = getMoveRecursive(newBoard, USER, depth - 1);
+                     twoTileScores += result.score;
+                  }
+                  delete newBoard;
+
+                  // spawn a 4 tile in the empty position
+                  tile = 4;
+                  newBoard = new Board(*board);
+                  newBoard->setPos(row, col, tile);
+                  {
+                     Result result = getMoveRecursive(newBoard, USER, depth - 1);
+                     fourTileScores += result.score;
+                  }
+                  delete newBoard;
+
+                  emptySlots++;
+               }
+            }
+         }
+         if (emptySlots == 0) {
+            expectedScore = 0;
+         } else {
+            expectedScore = (0.9 * (twoTileScores / emptySlots) +
+                             0.1 * (fourTileScores / emptySlots));
+         }
+         return Result(expectedScore, NO_MOVE);
       }
       break;
    }
