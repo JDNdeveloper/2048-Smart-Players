@@ -1,18 +1,31 @@
-from Player import Player
-import random
 import copy
 import ctypes
+import random
+from Model import Model
+from Player import Player
 
 cLib = ctypes.cdll.LoadLibrary('./libExpectiMaxPlayer.so')
 
 class CExpectiMaxPlayer(object):
-    def __init__(self):
-        self.obj = cLib.ExpectiMaxPlayer_new()
+    def __init__(self, size, debug):
+        self.size = size
+        self.debug = debug
+        self.obj = cLib.ExpectiMaxPlayer_new(self.debug)
+        self.board = cLib.Board_new(size)
+
+    def _setBoard(self, board):
+        for (row, rowList) in enumerate(board):
+            for (col, val) in enumerate(rowList):
+                cLib.Board_setPos(self.board, row, col, val)
 
     def getMove(self, board):
-        # TODO implement vector interface, convert board to vector,
-        # and pass that in
-        return cLib.ExpectiMaxPlayer_getMove(self.obj)
+        self._setBoard(board)
+        return cLib.ExpectiMaxPlayer_getMove(self.obj, self.board)
+
+    def __del__(self):
+        # Always good to avoid memory leaks!
+        cLib.ExpectiMaxPlayer_delete(self.obj)
+        cLib.Board_delete(self.board)
 
 ##########################################################################
 # TODO: implement heuristics
@@ -25,7 +38,7 @@ class ExpectiMaxPlayer(Player):
         self.depth = depth
         self.lastBoard = None
         self.lastMove = None
-        self.cPlayer = CExpectiMaxPlayer()
+        self.cPlayer = CExpectiMaxPlayer(Model.SIZE, self.debug)
 
         self.getMoveRecurseLookup = {}
         self.generateNextMoveLookup = {}
@@ -60,6 +73,7 @@ class ExpectiMaxPlayer(Player):
 
         # TODO get this implemented, then uncomment
         # return self.cPlayer.getMove(board)
+        self.cPlayer.getMove(board)
 
         movePlayed = ['', 'UP', 'DOWN', 'LEFT', 'RIGHT']
         #######################################
