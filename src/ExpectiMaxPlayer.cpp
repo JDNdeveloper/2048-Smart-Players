@@ -1,3 +1,4 @@
+#include <sstream>
 #include "ExpectiMaxPlayer.h"
 
 /* ExpectiMaxPlayer interface */
@@ -79,6 +80,20 @@ Board::~Board() {
       boardVec->pop_back();
    }
    delete boardVec;
+}
+
+std::string Board::getString() {
+   std::ostringstream os;
+   for (BoardVec::iterator rowVecIt = boardVec->begin();
+        rowVecIt != boardVec->end(); rowVecIt++) {
+      RowVec* rowVec = *rowVecIt;
+      for (RowVec::iterator valIt = rowVec->begin(); valIt != rowVec->end();
+           valIt++) {
+         int val = *valIt;
+         os << val << " ";
+      }
+   }
+   return os.str();
 }
 
 void Board::print() {
@@ -280,7 +295,14 @@ float getHeuristicScore(Board* board) {
    return board->getScore();
 }
 
-Result getMoveRecursive(Board* board, Player player, int depth) {
+Result getMoveRecursive(StateCache* stateCache, Board* board, Player player,
+                        int depth) {
+   State state(board->getString(), player, depth);
+   StateCache::iterator stateIt = stateCache->find(state);
+   if (stateIt != stateCache->end()) {
+      return Result(stateIt->second, NO_MOVE);
+   }
+
    if (depth == 0) {
       return Result(getHeuristicScore(board), NO_MOVE);
    }
@@ -300,7 +322,8 @@ Result getMoveRecursive(Board* board, Player player, int depth) {
          newBoard = new Board(*board);
          moveScore = newBoard->makeMove(move);
          if (moveScore != -1) {
-            Result result = getMoveRecursive(newBoard, TILE_SPAWN, depth);
+            Result result = getMoveRecursive(stateCache, newBoard, TILE_SPAWN,
+                                             depth);
             float score = result.score;
             if (score > maxScore) {
                maxScore = score;
@@ -314,7 +337,8 @@ Result getMoveRecursive(Board* board, Player player, int depth) {
          newBoard = new Board(*board);
          moveScore = newBoard->makeMove(move);
          if (moveScore != -1) {
-            Result result = getMoveRecursive(newBoard, TILE_SPAWN, depth);
+            Result result = getMoveRecursive(stateCache, newBoard, TILE_SPAWN,
+                                             depth);
             float score = result.score;
             if (score > maxScore) {
                maxScore = score;
@@ -328,7 +352,8 @@ Result getMoveRecursive(Board* board, Player player, int depth) {
          newBoard = new Board(*board);
          moveScore = newBoard->makeMove(move);
          if (moveScore != -1) {
-            Result result = getMoveRecursive(newBoard, TILE_SPAWN, depth);
+            Result result = getMoveRecursive(stateCache, newBoard, TILE_SPAWN,
+                                             depth);
             float score = result.score;
             if (score > maxScore) {
                maxScore = score;
@@ -342,7 +367,8 @@ Result getMoveRecursive(Board* board, Player player, int depth) {
          newBoard = new Board(*board);
          moveScore = newBoard->makeMove(move);
          if (moveScore != -1) {
-            Result result = getMoveRecursive(newBoard, TILE_SPAWN, depth);
+            Result result = getMoveRecursive(stateCache, newBoard, TILE_SPAWN,
+                                             depth);
             float score = result.score;
             if (score > maxScore) {
                maxScore = score;
@@ -351,6 +377,7 @@ Result getMoveRecursive(Board* board, Player player, int depth) {
          }
          delete newBoard;
 
+         stateCache->insert({state, maxScore});
          return Result(maxScore, maxMove);
       }
       break;
@@ -373,7 +400,8 @@ Result getMoveRecursive(Board* board, Player player, int depth) {
                   newBoard = new Board(*board);
                   newBoard->setPos(row, col, tile);
                   {
-                     Result result = getMoveRecursive(newBoard, USER, depth - 1);
+                     Result result = getMoveRecursive(stateCache, newBoard, USER,
+                                                      depth - 1);
                      twoTileScores += result.score;
                   }
                   delete newBoard;
@@ -383,7 +411,8 @@ Result getMoveRecursive(Board* board, Player player, int depth) {
                   newBoard = new Board(*board);
                   newBoard->setPos(row, col, tile);
                   {
-                     Result result = getMoveRecursive(newBoard, USER, depth - 1);
+                     Result result = getMoveRecursive(stateCache, newBoard, USER,
+                                                      depth - 1);
                      fourTileScores += result.score;
                   }
                   delete newBoard;
@@ -398,6 +427,7 @@ Result getMoveRecursive(Board* board, Player player, int depth) {
             expectedScore = (0.9 * (twoTileScores / emptySlots) +
                              0.1 * (fourTileScores / emptySlots));
          }
+         stateCache->insert({state, expectedScore});
          return Result(expectedScore, NO_MOVE);
       }
       break;
@@ -405,6 +435,8 @@ Result getMoveRecursive(Board* board, Player player, int depth) {
 }
 
 int ExpectiMaxPlayer::getMove(Board* board) {
-   Result result = getMoveRecursive(board, USER, depth);
+   StateCache* stateCache = new StateCache();
+   Result result = getMoveRecursive(stateCache, board, USER, depth);
+   delete stateCache;
    return result.move;
 }

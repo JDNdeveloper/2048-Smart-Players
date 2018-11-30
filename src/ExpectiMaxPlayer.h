@@ -1,4 +1,6 @@
+#include <functional>
 #include <iostream>
+#include <unordered_map>
 #include <vector>
 
 typedef std::vector<int> RowVec;
@@ -28,12 +30,43 @@ class Result {
    };
 };
 
+class State {
+ public:
+   std::string board;
+   Player player;
+   int depth;
+
+   State(std::string boardArg, Player playerArg, int depthArg) {
+      board = boardArg;
+      player = playerArg;
+      depth = depthArg;
+   };
+   bool operator==(const State& rhs) const {
+      return (rhs.board == board &&
+              rhs.player == player &&
+              rhs.depth == depth);
+   };
+};
+
+typedef std::unordered_map<State, int> StateCache;
+
+namespace std {
+   template <> struct hash<State> {
+      size_t operator()(const State& state) const {
+         return hash<int>()(hash<string>()(state.board) +
+                            hash<int>()(state.player) +
+                            hash<int>()(state.depth));
+      }
+   };
+}
+
 class Board {
  public:
    Board(int);
    Board(const Board&);
    ~Board();
    void print();
+   std::string getString();
    void setPos(int, int, int);
    int getPos(int row, int col) { return boardVec->at(row)->at(col); };
    int getSize() { return size; };
