@@ -18,7 +18,9 @@ class Board {
    ~Board();
    void print();
    void setPos(int, int, int);
-   void makeMove(Move);
+   int getTileSum();
+   int getMaxTile();
+   int makeMove(Move);
  private:
    int size;
    BoardVec* boardVec;

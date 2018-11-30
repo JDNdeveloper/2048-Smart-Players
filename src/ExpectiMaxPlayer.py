@@ -72,7 +72,7 @@ class ExpectiMaxPlayer(Player):
         """
 
         # TODO return this call once finished implementing
-        self.cPlayer.getMove(board)
+        return self.cPlayer.getMove(board)
 
         #######################################
         def recurse(board, index, depth):
