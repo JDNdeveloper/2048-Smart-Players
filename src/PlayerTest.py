@@ -95,7 +95,7 @@ class ExpectiMaxPlayerTest(unittest.TestCase):
       self.assertEquals(len(numMoves), NUM_ITERS)
 
       # check scores
-      verifyRanges(self, scores, ((100, 4000), (1000, 10000)))
+      verifyRanges(self, scores, ((100, 4000), (1000, 20000)))
 
       # check max tiles
       verifyRanges(self, maxTiles, ((8, 512), (64, 2048)))
