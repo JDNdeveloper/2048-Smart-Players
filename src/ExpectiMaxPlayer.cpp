@@ -327,7 +327,7 @@ Result getMoveRecursive(StateCache* stateCache, Board* board, Player player,
             Result result = getMoveRecursive(stateCache, newBoard, TILE_SPAWN,
                                              depth, prob / 4.0);
             float score = result.score;
-            if (score > maxScore) {
+            if (score >= maxScore) {
                maxScore = score;
                maxMove = move;
             }
@@ -342,7 +342,7 @@ Result getMoveRecursive(StateCache* stateCache, Board* board, Player player,
             Result result = getMoveRecursive(stateCache, newBoard, TILE_SPAWN,
                                              depth, prob / 4.0);
             float score = result.score;
-            if (score > maxScore) {
+            if (score >= maxScore) {
                maxScore = score;
                maxMove = move;
             }
@@ -357,7 +357,7 @@ Result getMoveRecursive(StateCache* stateCache, Board* board, Player player,
             Result result = getMoveRecursive(stateCache, newBoard, TILE_SPAWN,
                                              depth, prob / 4.0);
             float score = result.score;
-            if (score > maxScore) {
+            if (score >= maxScore) {
                maxScore = score;
                maxMove = move;
             }
@@ -372,7 +372,7 @@ Result getMoveRecursive(StateCache* stateCache, Board* board, Player player,
             Result result = getMoveRecursive(stateCache, newBoard, TILE_SPAWN,
                                              depth, prob / 4.0);
             float score = result.score;
-            if (score > maxScore) {
+            if (score >= maxScore) {
                maxScore = score;
                maxMove = move;
             }

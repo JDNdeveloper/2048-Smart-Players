@@ -48,6 +48,8 @@ class Model(object):
       boardChanged = False
       moveScore = 0
 
+      assert move in Model.MOVES
+
       if move == Move.UP:
          allRowColPairs = [zip(range(Model.SIZE), [i] * Model.SIZE)
                            for i in range(Model.SIZE)]
