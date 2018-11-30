@@ -70,22 +70,28 @@ Board::~Board() {
    free(boardByteArray);
 }
 
-void Board::setPos(int row, int col, int val) {
-   int idx = row * size + col;
+inline void Board::setRawPos(int row, int col, char val) {
+   boardByteArray[getIndex(row, col)] = val;
+}
+
+inline char Board::getRawPos(int row, int col) {
+   return boardByteArray[getIndex(row, col)];
+}
+
+inline void Board::setPos(int row, int col, int val) {
    if (val == 0) {
-      boardByteArray[idx] = 0;
+      setRawPos(row, col, 0);
    } else {
-      boardByteArray[idx] = (char) std::log2(val);
+      setRawPos(row, col, (char) std::log2(val));
    }
 }
 
-int Board::getPos(int row, int col) {
-   int idx = row * size + col;
-   int val = boardByteArray[idx];
+inline int Board::getPos(int row, int col) {
+   int val = getRawPos(row, col);
    if (val == 0) {
       return 0;
    } else {
-      return pow(2.0, float(boardByteArray[idx]));
+      return std::pow(2.0, float(val));
    }
 }
 
@@ -111,18 +117,18 @@ int Board::getMaxTile() {
    int maxTile = 0;
    for (int row = 0; row < size; row++) {
       for (int col = 0; col < size; col++) {
-         int val = getPos(row, col);
+         int val = getRawPos(row, col);
          maxTile = val > maxTile ? val : maxTile;
       }
    }
-   return maxTile;
+   return std::pow(2.0, maxTile);
 }
 
 int Board::getNumOpenSpaces() {
    int numOpenSpaces = 0;
    for (int row = 0; row < size; row++) {
       for (int col = 0; col < size; col++) {
-         if (getPos(row, col) == 0) {
+         if (getRawPos(row, col) == 0) {
             numOpenSpaces++;
          }
       }
@@ -163,16 +169,16 @@ int Board::makeMove(Move move) {
       int colPrevIdx = -1;
 
       for (int j = 0; j < size; j++) {
-         int val = getPos(rowIdx, colIdx);
+         int val = getRawPos(rowIdx, colIdx);
          if (val > 0) {
             if (val == prevVal) {
-               int newVal = 2 * val;
-               setPos(rowPrevIdx, colPrevIdx, newVal);
+               int newVal = val + 1;
+               setRawPos(rowPrevIdx, colPrevIdx, newVal);
                moveScore += newVal;
                prevVal = -1;
                boardChanged = true;
             } else {
-               setPos(rowBackIdx, colBackIdx, val);
+               setRawPos(rowBackIdx, colBackIdx, val);
                setCount++;
                if (rowBackIdx != rowIdx || colBackIdx != colIdx)
                   boardChanged = true;
@@ -215,7 +221,7 @@ int Board::makeMove(Move move) {
       }
 
       for (; setCount < size; setCount++) {
-         setPos(rowBackIdx, colBackIdx, 0);
+         setRawPos(rowBackIdx, colBackIdx, 0);
          switch (move) {
          case UP:
             rowBackIdx++;
@@ -289,10 +295,10 @@ float getHeuristicScore(Board* board) {
                            maxTile == board->getPos(end, start) ||
                            maxTile == board->getPos(end, end));
 
-   return (1.0 * score +
-           100.0 * maxTile +
-           100.0 * openSpaces +
-           1000.0 * maxTileInCorner);
+   return (100.0 * score +
+           10.0 * maxTile +
+           10.0 * openSpaces +
+           10.0 * maxTileInCorner);
 }
 
 Result getMoveRecursive(StateCache* stateCache, Board* board, Player player,
@@ -393,15 +399,15 @@ Result getMoveRecursive(StateCache* stateCache, Board* board, Player player,
          int emptySlots = board->getNumOpenSpaces();
          for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
-               if (board->getPos(row, col) == 0) {
+               if (board->getRawPos(row, col) == 0) {
                   Board* newBoard;
                   int tile;
                   double newProb;
 
-                  // spawn a 2 tile in the empty position
-                  tile = 2;
+                  // spawn a 2^1 = 2 tile in the empty position
+                  tile = 1;
                   newBoard = new Board(*board);
-                  newBoard->setPos(row, col, tile);
+                  newBoard->setRawPos(row, col, tile);
                   newProb = prob * (1.0 / emptySlots) * 0.9;
                   {
                      Result result = getMoveRecursive(stateCache, newBoard, USER,
@@ -410,10 +416,10 @@ Result getMoveRecursive(StateCache* stateCache, Board* board, Player player,
                   }
                   delete newBoard;
 
-                  // spawn a 4 tile in the empty position
-                  tile = 4;
+                  // spawn a 2^2 = 4 tile in the empty position
+                  tile = 2;
                   newBoard = new Board(*board);
-                  newBoard->setPos(row, col, tile);
+                  newBoard->setRawPos(row, col, tile);
                   newProb = prob * (1.0 / emptySlots) * 0.1;
                   {
                      Result result = getMoveRecursive(stateCache, newBoard, USER,

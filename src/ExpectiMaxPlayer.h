@@ -65,9 +65,13 @@ class Board {
    Board(const Board&);
    ~Board();
 
-   // byte-array interface
-   void setPos(int, int, int);
-   int getPos(int, int);
+   // byte-array direct interface
+   inline void setRawPos(int, int, char);
+   inline char getRawPos(int, int);
+
+   // byte-array wrapped interface
+   inline void setPos(int, int, int);
+   inline int getPos(int, int);
    std::string getString();
 
    int getSize() { return size; };
@@ -82,6 +86,8 @@ class Board {
    int length;
    int score;
    char* boardByteArray;
+
+   inline int getIndex(int row, int col) { return row * size + col; };
 };
 
 class ExpectiMaxPlayer {
