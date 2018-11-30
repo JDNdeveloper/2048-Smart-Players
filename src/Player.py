@@ -44,6 +44,9 @@ class Player(object):
          while not self.m.isGameOver():
             board, score = self.m.getState()
             move = self.getMove(board, score)
+            if self.debug:
+               print "Move Chosen: %s" % self.m.MOVE_NAMES[move]
+               print self.m.getBoardString(board)
             self.m.makeMove(move)
             count += 1
 

@@ -71,11 +71,9 @@ class ExpectiMaxPlayer(Player):
         [More to follow]
         """
 
-        # TODO get this implemented, then uncomment
-        # return self.cPlayer.getMove(board)
+        # TODO return this call once finished implementing
         self.cPlayer.getMove(board)
 
-        movePlayed = ['', 'UP', 'DOWN', 'LEFT', 'RIGHT']
         #######################################
         def recurse(board, index, depth):
             state = (str(board), index, depth)
@@ -124,9 +122,6 @@ class ExpectiMaxPlayer(Player):
         #######################################
         bestMove = recurse(self.m.getState()[0], 0, self.depth)
         self.lastMove = bestMove[0]
-        if self.debug:
-            print "BestMove: {}".format(movePlayed[self.lastMove])
-            print self.m.getBoardString(board)
         return self.lastMove
 
     def evalFunction(self, board):

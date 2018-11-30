@@ -16,6 +16,7 @@ class Model(object):
    FILL_VALUES = [2] * 9 + [4] * 1
    """All possible moves."""
    MOVES = (Move.UP, Move.DOWN, Move.LEFT, Move.RIGHT)
+   MOVE_NAMES = ('', 'UP', 'DOWN', 'LEFT', 'RIGHT')
 
    def __init__(self):
       self.board = None
