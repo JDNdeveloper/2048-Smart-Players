@@ -1,3 +1,4 @@
+#include <cmath>
 #include <sstream>
 #include "ExpectiMaxPlayer.h"
 
@@ -42,90 +43,65 @@ extern "C" {
 Board::Board(int sizeArg) {
    // set the board size
    size = sizeArg;
+   length = size * size;
 
    // setup the board
-   boardVec = new BoardVec;
-   for (int i = 0; i < size; i++) {
-      RowVec* rowVec = new RowVec;
-      for (int j = 0; j < size; j++) {
-         rowVec->push_back(0);
-      }
-      boardVec->push_back(rowVec);
+   boardByteArray = (char*) malloc(length * sizeof(char));
+   for (int i = 0; i < length; i++) {
+      boardByteArray[i] = 0;
    }
 }
 
 Board::Board(const Board& oldBoard) {
    // set the board size and score
    size = oldBoard.size;
+   length = size * size;
    score = oldBoard.score;
 
    // copy the board contents
-   boardVec = new BoardVec;
-   BoardVec* oldBoardVec = oldBoard.boardVec;
-   for (BoardVec::iterator rowVecIt = oldBoardVec->begin();
-        rowVecIt != oldBoardVec->end(); rowVecIt++) {
-      RowVec* oldRowVec = *rowVecIt;
-      RowVec* rowVec = new RowVec;
-      for (RowVec::iterator valIt = oldRowVec->begin(); valIt != oldRowVec->end();
-           valIt++) {
-         rowVec->push_back(*valIt);
-      }
-      boardVec->push_back(rowVec);
+   boardByteArray = (char*) malloc(length * sizeof(char));
+   char* oldBoardByteArray = oldBoard.boardByteArray;
+   for (int i = 0; i < length; i++) {
+      boardByteArray[i] = oldBoardByteArray[i];
    }
 }
 
 Board::~Board() {
-   while(!boardVec->empty()) {
-      delete boardVec->back();
-      boardVec->pop_back();
+   free(boardByteArray);
+}
+
+void Board::setPos(int row, int col, int val) {
+   int idx = row * size + col;
+   if (val == 0) {
+      boardByteArray[idx] = 0;
+   } else {
+      boardByteArray[idx] = (char) std::log2(val);
    }
-   delete boardVec;
+}
+
+int Board::getPos(int row, int col) {
+   int idx = row * size + col;
+   int val = boardByteArray[idx];
+   if (val == 0) {
+      return 0;
+   } else {
+      return pow(2.0, float(boardByteArray[idx]));
+   }
 }
 
 std::string Board::getString() {
    std::ostringstream os;
-   for (BoardVec::iterator rowVecIt = boardVec->begin();
-        rowVecIt != boardVec->end(); rowVecIt++) {
-      RowVec* rowVec = *rowVecIt;
-      for (RowVec::iterator valIt = rowVec->begin(); valIt != rowVec->end();
-           valIt++) {
-         int val = *valIt;
-         os << val << " ";
-      }
+   for (int i = 0; i < length; i++) {
+      os << boardByteArray[i];
    }
    return os.str();
 }
 
-void Board::print() {
-   for (BoardVec::iterator rowVecIt = boardVec->begin();
-        rowVecIt != boardVec->end(); rowVecIt++) {
-      RowVec* rowVec = *rowVecIt;
-      for (RowVec::iterator valIt = rowVec->begin(); valIt != rowVec->end();
-           valIt++) {
-         int val = *valIt;
-         std::cout << val << " ";
-      }
-      std::cout << std::endl;
-   }
-   std::cout << std::endl;
-}
-
-void Board::setPos(int row, int col, int val) {
-   if (row < 0 || row >= size || col < 0 || col >= size)
-      return;
-
-   boardVec->at(row)->at(col) = val;
-}
-
 int Board::getTileSum() {
    int score = 0;
-   for (BoardVec::iterator rowVecIt = boardVec->begin();
-        rowVecIt != boardVec->end(); rowVecIt++) {
-      RowVec* rowVec = *rowVecIt;
-      for (RowVec::iterator valIt = rowVec->begin(); valIt != rowVec->end();
-           valIt++) {
-         int val = *valIt;
-         score += val;
+   for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
+         score += getPos(row, col);
       }
    }
    return score;
@@ -133,12 +109,9 @@ int Board::getTileSum() {
 
 int Board::getMaxTile() {
    int maxTile = 0;
-   for (BoardVec::iterator rowVecIt = boardVec->begin();
-        rowVecIt != boardVec->end(); rowVecIt++) {
-      RowVec* rowVec = *rowVecIt;
-      for (RowVec::iterator valIt = rowVec->begin(); valIt != rowVec->end();
-           valIt++) {
-         int val = *valIt;
+   for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
+         int val = getPos(row, col);
          maxTile = val > maxTile ? val : maxTile;
       }
    }
@@ -178,16 +151,16 @@ int Board::makeMove(Move move) {
       int colPrevIdx = -1;
 
       for (int j = 0; j < size; j++) {
-         int val = boardVec->at(rowIdx)->at(colIdx);
+         int val = getPos(rowIdx, colIdx);
          if (val > 0) {
             if (val == prevVal) {
                int newVal = 2 * val;
-               boardVec->at(rowPrevIdx)->at(colPrevIdx) = newVal;
+               setPos(rowPrevIdx, colPrevIdx, newVal);
                moveScore += newVal;
                prevVal = -1;
                boardChanged = true;
             } else {
-               boardVec->at(rowBackIdx)->at(colBackIdx) = val;
+               setPos(rowBackIdx, colBackIdx, val);
                setCount++;
                if (rowBackIdx != rowIdx || colBackIdx != colIdx)
                   boardChanged = true;
@@ -230,7 +203,7 @@ int Board::makeMove(Move move) {
       }
 
       for (; setCount < size; setCount++) {
-         boardVec->at(rowBackIdx)->at(colBackIdx) = 0;
+         setPos(rowBackIdx, colBackIdx, 0);
          switch (move) {
          case UP:
             rowBackIdx++;

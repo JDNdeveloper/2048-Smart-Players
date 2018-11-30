@@ -5,9 +5,6 @@
 
 #define PROB_CUTOFF 1e-5
 
-typedef std::vector<int> RowVec;
-typedef std::vector<RowVec*> BoardVec;
-
 enum Move {
    NO_MOVE = -1,
    UP = 1,
@@ -67,10 +64,12 @@ class Board {
    Board(int);
    Board(const Board&);
    ~Board();
-   void print();
-   std::string getString();
+
+   // byte-array interface
    void setPos(int, int, int);
-   int getPos(int row, int col) { return boardVec->at(row)->at(col); };
+   int getPos(int, int);
+   std::string getString();
+
    int getSize() { return size; };
    int getTileSum();
    int getMaxTile();
@@ -79,8 +78,9 @@ class Board {
    int makeMove(Move);
  private:
    int size;
+   int length;
    int score;
-   BoardVec* boardVec;
+   char* boardByteArray;
 };
 
 class ExpectiMaxPlayer {
