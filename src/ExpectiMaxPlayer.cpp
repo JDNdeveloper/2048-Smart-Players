@@ -118,6 +118,18 @@ int Board::getMaxTile() {
    return maxTile;
 }
 
+int Board::getNumOpenSpaces() {
+   int numOpenSpaces = 0;
+   for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
+         if (getPos(row, col) == 0) {
+            numOpenSpaces++;
+         }
+      }
+   }
+   return numOpenSpaces;
+}
+
 int Board::makeMove(Move move) {
    bool boardChanged = false;
    int moveScore = 0;
@@ -265,7 +277,22 @@ int tryMove(Board* board, Move move) {
 }
 
 float getHeuristicScore(Board* board) {
-   return board->getScore();
+   int boardSize = board->getSize();
+   int start = 0;
+   int end = boardSize - 1;
+
+   int score = board->getScore();
+   int maxTile = board->getMaxTile();
+   int openSpaces = board->getNumOpenSpaces();
+   bool maxTileInCorner = (maxTile == board->getPos(start, start) ||
+                           maxTile == board->getPos(start, end) ||
+                           maxTile == board->getPos(end, start) ||
+                           maxTile == board->getPos(end, end));
+
+   return (1.0 * score +
+           100.0 * maxTile +
+           100.0 * openSpaces +
+           1000.0 * maxTileInCorner);
 }
 
 Result getMoveRecursive(StateCache* stateCache, Board* board, Player player,
@@ -363,14 +390,7 @@ Result getMoveRecursive(StateCache* stateCache, Board* board, Player player,
          float fourTileScores = 0;
 
          int size = board->getSize();
-         int emptySlots = 0;
-         for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-               if (board->getPos(row, col) == 0) {
-                  emptySlots++;
-               }
-            }
-         }
+         int emptySlots = board->getNumOpenSpaces();
          for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
                if (board->getPos(row, col) == 0) {

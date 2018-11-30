@@ -75,6 +75,7 @@ class Board {
    int getMaxTile();
    void setScore(int scoreArg) { score = scoreArg; };
    int getScore() { return score; };
+   int getNumOpenSpaces();
    int makeMove(Move);
  private:
    int size;
