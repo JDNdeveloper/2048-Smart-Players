@@ -325,7 +325,9 @@ Result getMoveRecursive(StateCache* stateCache, Board* board, Player player,
          int moveScore;
 
          Move maxMove = NO_MOVE;
-         float maxScore = -1;
+         // this serves as the penalty for reaching
+         // game over
+         float maxScore = -100;
 
          // move up
          move = UP;
