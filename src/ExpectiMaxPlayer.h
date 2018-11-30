@@ -3,6 +3,8 @@
 #include <unordered_map>
 #include <vector>
 
+#define PROB_CUTOFF 1e-5
+
 typedef std::vector<int> RowVec;
 typedef std::vector<RowVec*> BoardVec;
 
