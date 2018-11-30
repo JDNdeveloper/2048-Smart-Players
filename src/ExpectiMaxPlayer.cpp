@@ -295,10 +295,12 @@ float getHeuristicScore(Board* board) {
                            maxTile == board->getPos(end, start) ||
                            maxTile == board->getPos(end, end));
 
-   return (100.0 * score +
-           10.0 * maxTile +
-           10.0 * openSpaces +
-           10.0 * maxTileInCorner);
+   // TODO figure out why this is worse than just using score...
+   // return (100.0 * score +
+   //         10.0 * maxTile +
+   //         10.0 * openSpaces +
+   //         10.0 * maxTileInCorner);
+   return score;
 }
 
 Result getMoveRecursive(StateCache* stateCache, Board* board, Player player,

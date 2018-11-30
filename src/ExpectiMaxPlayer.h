@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <vector>
 
-#define PROB_CUTOFF 1e-5
+#define PROB_CUTOFF 8e-6
 
 enum Move {
    NO_MOVE = -1,
