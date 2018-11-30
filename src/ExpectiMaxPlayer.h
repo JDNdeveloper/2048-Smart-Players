@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 
-typedef std::vector<int> Row;
-typedef std::vector<Row*> Board;
+typedef std::vector<int> RowVec;
+typedef std::vector<RowVec*> BoardVec;
 
 enum Move {
    UP = 1,
@@ -11,30 +11,23 @@ enum Move {
    RIGHT = 4
 };
 
+class Board {
+ public:
+   Board(int);
+   Board(const Board&);
+   ~Board();
+   void print();
+   void setPos(int, int, int);
+   void makeMove(Move);
+ private:
+   int size;
+   BoardVec* boardVec;
+};
+
 class ExpectiMaxPlayer {
  public:
-   ExpectiMaxPlayer(bool debugArg) {
-      debug = debugArg;
-   }
-
-   void printBoard(Board* board) {
-      for (Board::iterator rowIt = board->begin(); rowIt != board->end(); rowIt++) {
-         Row* row = *rowIt;
-         for (Row::iterator valIt = row->begin(); valIt != row->end(); valIt++) {
-            int val = *valIt;
-            std::cout << val << " ";
-         }
-         std::cout << std::endl;
-      }
-      std::cout << std::endl;
-   }
-
-   int getMove(Board* board){
-      if (debug) {
-         printBoard(board);
-      }
-      return UP;
-   }
+   ExpectiMaxPlayer(bool);
+   int getMove(Board*);
  private:
    bool debug;
 };
