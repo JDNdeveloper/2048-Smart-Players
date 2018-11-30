@@ -3,8 +3,8 @@
 /* ExpectiMaxPlayer interface */
 
 extern "C" {
-   ExpectiMaxPlayer* ExpectiMaxPlayer_new(bool debug) {
-      return new ExpectiMaxPlayer(debug);
+   ExpectiMaxPlayer* ExpectiMaxPlayer_new(bool debug, int depth) {
+      return new ExpectiMaxPlayer(debug, depth);
    }
 
    void ExpectiMaxPlayer_delete(ExpectiMaxPlayer* player) {
@@ -50,8 +50,9 @@ Board::Board(int sizeArg) {
 }
 
 Board::Board(const Board& oldBoard) {
-   // set the board size
+   // set the board size and score
    size = oldBoard.size;
+   score = oldBoard.score;
 
    // copy the board contents
    boardVec = new BoardVec;
@@ -247,6 +248,8 @@ int Board::makeMove(Move move) {
       }
    }
 
+   score += moveScore;
+
    /* return value:
     * -1 = board did not change
     *  0 = no tiles merged
@@ -257,8 +260,9 @@ int Board::makeMove(Move move) {
 
 /* ExpectiMaxPlayer */
 
-ExpectiMaxPlayer::ExpectiMaxPlayer(bool debugArg) {
+ExpectiMaxPlayer::ExpectiMaxPlayer(bool debugArg, int depthArg) {
    debug = debugArg;
+   depth = depthArg;
 }
 
 int tryMove(Board* board, Move move) {
@@ -268,46 +272,93 @@ int tryMove(Board* board, Move move) {
    return moveScore;
 }
 
+int getHeuristicScore(Board* board) {
+   return board->getScore();
+}
+
+Result getMoveRecursive(Board* board, Player player, int depth) {
+   if (depth == 0) {
+      return Result(getHeuristicScore(board), NO_MOVE);
+   }
+
+   switch (player) {
+   case USER:
+      {
+         Board* newBoard;
+         Move move;
+         int moveScore;
+
+         Move maxMove;
+         int maxScore = -1;
+
+         // move up
+         move = UP;
+         newBoard = new Board(*board);
+         moveScore = newBoard->makeMove(move);
+         if (moveScore != -1) {
+            Result result = getMoveRecursive(newBoard, TILE_SPAWN, depth);
+            int score = result.score;
+            if (score > maxScore) {
+               maxScore = score;
+               maxMove = move;
+            }
+         }
+         delete newBoard;
+
+         // move down
+         move = DOWN;
+         newBoard = new Board(*board);
+         moveScore = newBoard->makeMove(move);
+         if (moveScore != -1) {
+            Result result = getMoveRecursive(newBoard, TILE_SPAWN, depth);
+            int score = result.score;
+            if (score > maxScore) {
+               maxScore = score;
+               maxMove = move;
+            }
+         }
+         delete newBoard;
+
+         // move left
+         move = LEFT;
+         newBoard = new Board(*board);
+         moveScore = newBoard->makeMove(move);
+         if (moveScore != -1) {
+            Result result = getMoveRecursive(newBoard, TILE_SPAWN, depth);
+            int score = result.score;
+            if (score > maxScore) {
+               maxScore = score;
+               maxMove = move;
+            }
+         }
+         delete newBoard;
+
+         // move right
+         move = RIGHT;
+         newBoard = new Board(*board);
+         moveScore = newBoard->makeMove(move);
+         if (moveScore != -1) {
+            Result result = getMoveRecursive(newBoard, TILE_SPAWN, depth);
+            int score = result.score;
+            if (score > maxScore) {
+               maxScore = score;
+               maxMove = move;
+            }
+         }
+         delete newBoard;
+
+         return Result(maxScore, maxMove);
+      }
+      break;
+   case TILE_SPAWN:
+      {
+         return Result(getHeuristicScore(board), NO_MOVE);
+      }
+      break;
+   }
+}
+
 int ExpectiMaxPlayer::getMove(Board* board) {
-   int maxMove = -1;
-   int maxMoveScore = -1;
-   int moveScore = -1;
-   Move move = UP;
-
-   // check UP
-   move = UP;
-   moveScore = tryMove(board, move);
-   if (moveScore > maxMoveScore) {
-      maxMove = move;
-      maxMoveScore = moveScore;
-   }
-
-   // check DOWN
-   move = DOWN;
-   moveScore = tryMove(board, move);
-   if (moveScore > maxMoveScore) {
-      maxMove = move;
-      maxMoveScore = moveScore;
-   }
-
-   // check LEFT
-   move = LEFT;
-   moveScore = tryMove(board, move);
-   if (moveScore > maxMoveScore) {
-      maxMove = move;
-      maxMoveScore = moveScore;
-   }
-
-   // check RIGHT
-   move = RIGHT;
-   moveScore = tryMove(board, move);
-   if (moveScore > maxMoveScore) {
-      maxMove = move;
-      maxMoveScore = moveScore;
-   }
-
-   if (debug) {
-      board->print();
-   }
-   return maxMove;
+   Result result = getMoveRecursive(board, USER, depth);
+   return result.move;
 }

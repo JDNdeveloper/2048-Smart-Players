@@ -8,4 +8,4 @@ libExpectiMaxPlayer.so: ExpectiMaxPlayer.o
 		ExpectiMaxPlayer.o
 
 ExpectiMaxPlayer.o: ExpectiMaxPlayer.cpp ExpectiMaxPlayer.h
-	g++ -c -fPIC ExpectiMaxPlayer.cpp -o ExpectiMaxPlayer.o
+	g++ -c -O3 -fPIC ExpectiMaxPlayer.cpp -o ExpectiMaxPlayer.o
