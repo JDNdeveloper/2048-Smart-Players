@@ -8,10 +8,11 @@ import QLPlayer
 
 DEFAULT_ITERS = 1
 DEFAULT_DEPTH = 3
+DEFAULT_PROB_CUTOFF = 1e-5
 PLAYER_NAMES = ['INTERACTIVE', 'GREEDY', 'CORNER', 'RANDOM', 'EXPECTIMAX', 'QL']
 DEFAULT_PLAYER_NAME = PLAYER_NAMES[0]
 
-def main(playerName, numIters, size, debug, depth, train, load, save):
+def main(playerName, numIters, size, debug, depth, probCutoff, train, load, save):
    """Primary test harness."""
 
    # set the board size
@@ -35,7 +36,8 @@ def main(playerName, numIters, size, debug, depth, train, load, save):
       p.run(numIters=numIters, printStats=True, printAtCheckpoints=True)
    elif playerName == PLAYER_NAMES[4]:
       # run the expectimax player
-      p = ExpectiMaxPlayer.ExpectiMaxPlayer(debug=debug, depth=depth)
+      p = ExpectiMaxPlayer.ExpectiMaxPlayer(debug=debug, depth=depth,
+                                            probCutoff=probCutoff)
       p.run(numIters=numIters, printStats=True, printAtCheckpoints=True)
    elif playerName == PLAYER_NAMES[5]:
       # run the RL player
@@ -57,6 +59,9 @@ if __name__ == '__main__':
    parser.add_argument('--depth', default=DEFAULT_DEPTH,
                        help=('depth of search for expectimax, default %d' %
                              DEFAULT_DEPTH))
+   parser.add_argument('--probCutoff', default=DEFAULT_PROB_CUTOFF,
+                       help=('smallest exploration probability, default %f' %
+                             DEFAULT_PROB_CUTOFF))
    parser.add_argument('--train', action='store_true',
                        help='runs player in training mode')
    parser.add_argument('--load', action='store_true',
@@ -66,4 +71,4 @@ if __name__ == '__main__':
    args = parser.parse_args()
 
    main(args.player.upper(), int(args.numIters), int(args.size), args.debug,
-        int(args.depth), args.train, args.load, args.save)
+        int(args.depth), float(args.probCutoff), args.train, args.load, args.save)

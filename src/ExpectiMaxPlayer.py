@@ -7,11 +7,13 @@ from Player import Player
 cLib = ctypes.cdll.LoadLibrary('./libExpectiMaxPlayer.so')
 
 class CExpectiMaxPlayer(object):
-    def __init__(self, size, debug, depth):
+    def __init__(self, size, debug, depth, probCutoff):
         self.size = size
         self.debug = debug
         self.depth = depth
-        self.obj = cLib.ExpectiMaxPlayer_new(self.debug, self.depth)
+        self.probCutoff = probCutoff
+        self.obj = cLib.ExpectiMaxPlayer_new(self.debug, self.depth,
+                                             ctypes.c_double(self.probCutoff))
         self.board = cLib.Board_new(size)
 
     def _setBoard(self, board, score):
@@ -35,10 +37,12 @@ class CExpectiMaxPlayer(object):
 class ExpectiMaxPlayer(Player):
     """Plays with an expectimax algorithm"""
 
-    def __init__(self, debug=False, depth=3):
+    def __init__(self, debug=False, depth=3, probCutoff=1e-5):
         super(ExpectiMaxPlayer, self).__init__(debug)
         self.depth = depth
-        self.cPlayer = CExpectiMaxPlayer(Model.SIZE, self.debug, self.depth)
+        self.probCutoff = probCutoff
+        self.cPlayer = CExpectiMaxPlayer(Model.SIZE, self.debug, self.depth,
+                                         self.probCutoff)
 
     def getMove(self, board, score):
         """

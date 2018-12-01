@@ -3,8 +3,6 @@
 #include <unordered_map>
 #include <vector>
 
-#define PROB_CUTOFF 4e-6
-
 enum Move {
    NO_MOVE = -1,
    UP = 1,
@@ -92,9 +90,12 @@ class Board {
 
 class ExpectiMaxPlayer {
  public:
-   ExpectiMaxPlayer(bool, int);
+   ExpectiMaxPlayer(bool, int, double);
+   Result getMoveRecursive(Board*, Player, int, double);
    int getMove(Board*);
  private:
-   bool debug;
-   int depth;
+   const bool debug;
+   const int depth;
+   const double probCutoff;
+   StateCache stateCache;
 };
