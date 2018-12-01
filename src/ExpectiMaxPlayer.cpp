@@ -310,14 +310,18 @@ float getHeuristicScore(Board* board) {
 Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
                                int depth, double prob) {
    State state(board->getString(), player, depth);
+   cacheLock.lock();
    StateCache::iterator stateIt = stateCache.find(state);
    if (stateIt != stateCache.end()) {
+      cacheLock.unlock();
       return Result(stateIt->second, NO_MOVE);
    }
-
+   cacheLock.unlock();
    if (depth == 0 || prob < probCutoff) {
       int heuristicScore = getHeuristicScore(board);
+      cacheLock.lock();
       stateCache.insert({state, heuristicScore});
+      cacheLock.unlock();
       return Result(heuristicScore, NO_MOVE);
    }
 
@@ -392,8 +396,10 @@ Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
             }
          }
          delete newBoard;
-
+        
+         cacheLock.lock();
          stateCache.insert({state, maxScore});
+         cacheLock.unlock();
          return Result(maxScore, maxMove);
       }
       break;
@@ -444,7 +450,9 @@ Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
             expectedScore = (0.9 * (twoTileScores / emptySlots) +
                              0.1 * (fourTileScores / emptySlots));
          }
+         cacheLock.lock();
          stateCache.insert({state, expectedScore});
+         cacheLock.unlock();
          return Result(expectedScore, NO_MOVE);
       }
       break;
