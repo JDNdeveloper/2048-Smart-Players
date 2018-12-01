@@ -452,6 +452,7 @@ Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
 }
 
 int ExpectiMaxPlayer::getMove(Board* board) {
+   stateCache.clear();
    Result result = getMoveRecursive(board, USER, depth, 1.0);
    return result.move;
 }
