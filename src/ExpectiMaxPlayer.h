@@ -78,6 +78,10 @@ class Board {
    int getTileSum();
    int getMaxTile();
    void setScore(int scoreArg) { score = scoreArg; };
+   int getTopLeftMonotonicity();
+   int getTopRightMonotonicity();
+   int getBotLeftMonotonicity();
+   int getBotRightMonotonicity();
    int getScore() { return score; };
    int getNumOpenSpaces();
    int makeMove(Move);

@@ -104,6 +104,86 @@ std::string Board::getString() {
    return os.str();
 }
 
+int Board::getTopLeftMonotonicity() {
+    int monCntr = 0;
+    int boardSize = getSize();
+    int start = 0;
+    int end = boardSize - 1;
+    for (int j = 0; j < boardSize; j++){
+        for (int i = 0; i<boardSize-1; i++){
+            if (getPos(start+j, start+i) < getPos(start+j, start+i+1)){
+                monCntr += boardSize - i;
+            }
+        }
+    }
+    for (int i = 0; i<boardSize-1; i++){
+        if (getPos(start+i, start) < getPos(start+i+1, start)){
+            monCntr += boardSize - i;
+        }
+    }
+    return monCntr;
+}
+
+int Board::getTopRightMonotonicity(){
+    int monCntr = 0;
+    int boardSize = getSize();
+    int start = 0;
+    int end = boardSize - 1;
+    for (int j = 0; j<boardSize-1; j++){
+        for (int i = 0; i<boardSize-1; i++){
+            if (getPos(start+j, end-i) < getPos(start+j, end-i-1)){
+               monCntr += boardSize - i;
+            }
+        }
+      }
+      for (int i = 0; i<boardSize-1; i++){
+        if (getPos(start+i, end) < getPos(end+i+1, start)){
+           monCntr += boardSize - i;
+        }
+      }
+     return monCntr;
+}
+
+int Board::getBotLeftMonotonicity(){
+    int monCntr = 0;
+    int boardSize = getSize();
+    int start = 0;
+    int end = boardSize - 1;
+    for (int j = 0; j<boardSize-1; j++){
+      for (int i = 0; i<boardSize-1; i++){
+        if (getPos(end-j, start+i) < getPos(end-j, start+i+1)){
+           monCntr += boardSize - i;
+        }
+       }
+      }
+      for (int i = 0; i<boardSize-1; i++){
+        if (getPos(end-i, start) < getPos(end-i-1, start)){
+           monCntr += boardSize - i;
+        }
+      }
+      return monCntr;
+}
+
+int Board::getBotRightMonotonicity(){
+    int monCntr = 0;
+    int boardSize = getSize();
+    int start = 0;
+    int end = boardSize - 1;
+    for (int j = 0; j<boardSize-1; j++){
+      for (int i = 0; i<boardSize-1; i++){
+        if (getPos(end-j, end-i) < getPos(end-j, end-i-1)){
+           monCntr += boardSize - i;
+        }
+      }
+    }
+    for (int i = 0; i<boardSize-1; i++){
+        if (getPos(end-i, end) < getPos(end-i-1, end)){
+           monCntr += boardSize - i;
+        }
+      }
+    return monCntr;
+}
+
 int Board::getTileSum() {
    int score = 0;
    for (int row = 0; row < size; row++) {
@@ -295,17 +375,25 @@ float getHeuristicScore(Board* board) {
    int score = board->getScore();
    int maxTile = board->getMaxTile();
    int openSpaces = board->getNumOpenSpaces();
-   bool maxTileInCorner = (maxTile == board->getPos(start, start) ||
-                           maxTile == board->getPos(start, end) ||
-                           maxTile == board->getPos(end, start) ||
-                           maxTile == board->getPos(end, end));
+   bool topLeft  = (maxTile == board->getPos(start, start)); 
+   bool topRight = (maxTile == board->getPos(start, end));
+   bool botLeft  = (maxTile == board->getPos(end, start));
+   bool botRight = (maxTile == board->getPos(end, end));
+   bool maxTileInCorner = topLeft || topRight || botLeft || botRight;
+   
+   int monCntr = 0; //proxy for monotonicity of row and col with Max Val
+   if (topLeft) monCntr = board->getTopLeftMonotonicity();
+   if (topRight) monCntr = board->getTopRightMonotonicity();
+   if (botLeft) monCntr = board->getBotLeftMonotonicity();
+   if (botRight) monCntr = board->getBotRightMonotonicity();
 
    // TODO figure out why this is worse than just using score...
-   // return (100.0 * score +
-   //         10.0 * maxTile +
-   //         10.0 * openSpaces +
-   //         10.0 * maxTileInCorner);
-   return score;
+    return (//5.0 * score +
+            //10.0 * maxTile +
+            -10.0 * monCntr + 
+            10.0 * openSpaces +
+            20.0 * maxTileInCorner*maxTile);
+   //return score;
 }
 
 Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
@@ -463,5 +551,9 @@ Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
 int ExpectiMaxPlayer::getMove(Board* board) {
    stateCache.clear();
    Result result = getMoveRecursive(board, USER, depth, 1.0);
+    /*working on the threadpool calling. 
+     Throws a lot due to not findinf the correct function handel.*/
+   
+   //auto result = pool.push([this, board](Result){return ExpectiMaxPlayer::getMoveRecursive(board, USER, depth, 1.0);});
    return result.move;
 }
