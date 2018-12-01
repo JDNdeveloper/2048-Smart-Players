@@ -353,7 +353,7 @@ int Board::makeMove(Move move) {
 
 ExpectiMaxPlayer::ExpectiMaxPlayer(bool debugArg, int depthArg,
                                    double probCutoffArg)
-   : pool(2), 
+   : pool(2),
      debug(debugArg),
      depth(depthArg),
      probCutoff(probCutoffArg),
@@ -375,42 +375,38 @@ float getHeuristicScore(Board* board) {
    int score = board->getScore();
    int maxTile = board->getMaxTile();
    int openSpaces = board->getNumOpenSpaces();
-   bool topLeft  = (maxTile == board->getPos(start, start)); 
+   bool topLeft  = (maxTile == board->getPos(start, start));
    bool topRight = (maxTile == board->getPos(start, end));
    bool botLeft  = (maxTile == board->getPos(end, start));
    bool botRight = (maxTile == board->getPos(end, end));
    bool maxTileInCorner = topLeft || topRight || botLeft || botRight;
-   
+
    int monCntr = 0; //proxy for monotonicity of row and col with Max Val
    if (topLeft) monCntr = board->getTopLeftMonotonicity();
    if (topRight) monCntr = board->getTopRightMonotonicity();
    if (botLeft) monCntr = board->getBotLeftMonotonicity();
    if (botRight) monCntr = board->getBotRightMonotonicity();
 
-   // TODO figure out why this is worse than just using score...
-    return (//5.0 * score +
-            //10.0 * maxTile +
-            -10.0 * monCntr + 
-            10.0 * openSpaces +
-            20.0 * maxTileInCorner*maxTile);
-   //return score;
+   return (-10.0 * monCntr +
+           10.0 * openSpaces +
+           20.0 * maxTileInCorner*maxTile);
 }
 
 Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
                                int depth, double prob) {
    State state(board->getString(), player, depth);
-   cacheLock.lock();
+   // cacheLock.lock();
    StateCache::iterator stateIt = stateCache.find(state);
    if (stateIt != stateCache.end()) {
-      cacheLock.unlock();
+      // cacheLock.unlock();
       return Result(stateIt->second, NO_MOVE);
    }
-   cacheLock.unlock();
+   // cacheLock.unlock();
    if (depth == 0 || prob < probCutoff) {
       int heuristicScore = getHeuristicScore(board);
-      cacheLock.lock();
+      // cacheLock.lock();
       stateCache.insert({state, heuristicScore});
-      cacheLock.unlock();
+      // cacheLock.unlock();
       return Result(heuristicScore, NO_MOVE);
    }
 
@@ -485,10 +481,10 @@ Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
             }
          }
          delete newBoard;
-        
-         cacheLock.lock();
+
+         // cacheLock.lock();
          stateCache.insert({state, maxScore});
-         cacheLock.unlock();
+         // cacheLock.unlock();
          return Result(maxScore, maxMove);
       }
       break;
@@ -539,9 +535,9 @@ Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
             expectedScore = (0.9 * (twoTileScores / emptySlots) +
                              0.1 * (fourTileScores / emptySlots));
          }
-         cacheLock.lock();
+         // cacheLock.lock();
          stateCache.insert({state, expectedScore});
-         cacheLock.unlock();
+         // cacheLock.unlock();
          return Result(expectedScore, NO_MOVE);
       }
       break;
@@ -551,9 +547,10 @@ Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
 int ExpectiMaxPlayer::getMove(Board* board) {
    stateCache.clear();
    Result result = getMoveRecursive(board, USER, depth, 1.0);
-    /*working on the threadpool calling. 
-     Throws a lot due to not findinf the correct function handel.*/
-   
-   //auto result = pool.push([this, board](Result){return ExpectiMaxPlayer::getMoveRecursive(board, USER, depth, 1.0);});
+   // Working on the threadpool calling.
+   // Throws a lot due to not finding the correct function handle.
+   // auto result = pool.push([this, board](Result) {
+   //       return ExpectiMaxPlayer::getMoveRecursive(board, USER, depth, 1.0);
+   //    });
    return result.move;
 }
