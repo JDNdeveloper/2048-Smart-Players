@@ -273,7 +273,8 @@ int Board::makeMove(Move move) {
 
 ExpectiMaxPlayer::ExpectiMaxPlayer(bool debugArg, int depthArg,
                                    double probCutoffArg)
-   : debug(debugArg),
+   : pool(2), 
+     debug(debugArg),
      depth(depthArg),
      probCutoff(probCutoffArg),
      stateCache() {
