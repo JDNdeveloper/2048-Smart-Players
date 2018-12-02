@@ -28,14 +28,16 @@ class QLearningAgent():
 	def saveWeights(self):
 		if self.debug:
 			print "SAVING WEIGHTS"
+		for w in self.weights:
+			self.weights[w][0] = round(self.weights[w][0], 1)
 		with gzip.GzipFile("weights.zip", 'w') as fout:
-   			 fout.write(json.dumps(self.weights).encode('utf-8'))                       
+   			 fout.write(json.dumps(self.weights).encode('utf-8'))    
 
 	def loadWeights(self):
 		if self.debug:
 			print "LOADING WEIGHTS"
 		with gzip.GzipFile("weights.zip", 'r') as fin:
-		    data = json.loads(fin.read().decode('utf-8'))
+		    self.weights = json.loads(fin.read().decode('utf-8'))
 
 
 	def getQ(self, state, action):
