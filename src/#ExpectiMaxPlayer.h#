@@ -103,7 +103,7 @@ class ExpectiMaxPlayer {
    Result getMoveRecursive(Board*, Player, int, double);
    int getMove(Board*);
  private:
-#ifdef __LINUX__
+#ifdef __linux__
    ctpl::thread_pool pool;
    std::mutex cacheLock;
 #endif

@@ -369,11 +369,15 @@ int Board::makeMove(Move move) {
 
 ExpectiMaxPlayer::ExpectiMaxPlayer(bool debugArg, int depthArg,
                                    double probCutoffArg)
-   : pool(2),
-     debug(debugArg),
-     depth(depthArg),
-     probCutoff(probCutoffArg),
-     stateCache() {
+   :
+#ifdef __linux__
+   pool(2),
+   cacheLock(),
+#endif
+   debug(debugArg),
+   depth(depthArg),
+   probCutoff(probCutoffArg),
+   stateCache() {
 }
 
 int tryMove(Board* board, Move move) {
@@ -412,18 +416,28 @@ float getHeuristicScore(Board* board) {
 Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
                                           int depth, double prob) {
    State state(board->getString(), player, depth);
+#ifdef __linux__
    // cacheLock.lock();
+#endif
    StateCache::iterator stateIt = stateCache.find(state);
    if (stateIt != stateCache.end()) {
+#ifdef __linux__
       // cacheLock.unlock();
+#endif
       return Result(stateIt->second, NO_MOVE);
    }
+#ifdef __linux__
    // cacheLock.unlock();
+#endif
    if (depth == 0 || prob < probCutoff) {
       int heuristicScore = getHeuristicScore(board);
+#ifdef __linux__
       // cacheLock.lock();
+#endif
       stateCache.insert({state, heuristicScore});
+#ifdef __linux__
       // cacheLock.unlock();
+#endif
       return Result(heuristicScore, NO_MOVE);
    }
 
@@ -499,9 +513,13 @@ Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
          }
          delete newBoard;
 
+#ifdef __linux__
          // cacheLock.lock();
+#endif
          stateCache.insert({state, maxScore});
+#ifdef __linux__
          // cacheLock.unlock();
+#endif
          return Result(maxScore, maxMove);
       }
       break;
@@ -552,9 +570,13 @@ Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
             expectedScore = (0.9 * (twoTileScores / emptySlots) +
                              0.1 * (fourTileScores / emptySlots));
          }
+#ifdef __linux__
          // cacheLock.lock();
+#endif
          stateCache.insert({state, expectedScore});
+#ifdef __linux__
          // cacheLock.unlock();
+#endif
          return Result(expectedScore, NO_MOVE);
       }
       break;
@@ -564,10 +586,12 @@ Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
 int ExpectiMaxPlayer::getMove(Board* board) {
    stateCache.clear();
    Result result = getMoveRecursive(board, USER, depth, 1.0);
+#ifdef __linux__
    // Working on the threadpool calling.
    // Throws a lot due to not finding the correct function handle.
    // auto result = pool.push([this, board](Result) {
    //       return ExpectiMaxPlayer::getMoveRecursive(board, USER, depth, 1.0);
    //    });
+#endif
    return result.move;
 }
