@@ -116,7 +116,7 @@ class QLPlayerTest(unittest.TestCase):
       self.assertEquals(len(numMoves), NUM_ITERS)
 
       # check scores
-      verifyRanges(self, scores, ((100, 2000), (700, 5000)))
+      verifyRanges(self, scores, ((100, 2000), (500, 5000)))
 
       # check max tiles
       verifyRanges(self, maxTiles, ((8, 128), (32, 512)))
