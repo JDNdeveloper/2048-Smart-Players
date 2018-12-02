@@ -95,13 +95,13 @@ class ExpectiMaxPlayerTest(unittest.TestCase):
       self.assertEquals(len(numMoves), NUM_ITERS)
 
       # check scores
-      verifyRanges(self, scores, ((100, 4000), (1000, 20000)))
+      verifyRanges(self, scores, ((100, 4000), (1000, 30000)))
 
       # check max tiles
-      verifyRanges(self, maxTiles, ((8, 512), (64, 2048)))
+      verifyRanges(self, maxTiles, ((8, 512), (64, 4096)))
 
       # check moves
-      verifyRanges(self, numMoves, ((20, 500), (100, 1000)))
+      verifyRanges(self, numMoves, ((20, 500), (100, 2000)))
 
 class QLPlayerTest(unittest.TestCase):
    def setUp(self):

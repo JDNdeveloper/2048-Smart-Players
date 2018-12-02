@@ -106,98 +106,98 @@ std::string Board::getString() {
 
 
 int Board::getAdjacentTiles(){
-    int numAdj = 0;
-    int start = 0;
-    for( int i=0; i<getSize(); i++){
-        for( int j=0; j<getSize(); j++){
-            if((j+1 < getSize()) && getPos(i, j) == getPos(i, j+1)) numAdj++;
-            if((i+1 < getSize()) && getPos(i, j) == getPos(i+1, j)) numAdj++;
-            if((j-1 >= start) && getPos(i, j) == getPos(i, j-1)) numAdj++;
-            if((i-1 >= start) && getPos(i, j) == getPos(i-1, j)) numAdj++;
-        }
-    }
-    return numAdj;
+   int numAdj = 0;
+   int start = 0;
+   for( int i=0; i<getSize(); i++){
+      for( int j=0; j<getSize(); j++){
+         if((j+1 < getSize()) && getPos(i, j) == getPos(i, j+1)) numAdj++;
+         if((i+1 < getSize()) && getPos(i, j) == getPos(i+1, j)) numAdj++;
+         if((j-1 >= start) && getPos(i, j) == getPos(i, j-1)) numAdj++;
+         if((i-1 >= start) && getPos(i, j) == getPos(i-1, j)) numAdj++;
+      }
+   }
+   return numAdj;
 }
 
 
 int Board::getTopLeftMonotonicity() {
-    int monCntr = 0;
-    int boardSize = getSize();
-    int start = 0;
-    int end = boardSize - 1;
-    for (int j = 0; j < boardSize; j++){
-        for (int i = 0; i<boardSize-1; i++){
-            if (getPos(start+j, start+i) < getPos(start+j, start+i+1)){
-                monCntr += boardSize - i;
-            }
-        }
-    }
-    for (int i = 0; i<boardSize-1; i++){
-        if (getPos(start+i, start) < getPos(start+i+1, start)){
+   int monCntr = 0;
+   int boardSize = getSize();
+   int start = 0;
+   int end = boardSize - 1;
+   for (int j = 0; j < boardSize; j++){
+      for (int i = 0; i<boardSize-1; i++){
+         if (getPos(start+j, start+i) < getPos(start+j, start+i+1)){
             monCntr += boardSize - i;
-        }
-    }
-    return monCntr;
+         }
+      }
+   }
+   for (int i = 0; i<boardSize-1; i++){
+      if (getPos(start+i, start) < getPos(start+i+1, start)){
+         monCntr += boardSize - i;
+      }
+   }
+   return monCntr;
 }
 
 int Board::getTopRightMonotonicity(){
-    int monCntr = 0;
-    int boardSize = getSize();
-    int start = 0;
-    int end = boardSize - 1;
-    for (int j = 0; j<boardSize-1; j++){
-        for (int i = 0; i<boardSize-1; i++){
-            if (getPos(start+j, end-i) < getPos(start+j, end-i-1)){
-               monCntr += boardSize - i;
-            }
-        }
-      }
+   int monCntr = 0;
+   int boardSize = getSize();
+   int start = 0;
+   int end = boardSize - 1;
+   for (int j = 0; j<boardSize-1; j++){
       for (int i = 0; i<boardSize-1; i++){
-        if (getPos(start+i, end) < getPos(end+i+1, start)){
-           monCntr += boardSize - i;
-        }
+         if (getPos(start+j, end-i) < getPos(start+j, end-i-1)){
+            monCntr += boardSize - i;
+         }
       }
-     return monCntr;
+   }
+   for (int i = 0; i<boardSize-1; i++){
+      if (getPos(start+i, end) < getPos(end+i+1, start)){
+         monCntr += boardSize - i;
+      }
+   }
+   return monCntr;
 }
 
 int Board::getBotLeftMonotonicity(){
-    int monCntr = 0;
-    int boardSize = getSize();
-    int start = 0;
-    int end = boardSize - 1;
-    for (int j = 0; j<boardSize-1; j++){
+   int monCntr = 0;
+   int boardSize = getSize();
+   int start = 0;
+   int end = boardSize - 1;
+   for (int j = 0; j<boardSize-1; j++){
       for (int i = 0; i<boardSize-1; i++){
-        if (getPos(end-j, start+i) < getPos(end-j, start+i+1)){
-           monCntr += boardSize - i;
-        }
-       }
+         if (getPos(end-j, start+i) < getPos(end-j, start+i+1)){
+            monCntr += boardSize - i;
+         }
       }
-      for (int i = 0; i<boardSize-1; i++){
-        if (getPos(end-i, start) < getPos(end-i-1, start)){
-           monCntr += boardSize - i;
-        }
+   }
+   for (int i = 0; i<boardSize-1; i++){
+      if (getPos(end-i, start) < getPos(end-i-1, start)){
+         monCntr += boardSize - i;
       }
-      return monCntr;
+   }
+   return monCntr;
 }
 
 int Board::getBotRightMonotonicity(){
-    int monCntr = 0;
-    int boardSize = getSize();
-    int start = 0;
-    int end = boardSize - 1;
-    for (int j = 0; j<boardSize-1; j++){
+   int monCntr = 0;
+   int boardSize = getSize();
+   int start = 0;
+   int end = boardSize - 1;
+   for (int j = 0; j<boardSize-1; j++){
       for (int i = 0; i<boardSize-1; i++){
-        if (getPos(end-j, end-i) < getPos(end-j, end-i-1)){
-           monCntr += boardSize - i;
-        }
+         if (getPos(end-j, end-i) < getPos(end-j, end-i-1)){
+            monCntr += boardSize - i;
+         }
       }
-    }
-    for (int i = 0; i<boardSize-1; i++){
-        if (getPos(end-i, end) < getPos(end-i-1, end)){
-           monCntr += boardSize - i;
-        }
+   }
+   for (int i = 0; i<boardSize-1; i++){
+      if (getPos(end-i, end) < getPos(end-i-1, end)){
+         monCntr += boardSize - i;
       }
-    return monCntr;
+   }
+   return monCntr;
 }
 
 int Board::getTileSum() {
@@ -410,7 +410,7 @@ float getHeuristicScore(Board* board) {
 }
 
 Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
-                               int depth, double prob) {
+                                          int depth, double prob) {
    State state(board->getString(), player, depth);
    // cacheLock.lock();
    StateCache::iterator stateIt = stateCache.find(state);
