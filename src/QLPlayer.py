@@ -34,7 +34,7 @@ class QLearningAgent():
 	def loadWeights(self):
 		if self.debug:
 			print "LOADING WEIGHTS"
-		with gzip.GzipFile("weights-5x.zip", 'r') as fin:
+		with gzip.GzipFile("weights.zip", 'r') as fin:
 		    data = json.loads(fin.read().decode('utf-8'))
 
 
