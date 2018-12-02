@@ -104,6 +104,22 @@ std::string Board::getString() {
    return os.str();
 }
 
+
+int Board::getAdjacentTiles(){
+    int numAdj = 0;
+    int start = 0;
+    for( int i=0; i<getSize(); i++){
+        for( int j=0; j<getSize(); j++){
+            if((j+1 < getSize()) && getPos(i, j) == getPos(i, j+1)) numAdj++;
+            if((i+1 < getSize()) && getPos(i, j) == getPos(i+1, j)) numAdj++;
+            if((j-1 >= start) && getPos(i, j) == getPos(i, j-1)) numAdj++;
+            if((i-1 >= start) && getPos(i, j) == getPos(i-1, j)) numAdj++;
+        }
+    }
+    return numAdj;
+}
+
+
 int Board::getTopLeftMonotonicity() {
     int monCntr = 0;
     int boardSize = getSize();
@@ -380,7 +396,7 @@ float getHeuristicScore(Board* board) {
    bool botLeft  = (maxTile == board->getPos(end, start));
    bool botRight = (maxTile == board->getPos(end, end));
    bool maxTileInCorner = topLeft || topRight || botLeft || botRight;
-
+   int numAdjacent = board->getAdjacentTiles();
    int monCntr = 0; //proxy for monotonicity of row and col with Max Val
    if (topLeft) monCntr = board->getTopLeftMonotonicity();
    if (topRight) monCntr = board->getTopRightMonotonicity();
@@ -389,7 +405,8 @@ float getHeuristicScore(Board* board) {
 
    return (-10.0 * monCntr +
            10.0 * openSpaces +
-           20.0 * maxTileInCorner*maxTile);
+           20.0 * maxTileInCorner*maxTile +
+           10.0*numAdjacent);
 }
 
 Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,

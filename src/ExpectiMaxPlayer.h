@@ -82,6 +82,7 @@ class Board {
    int getTopRightMonotonicity();
    int getBotLeftMonotonicity();
    int getBotRightMonotonicity();
+   int getAdjacentTiles();
    int getScore() { return score; };
    int getNumOpenSpaces();
    int makeMove(Move);
