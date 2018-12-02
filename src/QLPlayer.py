@@ -8,6 +8,9 @@ from collections import defaultdict
 import copy
 import itertools
 import pickle
+import json
+import gzip
+import hashlib
 
 #Algorithm
 class QLearningAgent():
@@ -25,14 +28,15 @@ class QLearningAgent():
 	def saveWeights(self):
 		if self.debug:
 			print "SAVING WEIGHTS"
-		with open('weights.pkl', 'wb') as outfile:
-			pickle.dump(self.weights, outfile, pickle.HIGHEST_PROTOCOL)
+		with gzip.GzipFile("weights.zip", 'w') as fout:
+   			 fout.write(json.dumps(self.weights).encode('utf-8'))                       
 
 	def loadWeights(self):
 		if self.debug:
 			print "LOADING WEIGHTS"
-		with open('weights.pkl', 'r') as infile:
-			self.weights = pickle.load(infile)
+		with gzip.GzipFile("weights-5x.zip", 'r') as fin:
+		    data = json.loads(fin.read().decode('utf-8'))
+
 
 	def getQ(self, state, action):
 		score = 0
@@ -76,6 +80,9 @@ class QLearningAgent():
 				else:
 					self.weights[f] = [-1 * updateVal, 1]
 
+def hashString(s):
+	str(int(hashlib.sha256(s.encode('utf-8')).hexdigest(), 16) % 10**16)
+
 def featureExtractor(state, action):
 	features = []
 	verticalFeatures = [["ver", action, j == 0 or j == 3]
@@ -89,10 +96,10 @@ def featureExtractor(state, action):
 			verticalFeatures[j].append(tile)
 
 	for f in verticalFeatures:
-		features.append(tuple(f))
+		features.append(str(f))
 
 	for f in horizontalFeatures:
-		features.append(tuple(f))
+		features.append(str(f))
 
 	squareFeaturesV = [["squareV", action, s[0], s[1]]
                            for s in itertools.product(range(len(state) - 2),
@@ -102,14 +109,14 @@ def featureExtractor(state, action):
                                                       range(len(state[0]) - 2))]
 
 	for s in squareFeaturesV:
-		features.append(tuple(s + [state[s[2]][s[3]],
+		features.append(str(s + [state[s[2]][s[3]],
                                            state[s[2]][s[3] + 1],
                                            state[s[2] + 1][s[3]],
                                            state[s[2] + 1][s[3] + 1],
                                            state[s[2] + 2][s[3]],
                                            state[s[2] + 2][s[3] + 1]]))
 	for s in squareFeaturesH:
-		features.append(tuple(s + [state[s[2]][s[3]],
+		features.append(str(s + [state[s[2]][s[3]],
                                            state[s[2]][s[3] + 1],
                                            state[s[2] + 1][s[3]],
                                            state[s[2] + 1][s[3] + 1],
