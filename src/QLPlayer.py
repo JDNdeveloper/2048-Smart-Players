@@ -12,16 +12,19 @@ import json
 import gzip
 import hashlib
 
+global global_weights
+global_weights = {}
+
 #Algorithm
 class QLearningAgent():
 	def __init__(self, actions, discount, featureExtractor,
-                     explorationProb=0.2, debug=False):
+                     explorationProb=0.2, debug=False, newWeights=False):
 		self.actions = actions
 		self.discount = discount
 		self.featureExtractor = featureExtractor
 		self.explorationProb = explorationProb
 		self.debug = debug
-		self.weights = {}
+		self.weights = {} if newWeights else global_weights
 		self.numIters = 1
 		self.overallUpdateVal = 0
 
@@ -31,7 +34,7 @@ class QLearningAgent():
 		for w in self.weights:
 			self.weights[w][0] = round(self.weights[w][0], 1)
 		with gzip.GzipFile("weights.zip", 'w') as fout:
-   			 fout.write(json.dumps(self.weights).encode('utf-8'))    
+			fout.write(json.dumps(self.weights).encode('utf-8'))
 
 	def loadWeights(self):
 		if self.debug:

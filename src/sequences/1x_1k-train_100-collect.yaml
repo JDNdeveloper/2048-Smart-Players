@@ -1,0 +1,4 @@
+- numIters: 1000
+  train: True
+- numIters: 100
+  train: False

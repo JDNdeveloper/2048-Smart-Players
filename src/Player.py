@@ -1,6 +1,7 @@
 import collections
 import numpy as np
 import random
+import time
 import Model
 
 class Player(object):
@@ -18,12 +19,14 @@ class Player(object):
       Returns:
       (scores, maxTiles): Scores and maxTiles lists from all runs.
       """
+      startTime = time.time()
+      endTime = time.time()
       scores = []
       maxTiles = []
       numMoves = []
 
       def printAllStats():
-         print 'Total runs: %d' % len(scores)
+         print 'Total runs: %d, %.3f seconds' % (len(scores), endTime - startTime)
          self._printScoreStats(scores)
          self._printMaxTileStats(maxTiles)
          self._printMaxTileHistogram(maxTiles)
@@ -50,6 +53,7 @@ class Player(object):
             self.m.makeMove(move)
             count += 1
 
+         endTime = time.time()
          scores.append(self.m.score)
          maxTiles.append(self.m.maxTile())
          numMoves.append(count)
@@ -57,7 +61,7 @@ class Player(object):
       if printStats:
          printAllStats()
 
-      return (scores, maxTiles, numMoves)
+      return (endTime - startTime, scores, maxTiles, numMoves)
 
    def getMove(self, board, score):
       """Get the next move given current board and score."""

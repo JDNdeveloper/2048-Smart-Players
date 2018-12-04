@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import argparse
+import yaml
 import ExpectiMaxPlayer
 import Model
 import Player
@@ -9,40 +10,74 @@ import QLPlayer
 DEFAULT_ITERS = 1
 DEFAULT_DEPTH = 3
 DEFAULT_PROB_CUTOFF = 1e-5
-PLAYER_NAMES = ['INTERACTIVE', 'GREEDY', 'CORNER', 'RANDOM', 'EXPECTIMAX', 'QL']
+# EM <=> "EXPECTIMAX", QL <=> "Q-Learning"
+PLAYER_NAMES = ['INTERACTIVE', 'GREEDY', 'CORNER', 'RANDOM', 'EM', 'QL']
 DEFAULT_PLAYER_NAME = PLAYER_NAMES[0]
+DEFAULT_SEQUENCES = [{'Iters': DEFAULT_ITERS}]
 
-def main(playerName, numIters, size, debug, depth, probCutoff, train, load, save):
+def generateSequenceParams(sequence, options):
+   sequenceParams = {}
+   for (key, defaultValue) in options:
+      sequenceParams[key] = sequence[key] if key in sequence else defaultValue
+   return sequenceParams
+
+def main(sequences, playerNameArg, numItersArg, sizeArg, debugArg, depthArg,
+         probCutoffArg, trainArg, loadArg, saveArg):
    """Primary test harness."""
 
-   # set the board size
-   Model.Model.SIZE = size
+   for i, sequence in enumerate(sequences):
+      # setup parameters for sequence
+      params = generateSequenceParams(sequence, [
+         ('playerName', playerNameArg),
+         ('numIters', numItersArg),
+         ('size', sizeArg),
+         ('debug', debugArg),
+         ('depth', depthArg),
+         ('probCutoff', probCutoffArg),
+         ('train', trainArg),
+         ('load', loadArg),
+         ('save', saveArg),
+      ])
+      print "Running sequence %d: %s\n" % (i + 1, sequence)
+      print "Full parameters: %s\n" % params
 
-   if playerName == PLAYER_NAMES[0]:
-      # run the interactive player
-      p = Player.InteractivePlayer(debug=debug)
-      p.run(numIters=numIters)
-   elif playerName == PLAYER_NAMES[1]:
-      # run the baseline greedy player
-      p = Player.BaselineGreedyPlayer(debug=debug)
-      p.run(numIters=numIters, printStats=True, printAtCheckpoints=True)
-   elif playerName == PLAYER_NAMES[2]:
-      # run the baseline corner player
-      p = Player.BaselineCornerPlayer(debug=debug)
-      p.run(numIters=numIters, printStats=True, printAtCheckpoints=True)
-   elif playerName == PLAYER_NAMES[3]:
-      # run the baseline random player
-      p = Player.BaselineRandomPlayer(debug=debug)
-      p.run(numIters=numIters, printStats=True, printAtCheckpoints=True)
-   elif playerName == PLAYER_NAMES[4]:
-      # run the expectimax player
-      p = ExpectiMaxPlayer.ExpectiMaxPlayer(debug=debug, depth=depth,
-                                            probCutoff=probCutoff)
-      p.run(numIters=numIters, printStats=True, printAtCheckpoints=True)
-   elif playerName == PLAYER_NAMES[5]:
-      # run the RL player
-      p = QLPlayer.RLPlayer(debug=debug, train=train, load=load, save=save)
-      p.run(numIters=numIters, printStats=True, printAtCheckpoints=True)
+      Model.Model.SIZE = params['size']
+
+      if params['playerName'] == PLAYER_NAMES[0]:
+         # run the interactive player
+         p = Player.InteractivePlayer(debug=params['debug'])
+         p.run(numIters=params['numIters'])
+      elif params['playerName'] == PLAYER_NAMES[1]:
+         # run the baseline greedy player
+         p = Player.BaselineGreedyPlayer(debug=params['debug'])
+         p.run(numIters=params['numIters'], printStats=True,
+               printAtCheckpoints=True)
+      elif params['playerName'] == PLAYER_NAMES[2]:
+         # run the baseline corner player
+         p = Player.BaselineCornerPlayer(debug=params['debug'])
+         p.run(numIters=params['numIters'], printStats=True,
+               printAtCheckpoints=True)
+      elif params['playerName'] == PLAYER_NAMES[3]:
+         # run the baseline random player
+         p = Player.BaselineRandomPlayer(debug=params['debug'])
+         p.run(numIters=params['numIters'], printStats=True,
+               printAtCheckpoints=True)
+      elif params['playerName'] == PLAYER_NAMES[4]:
+         # run the expectimax player
+         p = ExpectiMaxPlayer.ExpectiMaxPlayer(debug=params['debug'],
+                                               depth=params['depth'],
+                                               probCutoff=params['probCutoff'])
+         p.run(numIters=params['numIters'], printStats=True,
+               printAtCheckpoints=True)
+      elif params['playerName'] == PLAYER_NAMES[5]:
+         # run the RL player
+         p = QLPlayer.RLPlayer(debug=params['debug'], train=params['train'],
+                               load=params['load'], save=params['save'])
+         p.run(numIters=params['numIters'], printStats=True,
+               printAtCheckpoints=True)
+
+      if i != len(sequences) - 1:
+         print "\n\n"
 
 if __name__ == '__main__':
    parser = argparse.ArgumentParser()
@@ -68,7 +103,15 @@ if __name__ == '__main__':
                        help='loads player weights from weights.pkl')
    parser.add_argument('--save', action='store_true',
                        help='saves player weights to weights.pkl')
+   parser.add_argument('--sequences',
+                       help='runs custom sequences from given yaml file')
    args = parser.parse_args()
 
-   main(args.player.upper(), int(args.numIters), int(args.size), args.debug,
-        int(args.depth), float(args.probCutoff), args.train, args.load, args.save)
+   sequences = DEFAULT_SEQUENCES
+   if args.sequences:
+      with open(args.sequences, 'r') as stream:
+         sequences = yaml.load(stream)
+
+   main(sequences, args.player.upper(), int(args.numIters), int(args.size),
+        args.debug, int(args.depth), float(args.probCutoff), args.train, args.load,
+        args.save)

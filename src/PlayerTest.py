@@ -25,7 +25,8 @@ class BaselineGreedyPlayerTest(unittest.TestCase):
 
    def testRun(self):
       """Check that it's performing as expected."""
-      (scores, maxTiles, numMoves) = self.p.run(numIters=NUM_ITERS, printStats=True)
+      (time, scores, maxTiles, numMoves) = self.p.run(numIters=NUM_ITERS,
+                                                      printStats=True)
       print ''
       self.assertEquals(len(scores), NUM_ITERS)
       self.assertEquals(len(maxTiles), NUM_ITERS)
@@ -46,7 +47,8 @@ class BaselineCornerPlayerTest(unittest.TestCase):
 
    def testRun(self):
       """Check that it's performing as expected."""
-      (scores, maxTiles, numMoves) = self.p.run(numIters=NUM_ITERS, printStats=True)
+      (time, scores, maxTiles, numMoves) = self.p.run(numIters=NUM_ITERS,
+                                                      printStats=True)
       print ''
       self.assertEquals(len(scores), NUM_ITERS)
       self.assertEquals(len(maxTiles), NUM_ITERS)
@@ -67,7 +69,8 @@ class BaselineRandomPlayerTest(unittest.TestCase):
 
    def testRun(self):
       """Check that it's performing as expected."""
-      (scores, maxTiles, numMoves) = self.p.run(numIters=NUM_ITERS, printStats=True)
+      (time, scores, maxTiles, numMoves) = self.p.run(numIters=NUM_ITERS,
+                                                      printStats=True)
       print ''
       self.assertEquals(len(scores), NUM_ITERS)
       self.assertEquals(len(maxTiles), NUM_ITERS)
@@ -88,7 +91,8 @@ class ExpectiMaxPlayerTest(unittest.TestCase):
 
    def testRun(self):
       """Check that it's performing as expected."""
-      (scores, maxTiles, numMoves) = self.p.run(numIters=NUM_ITERS, printStats=True)
+      (time, scores, maxTiles, numMoves) = self.p.run(numIters=NUM_ITERS,
+                                                      printStats=True)
       print ''
       self.assertEquals(len(scores), NUM_ITERS)
       self.assertEquals(len(maxTiles), NUM_ITERS)
@@ -109,7 +113,8 @@ class QLPlayerTest(unittest.TestCase):
 
    def testRun(self):
       """Check that it's performing as expected."""
-      (scores, maxTiles, numMoves) = self.p.run(numIters=NUM_ITERS, printStats=True)
+      (time, scores, maxTiles, numMoves) = self.p.run(numIters=NUM_ITERS,
+                                                      printStats=True)
       print ''
       self.assertEquals(len(scores), NUM_ITERS)
       self.assertEquals(len(maxTiles), NUM_ITERS)
