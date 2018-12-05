@@ -90,13 +90,13 @@ def hashString(s):
 
 def featureExtractor(state, action):
 	features = []
-	verticalFeatures = [["ver", action, j == 0 or j == 3]
+	verticalFeatures = [["ver", j]
                             for j in range(len(state[0]))]
 	horizontalFeatures = []
 	colapsableTilesFeatures = []
 
 	for i, row in enumerate(state):
-		horizontalFeatures.append(["hor", action, i == 0 or i == 3] + row)
+		horizontalFeatures.append(["hor", i] + row)
 		for j, tile in enumerate(row):
 			verticalFeatures[j].append(tile)
 
