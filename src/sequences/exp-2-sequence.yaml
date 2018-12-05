@@ -73,7 +73,7 @@
 - numIters: 1966080
   train: True
 - numIters: 100
-  train: 
+  train: False
 - numIters: 3932160
   train: True
 - numIters: 100
