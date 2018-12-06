@@ -14,71 +14,71 @@
   train: True
 - numIters: 100
   train: False
-- numIters: 120
+- numIters: 160
   train: True
 - numIters: 100
   train: False
-- numIters: 240
+- numIters: 320
   train: True
 - numIters: 100
   train: False
-- numIters: 480
+- numIters: 640
   train: True
 - numIters: 100
   train: False
-- numIters: 960
+- numIters: 1280
   train: True
 - numIters: 100
   train: False
-- numIters: 1920
+- numIters: 2560
   train: True
 - numIters: 100
   train: False
-- numIters: 3840
+- numIters: 5120
   train: True
 - numIters: 100
   train: False
-- numIters: 7680
+- numIters: 10240
   train: True
 - numIters: 100
   train: False
-- numIters: 15360
+- numIters: 20480
   train: True
 - numIters: 100
   train: False
-- numIters: 30720
+- numIters: 40960
   train: True
 - numIters: 100
   train: False
-- numIters: 61440
+- numIters: 81920
   train: True
 - numIters: 100
   train: False
-- numIters: 122880
+- numIters: 163840
   train: True
 - numIters: 100
   train: False
-- numIters: 245760
+- numIters: 327680
   train: True
 - numIters: 100
   train: False
-- numIters: 491520
+- numIters: 655360
   train: True
 - numIters: 100
   train: False
-- numIters: 983040
+- numIters: 1310720
   train: True
 - numIters: 100
   train: False
-- numIters: 1966080
+- numIters: 2621440
   train: True
 - numIters: 100
   train: False
-- numIters: 3932160
+- numIters: 5242880
   train: True
 - numIters: 100
   train: False
-- numIters: 7864320
+- numIters: 10485760
   train: True
 - numIters: 100
   train: False
