@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import argparse
+import time
 import yaml
 import ExpectiMaxPlayer
 import Model
@@ -24,6 +25,8 @@ def generateSequenceParams(sequence, options):
 def main(sequences, playerNameArg, numItersArg, sizeArg, debugArg, depthArg,
          probCutoffArg, trainArg, loadArg, saveArg):
    """Primary test harness."""
+
+   startTime = time.time()
 
    for i, sequence in enumerate(sequences):
       # setup parameters for sequence
@@ -75,6 +78,9 @@ def main(sequences, playerNameArg, numItersArg, sizeArg, debugArg, depthArg,
                                load=params['load'], save=params['save'])
          p.run(numIters=params['numIters'], printStats=True,
                printAtCheckpoints=True)
+
+      runTime = time.time() - startTime
+      print "\nTotal runtime after %d sequence(s): %.3f seconds" % (i + 1, runTime)
 
       if i != len(sequences) - 1:
          print "\n\n"
