@@ -1,0 +1,468 @@
+++ python -u Main.py --player ql --sequences sequences/exp-2-sequence.yaml --size 5
+Running sequence 1: {'train': True, 'numIters': 10}
+
+Full parameters: {'probCutoff': 1e-05, 'load': False, 'playerName': 'QL', 'depth': 3, 'train': True, 'numIters': 10, 'debug': False, 'save': False, 'size': 5}
+
+Total runs: 1, 0.437 seconds
+SCORES ::: Max: 3896, Min: 3896, Median: 3896, Average: 3896, Stdev: 0
+MAX TILES ::: Max: 256, Min: 256, Median: 256, Average: 256, Stdev: 0
+MAX TILES histogram ::: 256: 1
+MOVES ::: Max: 406, Min: 406, Median: 406, Average: 406, Stdev: 0
+
+Total runs: 10, 3.286 seconds
+SCORES ::: Max: 5788, Min: 1068, Median: 2350, Average: 2909, Stdev: 1410
+MAX TILES ::: Max: 512, Min: 64, Median: 128, Average: 198, Stdev: 122
+MAX TILES histogram ::: 64: 1, 128: 5, 256: 3, 512: 1
+MOVES ::: Max: 480, Min: 157, Median: 257, Average: 300, Stdev: 106
+
+Total runtime after 1 sequence(s): 3.286 seconds
+
+
+
+Running sequence 2: {'train': False, 'numIters': 100}
+
+Full parameters: {'probCutoff': 1e-05, 'load': False, 'playerName': 'QL', 'depth': 3, 'train': False, 'numIters': 100, 'debug': False, 'save': False, 'size': 5}
+
+Total runs: 1, 0.264 seconds
+SCORES ::: Max: 6748, Min: 6748, Median: 6748, Average: 6748, Stdev: 0
+MAX TILES ::: Max: 512, Min: 512, Median: 512, Average: 512, Stdev: 0
+MAX TILES histogram ::: 512: 1
+MOVES ::: Max: 511, Min: 511, Median: 511, Average: 511, Stdev: 0
+
+Total runs: 10, 1.927 seconds
+SCORES ::: Max: 9480, Min: 1684, Median: 4046, Average: 4530, Stdev: 2295
+MAX TILES ::: Max: 512, Min: 128, Median: 256, Average: 332, Stdev: 153
+MAX TILES histogram ::: 128: 2, 256: 4, 512: 4
+MOVES ::: Max: 755, Min: 214, Median: 388, Average: 400, Stdev: 155
+
+Total runs: 100, 17.519 seconds
+SCORES ::: Max: 9480, Min: 836, Median: 3590, Average: 3871, Stdev: 1731
+MAX TILES ::: Max: 512, Min: 64, Median: 256, Average: 275, Stdev: 134
+MAX TILES histogram ::: 64: 3, 128: 22, 256: 54, 512: 21
+MOVES ::: Max: 755, Min: 133, Median: 334, Average: 357, Stdev: 119
+
+Total runtime after 2 sequence(s): 20.806 seconds
+
+
+
+Running sequence 3: {'train': True, 'numIters': 20}
+
+Full parameters: {'probCutoff': 1e-05, 'load': False, 'playerName': 'QL', 'depth': 3, 'train': True, 'numIters': 20, 'debug': False, 'save': False, 'size': 5}
+
+Total runs: 1, 0.348 seconds
+SCORES ::: Max: 3400, Min: 3400, Median: 3400, Average: 3400, Stdev: 0
+MAX TILES ::: Max: 256, Min: 256, Median: 256, Average: 256, Stdev: 0
+MAX TILES histogram ::: 256: 1
+MOVES ::: Max: 327, Min: 327, Median: 327, Average: 327, Stdev: 0
+
+Total runs: 10, 4.188 seconds
+SCORES ::: Max: 7416, Min: 1776, Median: 3382, Average: 4020, Stdev: 1770
+MAX TILES ::: Max: 512, Min: 128, Median: 256, Average: 307, Stdev: 142
+MAX TILES histogram ::: 128: 2, 256: 5, 512: 3
+MOVES ::: Max: 605, Min: 216, Median: 333, Average: 372, Stdev: 125
+
+Total runs: 20, 7.921 seconds
+SCORES ::: Max: 7416, Min: 1776, Median: 3382, Average: 3746, Stdev: 1454
+MAX TILES ::: Max: 512, Min: 128, Median: 256, Average: 288, Stdev: 120
+MAX TILES histogram ::: 128: 3, 256: 13, 512: 4
+MOVES ::: Max: 605, Min: 216, Median: 330, Average: 349, Stdev: 102
+
+Total runtime after 3 sequence(s): 28.728 seconds
+
+
+
+Running sequence 4: {'train': False, 'numIters': 100}
+
+Full parameters: {'probCutoff': 1e-05, 'load': False, 'playerName': 'QL', 'depth': 3, 'train': False, 'numIters': 100, 'debug': False, 'save': False, 'size': 5}
+
+Total runs: 1, 0.250 seconds
+SCORES ::: Max: 6296, Min: 6296, Median: 6296, Average: 6296, Stdev: 0
+MAX TILES ::: Max: 512, Min: 512, Median: 512, Average: 512, Stdev: 0
+MAX TILES histogram ::: 512: 1
+MOVES ::: Max: 499, Min: 499, Median: 499, Average: 499, Stdev: 0
+
+Total runs: 10, 2.279 seconds
+SCORES ::: Max: 7320, Min: 3812, Median: 5392, Average: 5404, Stdev: 1074
+MAX TILES ::: Max: 512, Min: 256, Median: 512, Average: 409, Stdev: 125
+MAX TILES histogram ::: 256: 4, 512: 6
+MOVES ::: Max: 551, Min: 366, Median: 427, Average: 440, Stdev: 57
+
+Total runs: 100, 22.981 seconds
+SCORES ::: Max: 13860, Min: 1492, Median: 5392, Average: 5354, Stdev: 2457
+MAX TILES ::: Max: 1024, Min: 64, Median: 512, Average: 375, Stdev: 180
+MAX TILES histogram ::: 64: 1, 128: 15, 256: 33, 512: 49, 1024: 2
+MOVES ::: Max: 953, Min: 177, Median: 427, Average: 443, Stdev: 154
+
+Total runtime after 4 sequence(s): 51.710 seconds
+
+
+
+Running sequence 5: {'train': True, 'numIters': 40}
+
+Full parameters: {'probCutoff': 1e-05, 'load': False, 'playerName': 'QL', 'depth': 3, 'train': True, 'numIters': 40, 'debug': False, 'save': False, 'size': 5}
+
+Total runs: 1, 0.229 seconds
+SCORES ::: Max: 1784, Min: 1784, Median: 1784, Average: 1784, Stdev: 0
+MAX TILES ::: Max: 128, Min: 128, Median: 128, Average: 128, Stdev: 0
+MAX TILES histogram ::: 128: 1
+MOVES ::: Max: 202, Min: 202, Median: 202, Average: 202, Stdev: 0
+
+Total runs: 10, 3.274 seconds
+SCORES ::: Max: 4320, Min: 1512, Median: 2518, Average: 2765, Stdev: 1076
+MAX TILES ::: Max: 256, Min: 128, Median: 128, Average: 179, Stdev: 62
+MAX TILES histogram ::: 128: 6, 256: 4
+MOVES ::: Max: 441, Min: 187, Median: 270, Average: 291, Stdev: 90
+
+Total runs: 40, 16.411 seconds
+SCORES ::: Max: 8784, Min: 1464, Median: 3464, Average: 3848, Stdev: 1870
+MAX TILES ::: Max: 512, Min: 64, Median: 256, Average: 270, Stdev: 133
+MAX TILES histogram ::: 64: 1, 128: 10, 256: 21, 512: 8
+MOVES ::: Max: 710, Min: 187, Median: 327, Average: 355, Stdev: 126
+
+Total runtime after 5 sequence(s): 68.122 seconds
+
+
+
+Running sequence 6: {'train': False, 'numIters': 100}
+
+Full parameters: {'probCutoff': 1e-05, 'load': False, 'playerName': 'QL', 'depth': 3, 'train': False, 'numIters': 100, 'debug': False, 'save': False, 'size': 5}
+
+Total runs: 1, 0.147 seconds
+SCORES ::: Max: 2548, Min: 2548, Median: 2548, Average: 2548, Stdev: 0
+MAX TILES ::: Max: 128, Min: 128, Median: 128, Average: 128, Stdev: 0
+MAX TILES histogram ::: 128: 1
+MOVES ::: Max: 266, Min: 266, Median: 266, Average: 266, Stdev: 0
+
+Total runs: 10, 2.528 seconds
+SCORES ::: Max: 11156, Min: 2548, Median: 6420, Average: 6158, Stdev: 2334
+MAX TILES ::: Max: 512, Min: 128, Median: 512, Average: 396, Stdev: 145
+MAX TILES histogram ::: 128: 1, 256: 3, 512: 6
+MOVES ::: Max: 776, Min: 266, Median: 507, Average: 486, Stdev: 140
+
+Total runs: 100, 25.990 seconds
+SCORES ::: Max: 15232, Min: 1648, Median: 6274, Average: 6583, Stdev: 2957
+MAX TILES ::: Max: 1024, Min: 128, Median: 512, Average: 468, Stdev: 241
+MAX TILES histogram ::: 128: 4, 256: 35, 512: 49, 1024: 12
+MOVES ::: Max: 962, Min: 196, Median: 497, Average: 505, Stdev: 163
+
+Total runtime after 6 sequence(s): 94.113 seconds
+
+
+
+Running sequence 7: {'train': True, 'numIters': 80}
+
+Full parameters: {'probCutoff': 1e-05, 'load': False, 'playerName': 'QL', 'depth': 3, 'train': True, 'numIters': 80, 'debug': False, 'save': False, 'size': 5}
+
+Total runs: 1, 0.862 seconds
+SCORES ::: Max: 7476, Min: 7476, Median: 7476, Average: 7476, Stdev: 0
+MAX TILES ::: Max: 512, Min: 512, Median: 512, Average: 512, Stdev: 0
+MAX TILES histogram ::: 512: 1
+MOVES ::: Max: 583, Min: 583, Median: 583, Average: 583, Stdev: 0
+
+Total runs: 10, 5.291 seconds
+SCORES ::: Max: 7688, Min: 3400, Median: 4450, Average: 5189, Stdev: 1672
+MAX TILES ::: Max: 512, Min: 256, Median: 256, Average: 358, Stdev: 125
+MAX TILES histogram ::: 256: 6, 512: 4
+MOVES ::: Max: 632, Min: 322, Median: 411, Average: 446, Stdev: 109
+
+Total runs: 80, 43.683 seconds
+SCORES ::: Max: 12900, Min: 1364, Median: 5732, Average: 5850, Stdev: 2186
+MAX TILES ::: Max: 1024, Min: 64, Median: 512, Average: 423, Stdev: 191
+MAX TILES histogram ::: 64: 1, 128: 2, 256: 31, 512: 42, 1024: 4
+MOVES ::: Max: 880, Min: 187, Median: 460, Average: 469, Stdev: 128
+
+Total runtime after 7 sequence(s): 137.797 seconds
+
+
+
+Running sequence 8: {'train': False, 'numIters': 100}
+
+Full parameters: {'probCutoff': 1e-05, 'load': False, 'playerName': 'QL', 'depth': 3, 'train': False, 'numIters': 100, 'debug': False, 'save': False, 'size': 5}
+
+Total runs: 1, 0.267 seconds
+SCORES ::: Max: 5964, Min: 5964, Median: 5964, Average: 5964, Stdev: 0
+MAX TILES ::: Max: 256, Min: 256, Median: 256, Average: 256, Stdev: 0
+MAX TILES histogram ::: 256: 1
+MOVES ::: Max: 495, Min: 495, Median: 495, Average: 495, Stdev: 0
+
+Total runs: 10, 3.153 seconds
+SCORES ::: Max: 16316, Min: 3556, Median: 6390, Average: 8004, Stdev: 4541
+MAX TILES ::: Max: 1024, Min: 256, Median: 384, Average: 537, Stdev: 332
+MAX TILES histogram ::: 256: 5, 512: 2, 1024: 3
+MOVES ::: Max: 1058, Min: 330, Median: 502, Average: 589, Stdev: 250
+
+Total runs: 100, 34.587 seconds
+SCORES ::: Max: 16796, Min: 2480, Median: 8006, Average: 8982, Stdev: 3462
+MAX TILES ::: Max: 1024, Min: 128, Median: 512, Average: 605, Stdev: 257
+MAX TILES histogram ::: 128: 1, 256: 12, 512: 62, 1024: 25
+MOVES ::: Max: 1094, Min: 262, Median: 609, Average: 642, Stdev: 188
+
+Total runtime after 8 sequence(s): 172.385 seconds
+
+
+
+Running sequence 9: {'train': True, 'numIters': 160}
+
+Full parameters: {'probCutoff': 1e-05, 'load': False, 'playerName': 'QL', 'depth': 3, 'train': True, 'numIters': 160, 'debug': False, 'save': False, 'size': 5}
+
+Total runs: 1, 0.480 seconds
+SCORES ::: Max: 4236, Min: 4236, Median: 4236, Average: 4236, Stdev: 0
+MAX TILES ::: Max: 256, Min: 256, Median: 256, Average: 256, Stdev: 0
+MAX TILES histogram ::: 256: 1
+MOVES ::: Max: 384, Min: 384, Median: 384, Average: 384, Stdev: 0
+
+Total runs: 10, 7.627 seconds
+SCORES ::: Max: 14908, Min: 4236, Median: 7526, Average: 8393, Stdev: 3491
+MAX TILES ::: Max: 1024, Min: 256, Median: 512, Average: 563, Stdev: 250
+MAX TILES histogram ::: 256: 2, 512: 6, 1024: 2
+MOVES ::: Max: 938, Min: 384, Median: 570, Average: 615, Stdev: 177
+
+Total runs: 100, 77.022 seconds
+SCORES ::: Max: 16668, Min: 3444, Median: 8458, Average: 9182, Stdev: 3302
+MAX TILES ::: Max: 1024, Min: 256, Median: 512, Average: 629, Stdev: 279
+MAX TILES histogram ::: 256: 16, 512: 53, 1024: 31
+MOVES ::: Max: 1065, Min: 311, Median: 630, Average: 657, Stdev: 176
+
+Total runs: 160, 137.190 seconds
+SCORES ::: Max: 22452, Min: 3444, Median: 9566, Average: 10615, Stdev: 4032
+MAX TILES ::: Max: 1024, Min: 256, Median: 512, Average: 712, Stdev: 288
+MAX TILES histogram ::: 256: 17, 512: 72, 1024: 71
+MOVES ::: Max: 1439, Min: 311, Median: 707, Average: 733, Stdev: 215
+
+Total runtime after 9 sequence(s): 309.576 seconds
+
+
+
+Running sequence 10: {'train': False, 'numIters': 100}
+
+Full parameters: {'probCutoff': 1e-05, 'load': False, 'playerName': 'QL', 'depth': 3, 'train': False, 'numIters': 100, 'debug': False, 'save': False, 'size': 5}
+
+Total runs: 1, 0.454 seconds
+SCORES ::: Max: 13148, Min: 13148, Median: 13148, Average: 13148, Stdev: 0
+MAX TILES ::: Max: 1024, Min: 1024, Median: 1024, Average: 1024, Stdev: 0
+MAX TILES histogram ::: 1024: 1
+MOVES ::: Max: 870, Min: 870, Median: 870, Average: 870, Stdev: 0
+
+Total runs: 10, 5.266 seconds
+SCORES ::: Max: 26520, Min: 6364, Median: 14822, Average: 15758, Stdev: 5763
+MAX TILES ::: Max: 2048, Min: 512, Median: 1024, Average: 1126, Stdev: 501
+MAX TILES histogram ::: 512: 2, 1024: 6, 2048: 2
+MOVES ::: Max: 1546, Min: 458, Median: 953, Average: 993, Stdev: 289
+
+Total runs: 100, 55.179 seconds
+SCORES ::: Max: 37620, Min: 5704, Median: 15928, Average: 16448, Stdev: 6143
+MAX TILES ::: Max: 2048, Min: 256, Median: 1024, Average: 1047, Stdev: 474
+MAX TILES histogram ::: 256: 1, 512: 24, 1024: 60, 2048: 15
+MOVES ::: Max: 2098, Min: 458, Median: 1004, Average: 1037, Stdev: 297
+
+Total runtime after 10 sequence(s): 364.757 seconds
+
+
+
+Running sequence 11: {'train': True, 'numIters': 320}
+
+Full parameters: {'probCutoff': 1e-05, 'load': False, 'playerName': 'QL', 'depth': 3, 'train': True, 'numIters': 320, 'debug': False, 'save': False, 'size': 5}
+
+Total runs: 1, 1.189 seconds
+SCORES ::: Max: 16372, Min: 16372, Median: 16372, Average: 16372, Stdev: 0
+MAX TILES ::: Max: 1024, Min: 1024, Median: 1024, Average: 1024, Stdev: 0
+MAX TILES histogram ::: 1024: 1
+MOVES ::: Max: 1021, Min: 1021, Median: 1021, Average: 1021, Stdev: 0
+
+Total runs: 10, 10.977 seconds
+SCORES ::: Max: 18748, Min: 7320, Median: 15084, Average: 13964, Stdev: 3712
+MAX TILES ::: Max: 1024, Min: 512, Median: 1024, Average: 921, Stdev: 204
+MAX TILES histogram ::: 512: 2, 1024: 8
+MOVES ::: Max: 1171, Min: 549, Median: 959, Average: 902, Stdev: 199
+
+Total runs: 100, 120.858 seconds
+SCORES ::: Max: 35728, Min: 5744, Median: 16212, Average: 16021, Stdev: 5596
+MAX TILES ::: Max: 2048, Min: 256, Median: 1024, Average: 1011, Stdev: 406
+MAX TILES histogram ::: 256: 1, 512: 21, 1024: 68, 2048: 10
+MOVES ::: Max: 1944, Min: 453, Median: 1018, Average: 1016, Stdev: 280
+
+Total runs: 320, 473.196 seconds
+SCORES ::: Max: 64144, Min: 5744, Median: 19064, Average: 20809, Stdev: 8585
+MAX TILES ::: Max: 4096, Min: 256, Median: 1024, Average: 1280, Stdev: 594
+MAX TILES histogram ::: 256: 1, 512: 38, 1024: 187, 2048: 91, 4096: 3
+MOVES ::: Max: 3228, Min: 453, Median: 1199, Average: 1248, Stdev: 406
+
+Total runtime after 11 sequence(s): 837.955 seconds
+
+
+
+Running sequence 12: {'train': False, 'numIters': 100}
+
+Full parameters: {'probCutoff': 1e-05, 'load': False, 'playerName': 'QL', 'depth': 3, 'train': False, 'numIters': 100, 'debug': False, 'save': False, 'size': 5}
+
+Total runs: 1, 1.226 seconds
+SCORES ::: Max: 41196, Min: 41196, Median: 41196, Average: 41196, Stdev: 0
+MAX TILES ::: Max: 2048, Min: 2048, Median: 2048, Average: 2048, Stdev: 0
+MAX TILES histogram ::: 2048: 1
+MOVES ::: Max: 2257, Min: 2257, Median: 2257, Average: 2257, Stdev: 0
+
+Total runs: 10, 9.987 seconds
+SCORES ::: Max: 42340, Min: 18700, Median: 37866, Average: 33084, Stdev: 9214
+MAX TILES ::: Max: 2048, Min: 1024, Median: 2048, Average: 1843, Stdev: 409
+MAX TILES histogram ::: 1024: 2, 2048: 8
+MOVES ::: Max: 2391, Min: 1141, Median: 2103, Average: 1866, Stdev: 475
+
+Total runs: 100, 96.040 seconds
+SCORES ::: Max: 78932, Min: 10388, Median: 30900, Average: 31984, Stdev: 12690
+MAX TILES ::: Max: 4096, Min: 512, Median: 2048, Average: 1894, Stdev: 950
+MAX TILES histogram ::: 512: 2, 1024: 36, 2048: 50, 4096: 12
+MOVES ::: Max: 3781, Min: 777, Median: 1755, Average: 1782, Stdev: 552
+
+Total runtime after 12 sequence(s): 933.995 seconds
+
+
+
+Running sequence 13: {'train': True, 'numIters': 640}
+
+Full parameters: {'probCutoff': 1e-05, 'load': False, 'playerName': 'QL', 'depth': 3, 'train': True, 'numIters': 640, 'debug': False, 'save': False, 'size': 5}
+
+Total runs: 1, 1.718 seconds
+SCORES ::: Max: 23716, Min: 23716, Median: 23716, Average: 23716, Stdev: 0
+MAX TILES ::: Max: 1024, Min: 1024, Median: 1024, Average: 1024, Stdev: 0
+MAX TILES histogram ::: 1024: 1
+MOVES ::: Max: 1431, Min: 1431, Median: 1431, Average: 1431, Stdev: 0
+
+Total runs: 10, 18.143 seconds
+SCORES ::: Max: 45388, Min: 18836, Median: 22566, Average: 26257, Stdev: 8262
+MAX TILES ::: Max: 2048, Min: 1024, Median: 1024, Average: 1433, Stdev: 501
+MAX TILES histogram ::: 1024: 6, 2048: 4
+MOVES ::: Max: 2458, Min: 1196, Median: 1380, Average: 1528, Stdev: 386
+
+Total runs: 100, 201.313 seconds
+SCORES ::: Max: 59892, Min: 10296, Median: 29150, Average: 30018, Stdev: 8867
+MAX TILES ::: Max: 4096, Min: 512, Median: 2048, Average: 1766, Stdev: 636
+MAX TILES histogram ::: 512: 1, 1024: 32, 2048: 64, 4096: 3
+MOVES ::: Max: 2959, Min: 727, Median: 1637, Average: 1695, Stdev: 406
+
+Total runs: 640, 1634.965 seconds
+SCORES ::: Max: 87924, Min: 7948, Median: 38458, Average: 40049, Stdev: 14540
+MAX TILES ::: Max: 4096, Min: 512, Median: 2048, Average: 2264, Stdev: 941
+MAX TILES histogram ::: 512: 5, 1024: 91, 2048: 427, 4096: 117
+MOVES ::: Max: 4338, Min: 588, Median: 2126, Average: 2155, Stdev: 645
+
+Total runtime after 13 sequence(s): 2568.961 seconds
+
+
+
+Running sequence 14: {'train': False, 'numIters': 100}
+
+Full parameters: {'probCutoff': 1e-05, 'load': False, 'playerName': 'QL', 'depth': 3, 'train': False, 'numIters': 100, 'debug': False, 'save': False, 'size': 5}
+
+Total runs: 1, 2.149 seconds
+SCORES ::: Max: 81644, Min: 81644, Median: 81644, Average: 81644, Stdev: 0
+MAX TILES ::: Max: 4096, Min: 4096, Median: 4096, Average: 4096, Stdev: 0
+MAX TILES histogram ::: 4096: 1
+MOVES ::: Max: 4005, Min: 4005, Median: 4005, Average: 4005, Stdev: 0
+
+Total runs: 10, 17.040 seconds
+SCORES ::: Max: 91064, Min: 26120, Median: 56030, Average: 60841, Stdev: 21531
+MAX TILES ::: Max: 4096, Min: 1024, Median: 3072, Average: 2969, Stdev: 1163
+MAX TILES histogram ::: 1024: 1, 2048: 4, 4096: 5
+MOVES ::: Max: 4497, Min: 1601, Median: 2959, Average: 3163, Stdev: 930
+
+Total runs: 100, 148.522 seconds
+SCORES ::: Max: 102500, Min: 20532, Median: 48868, Average: 53178, Stdev: 18859
+MAX TILES ::: Max: 8192, Min: 1024, Median: 2048, Average: 2887, Stdev: 1257
+MAX TILES histogram ::: 1024: 10, 2048: 46, 4096: 43, 8192: 1
+MOVES ::: Max: 4534, Min: 1318, Median: 2604, Average: 2764, Stdev: 804
+
+Total runtime after 14 sequence(s): 2717.485 seconds
+
+
+
+Running sequence 15: {'train': True, 'numIters': 1280}
+
+Full parameters: {'probCutoff': 1e-05, 'load': False, 'playerName': 'QL', 'depth': 3, 'train': True, 'numIters': 1280, 'debug': False, 'save': False, 'size': 5}
+
+Total runs: 1, 1.767 seconds
+SCORES ::: Max: 28364, Min: 28364, Median: 28364, Average: 28364, Stdev: 0
+MAX TILES ::: Max: 2048, Min: 2048, Median: 2048, Average: 2048, Stdev: 0
+MAX TILES histogram ::: 2048: 1
+MOVES ::: Max: 1545, Min: 1545, Median: 1545, Average: 1545, Stdev: 0
+
+Total runs: 10, 30.447 seconds
+SCORES ::: Max: 64808, Min: 28364, Median: 49992, Average: 49618, Stdev: 10947
+MAX TILES ::: Max: 4096, Min: 2048, Median: 2048, Average: 2662, Stdev: 938
+MAX TILES histogram ::: 2048: 7, 4096: 3
+MOVES ::: Max: 3211, Min: 1545, Median: 2675, Average: 2571, Stdev: 476
+
+Total runs: 100, 333.146 seconds
+SCORES ::: Max: 110704, Min: 17240, Median: 52938, Average: 55128, Stdev: 17446
+MAX TILES ::: Max: 8192, Min: 1024, Median: 4096, Average: 3123, Stdev: 1179
+MAX TILES histogram ::: 1024: 3, 2048: 45, 4096: 51, 8192: 1
+MOVES ::: Max: 4712, Min: 1105, Median: 2718, Average: 2810, Stdev: 738
+
+Total runs: 1000, 3895.576 seconds
+SCORES ::: Max: 160732, Min: 15080, Median: 64318, Average: 65667, Stdev: 24188
+MAX TILES ::: Max: 8192, Min: 1024, Median: 4096, Average: 3482, Stdev: 1511
+MAX TILES histogram ::: 1024: 31, 2048: 357, 4096: 560, 8192: 52
+MOVES ::: Max: 7030, Min: 975, Median: 3194, Average: 3280, Stdev: 1004
+
+Total runs: 1280, 5201.124 seconds
+SCORES ::: Max: 262468, Min: 15080, Median: 68282, Average: 69147, Stdev: 26670
+MAX TILES ::: Max: 16384, Min: 1024, Median: 4096, Average: 3660, Stdev: 1682
+MAX TILES histogram ::: 1024: 34, 2048: 421, 4096: 727, 8192: 97, 16384: 1
+MOVES ::: Max: 10223, Min: 975, Median: 3376, Average: 3426, Stdev: 1092
+
+Total runtime after 15 sequence(s): 7918.611 seconds
+
+
+
+Running sequence 16: {'train': False, 'numIters': 100}
+
+Full parameters: {'probCutoff': 1e-05, 'load': False, 'playerName': 'QL', 'depth': 3, 'train': False, 'numIters': 100, 'debug': False, 'save': False, 'size': 5}
+
+Total runs: 1, 1.517 seconds
+SCORES ::: Max: 51804, Min: 51804, Median: 51804, Average: 51804, Stdev: 0
+MAX TILES ::: Max: 2048, Min: 2048, Median: 2048, Average: 2048, Stdev: 0
+MAX TILES histogram ::: 2048: 1
+MOVES ::: Max: 2862, Min: 2862, Median: 2862, Average: 2862, Stdev: 0
+
+Total runs: 10, 20.057 seconds
+SCORES ::: Max: 120824, Min: 38864, Median: 71694, Average: 74188, Stdev: 29009
+MAX TILES ::: Max: 8192, Min: 2048, Median: 3072, Average: 3481, Stdev: 1843
+MAX TILES histogram ::: 2048: 5, 4096: 4, 8192: 1
+MOVES ::: Max: 5350, Min: 2160, Median: 3592, Average: 3688, Stdev: 1175
+
+Total runs: 100, 233.119 seconds
+SCORES ::: Max: 170284, Min: 22424, Median: 87894, Average: 88660, Stdev: 31105
+MAX TILES ::: Max: 8192, Min: 1024, Median: 4096, Average: 4352, Stdev: 1928
+MAX TILES histogram ::: 1024: 1, 2048: 20, 4096: 62, 8192: 17
+MOVES ::: Max: 7566, Min: 1440, Median: 4359, Average: 4290, Stdev: 1251
+
+Total runtime after 16 sequence(s): 8151.732 seconds
+
+
+
+Running sequence 17: {'train': True, 'numIters': 2560}
+
+Full parameters: {'probCutoff': 1e-05, 'load': False, 'playerName': 'QL', 'depth': 3, 'train': True, 'numIters': 2560, 'debug': False, 'save': False, 'size': 5}
+
+Total runs: 1, 5.211 seconds
+SCORES ::: Max: 91392, Min: 91392, Median: 91392, Average: 91392, Stdev: 0
+MAX TILES ::: Max: 4096, Min: 4096, Median: 4096, Average: 4096, Stdev: 0
+MAX TILES histogram ::: 4096: 1
+MOVES ::: Max: 4505, Min: 4505, Median: 4505, Average: 4505, Stdev: 0
+
+Total runs: 10, 40.987 seconds
+SCORES ::: Max: 143916, Min: 39316, Median: 70964, Average: 71606, Stdev: 29432
+MAX TILES ::: Max: 8192, Min: 2048, Median: 4096, Average: 3891, Stdev: 1701
+MAX TILES histogram ::: 2048: 3, 4096: 6, 8192: 1
+MOVES ::: Max: 6455, Min: 2213, Median: 3507, Average: 3541, Stdev: 1204
+
+Total runs: 100, 483.767 seconds
+SCORES ::: Max: 172132, Min: 24720, Median: 85150, Average: 83697, Stdev: 29426
+MAX TILES ::: Max: 8192, Min: 1024, Median: 4096, Average: 4270, Stdev: 1916
+MAX TILES histogram ::: 1024: 1, 2048: 22, 4096: 61, 8192: 16
+MOVES ::: Max: 7505, Min: 1573, Median: 4195, Average: 4058, Stdev: 1178
+
+./runTrials.sh: line 8: 14351 Segmentation fault      python -u Main.py --player ql --sequences ${SEQUENCES} --size ${SIZE}
+
+real	180m39.985s
+user	180m27.804s
+sys	0m12.616s
