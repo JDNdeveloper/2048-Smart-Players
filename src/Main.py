@@ -2,7 +2,7 @@
 
 import argparse
 import time
-import yaml
+#import yaml
 import ExpectiMaxPlayer
 import Model
 import Player

@@ -1,5 +1,6 @@
 #include <cmath>
 #include <sstream>
+#include <memory.h>
 #include "ExpectiMaxPlayer.h"
 
 /* ExpectiMaxPlayer interface */
@@ -47,10 +48,7 @@ Board::Board(int sizeArg) {
    length = size * size;
 
    // setup the board
-   boardByteArray = (char*) malloc(length * sizeof(char));
-   for (int i = 0; i < length; i++) {
-      boardByteArray[i] = 0;
-   }
+   boardByteArray = (char*) calloc(length, sizeof(char));
 }
 
 Board::Board(const Board& oldBoard) {
@@ -62,9 +60,7 @@ Board::Board(const Board& oldBoard) {
    // copy the board contents
    boardByteArray = (char*) malloc(length * sizeof(char));
    char* oldBoardByteArray = oldBoard.boardByteArray;
-   for (int i = 0; i < length; i++) {
-      boardByteArray[i] = oldBoardByteArray[i];
-   }
+   memmove(boardByteArray, oldBoardByteArray, length*sizeof(char));
 }
 
 Board::~Board() {
@@ -119,137 +115,81 @@ int Board::getAdjacentTiles(){
    return numAdj;
 }
 
-
-int Board::getTopLeftMonotonicity() {
-   int monCntr = 0;
-   int boardSize = getSize();
-   int start = 0;
-   int end = boardSize - 1;
-   for (int j = 0; j < boardSize; j++){
-      if (j%2 == 0){
-         for (int i = 0; i<boardSize-1; i++){
-            if (getPos(start+i, start+j) < getPos(start+i+1, start+j)){
-               monCntr += 5;
-            }
-         }
-      } else {
-         for (int i = 0; i<boardSize-1; i++){
-            if (getPos(start+i, start+j) > getPos(start+i+1, start+j)){
-               monCntr += 5;
-            }
-         }
+bool Board::maxTilePenalty(){
+   int maxTileCount = 1;
+   int maxTile = getMaxTile();
+   for (int i=0; i<getSize(); i++){ 
+      for (int j=0; j<getSize(); j++){
+         if (getPos(i, j) == maxTile) maxTileCount++;
       }
    }
-   for (int i = 0; i<boardSize-1; i++){
-      if (i%2==0){ //encourage zigzag
-         if (getPos(end, start+i) < getPos(end, start+i+1)){
-            monCntr += 3;
-         }
-      } else {
-         if (getPos(start, start+i) < getPos(start, start+i+1)){
-            monCntr += 3;
-         }
-      }
+   return maxTileCount > 1;
+}
+
+bool Board::isMonotonicIncreasingCol(int i){
+   for (int j = 0; j < getSize()-1; j++){
+      if (getPos(j, i) > getPos(j+1, i)) return false;
+   }
+   return true;
+}
+
+bool Board::isMonotonicDecreasingCol(int i){
+   for (int j = 0; j < getSize()-1; j++){
+      if (getPos(j, i) < getPos(j+1, i)) return false;
+   }
+   return true;
+}
+
+bool Board::isMonotonicIncreasingRow(int i){
+   for (int j = 0; j < getSize()-1; j++){
+      if (getPos(i, j) < getPos(i, j+1)) return false;
+   }
+   return true;
+}
+
+bool Board::isMonotonicDecreasingRow(int i){
+   for (int j = 0; j < getSize()-1; j++){
+      if (getPos(i, j) > getPos(i, j+1)) return false;
+   }
+   return true;
+}
+
+
+int Board::isMonotonicRows(){
+   int monCntr = 0;
+   for (int i = 0; i < getSize(); i++){
+      monCntr += isMonotonicIncreasingRow(i) ? 0: 2;
    }
    return monCntr;
 }
 
-int Board::getTopRightMonotonicity() {
-   int monCntr = 0;
-   int boardSize = getSize();
-   int start = 0;
-   int end = boardSize - 1;
-   for (int j = 0; j < boardSize; j++){
-      if (j%2 == 0){
-         for (int i = 0; i<boardSize-1; i++){
-            if (getPos(start+i, end+j) < getPos(start+i+1, end+j)){
-               monCntr += 5;
-            }
-         }
-      } else {
-         for (int i = 0; i<boardSize-1; i++){
-            if (getPos(start+i, end+j) > getPos(start+i+1, end+j)){
-               monCntr += 5;
-            }
-         }
-      }
+int Board::getTopLeftMonotonicity(){
+   int monCntr, start, end, boardSize;
+   boardSize = getSize();
+   end = boardSize - 1;
+   start = monCntr = 0;
+   for(int i=0; i<boardSize; i++){
+      if (i%2==0) monCntr += isMonotonicDecreasingCol(i) ? 0:2;
+      else monCntr += isMonotonicIncreasingCol(i) ? 0:2;
    }
-   for (int i = 0; i<boardSize-1; i++){
-      if (i%2==0){
-         if (getPos(end, end+i) < getPos(end, end+i+1)){
-            monCntr += 5;
-         }
-      } else {
-         if (getPos(start, start+i) < getPos(start, start+i+1)){
-            monCntr += 5;
-         }
-      }
-   }
-   return monCntr;
 }
 
-
-/*int Board::getTopRightMonotonicity(){
-   int monCntr = 0;
-   int boardSize = getSize();
-   int start = 0;
-   int end = boardSize - 1;
-   for (int j = 0; j<boardSize-1; j++){
-      for (int i = 0; i<boardSize-1; i++){
-         if (getPos(start+j, end-i) < getPos(start+j, end-i-1)){
-            monCntr += boardSize - i;
-         }
+int Board::getSnakeBonus(){
+   int start=0;
+   int snakeBonus = 0;
+   if (getPos(start, start) > getPos(start, start+1)){
+      for (int i=0; i<getSize()-1; i++){
+         if(i%2==0 && getPos(start, start+i) > getPos(start, start+i+1)) snakeBonus++;
+         else if(i%2==1 && getPos(start, start+i) < getPos(start, start+i+1)) snakeBonus++;
+      }
+   } else {
+      for (int i=0; i<getSize()-1; i++){
+         if(i%2==0 && getPos(start, start+i) < getPos(start, start+i+1)) snakeBonus++;
+         else if(i%2==1 && getPos(start, start+i) > getPos(start, start+i+1)) snakeBonus++;
       }
    }
-   for (int i = 0; i<boardSize-1; i++){
-      if (getPos(start+i, end) < getPos(end+i+1, start)){
-         monCntr += boardSize - i;
-      }
-   }
-   return monCntr;
-}*/
-
-int Board::getBotLeftMonotonicity(){
-   int monCntr = 0;
-   int boardSize = getSize();
-   int start = 0;
-   int end = boardSize - 1;
-   for (int j = 0; j<boardSize-1; j++){
-      for (int i = 0; i<boardSize-1; i++){
-         if (getPos(end-j, start+i) < getPos(end-j, start+i+1)){
-            monCntr += boardSize - i;
-         }
-      }
-   }
-   /*
-   for (int i = 0; i<boardSize-1; i++){
-      if (getPos(end-i, start) < getPos(end-i-1, start)){
-         monCntr += boardSize - i;
-      }
-   }*/
-   return monCntr;
 }
 
-int Board::getBotRightMonotonicity(){
-   int monCntr = 0;
-   int boardSize = getSize();
-   int start = 0;
-   int end = boardSize - 1;
-   for (int j = 0; j<boardSize-1; j++){
-      for (int i = 0; i<boardSize-1; i++){
-         if (getPos(end-j, end-i) < getPos(end-j, end-i-1)){
-            monCntr += boardSize - i;
-         }
-      }
-   }
-   /*
-   for (int i = 0; i<boardSize-1; i++){
-      if (getPos(end-i, end) < getPos(end-i-1, end)){
-         monCntr += boardSize - i;
-      }
-   }*/
-   return monCntr;
-}
 
 int Board::getTileSum() {
    int score = 0;
@@ -452,30 +392,16 @@ float getHeuristicScore(Board* board) {
    bool botRight = (maxTile == board->getPos(end, end));
    bool maxTileInCorner = topLeft; // || topRight || botLeft || botRight;
    int numAdjacent = board->getAdjacentTiles();
-   int monCntr, zigzagCntr;
-   monCntr = zigzagCntr = 0; //proxy for monotonicity of row and col with Max Val
-   if (topLeft) {
-       monCntr = board->getTopLeftMonotonicity();
-       //zigzagCntr = board->getTopLeftZigZag();
-   }
-   /*
-   if (topRight) {
-       monCntr = board->getTopRightMonotonicity();
-       //zigzagCntr = board->getTopRightZigZag();
-   }
-   if (botLeft) {
-       monCntr = board->getBotLeftMonotonicity();
-       //zigzagCntr = board->getBotLeftZigZag();
-   }
-   if (botRight) {
-       monCntr = board->getBotRightMonotonicity();
-       //zigzagCntr = board->getBotRightZigZag();
-   }*/
+   int monCntr = board->isMonotonicRows();
+   if (topLeft) monCntr += board->getTopLeftMonotonicity();
+   int snakeBonus = board->getSnakeBonus();
 
    return (-10.0 * monCntr +
-           10.0 * openSpaces +
-           10.0 * maxTileInCorner*maxTile +
-           10.0 * numAdjacent);
+           -100.0 * board->maxTilePenalty() + 
+           7.0 * openSpaces +
+           5.0 * snakeBonus +
+           1000.0 * maxTileInCorner+
+           15.0 * numAdjacent);
 }
 
 Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
@@ -494,8 +420,8 @@ Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
 #ifdef __linux__
    // cacheLock.unlock();
 #endif
-   if (depth == 0 || prob < probCutoff) {
-      int heuristicScore = getHeuristicScore(board);
+   int heuristicScore = getHeuristicScore(board);
+   if (depth == 0 || prob*heuristicScore < probCutoff*500) {
 #ifdef __linux__
       // cacheLock.lock();
 #endif

@@ -80,6 +80,13 @@ class Board {
    int getTileSum();
    int getMaxTile();
    void setScore(int scoreArg) { score = scoreArg; };
+   bool isMonotonicIncreasingCol(int i);
+   bool isMonotonicDecreasingCol(int i);
+   bool isMonotonicIncreasingRow(int i);
+   bool isMonotonicDecreasingRow(int i);
+   int isMonotonicRows();
+   bool maxTilePenalty();
+   int getSnakeBonus();
    int getTopLeftMonotonicity();
    int getTopRightMonotonicity();
    int getBotLeftMonotonicity();
