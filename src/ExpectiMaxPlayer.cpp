@@ -408,14 +408,15 @@ float getHeuristicScore(Board* board) {
    if (topLeft) monCntr += board->getTopLeftMonotonicity();
    int snakeBonus = board->getSnakeBonus();
 
-   float weights[5] = {-5.0, 10.0, 3.0, 100000.0, 10.0};
-   int phi[5] = {monCntr, openSpaces, snakeBonus, 1*maxTileInCorner, numAdjacent};
+   float weights[5] = {-10.0, 10.0, 10.0, 100.0, 10.0};
+   int phi[5] = {monCntr, openSpaces, snakeBonus, maxTile*maxTileInCorner, numAdjacent};
    int numFeatures = sizeof(phi)/sizeof(int);
    double score = 0;
    for (int i=0; i<numFeatures; i++){
       score += (double)(weights[i] * phi[i]);
    }
    if(board->maxTilePenalty()) score /= 2;
+   if(score < 0) score = 0;
    return score;
 }
 
