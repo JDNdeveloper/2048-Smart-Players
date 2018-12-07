@@ -1,5 +1,6 @@
 #include <cmath>
 #include <sstream>
+#include <iostream>
 #include <memory.h>
 #include "ExpectiMaxPlayer.h"
 
@@ -171,6 +172,17 @@ int Board::getTopLeftMonotonicity(){
    for(int i=0; i<boardSize; i++){
       if (i%2==0) monCntr += isMonotonicDecreasingCol(i) ? 0:2;
       else monCntr += isMonotonicIncreasingCol(i) ? 0:2;
+   }
+}
+
+int Board::getTopRightMonotonicity(){
+   int monCntr, start, end, boardSize;
+   boardSize = getSize();
+   end = boardSize - 1;
+   start = monCntr = 0;
+   for(int i=0; i<boardSize; i++){
+      if (i%2==0) monCntr += isMonotonicDecreasingCol(boardSize - i) ? 0:2;
+      else monCntr += isMonotonicIncreasingCol(boardSize - i) ? 0:2;
    }
 }
 
@@ -383,25 +395,34 @@ float getHeuristicScore(Board* board) {
    int start = 0;
    int end = boardSize - 1;
 
-   int score = board->getScore();
+   //int score = board->getScore();
    int maxTile = board->getMaxTile();
    int openSpaces = board->getNumOpenSpaces();
    bool topLeft  = (maxTile == board->getPos(start, start));
    bool topRight = (maxTile == board->getPos(start, end));
    bool botLeft  = (maxTile == board->getPos(end, start));
    bool botRight = (maxTile == board->getPos(end, end));
-   bool maxTileInCorner = topLeft; // || topRight || botLeft || botRight;
+   bool maxTileInCorner = topLeft || topRight; // || botLeft || botRight;
    int numAdjacent = board->getAdjacentTiles();
    int monCntr = board->isMonotonicRows();
    if (topLeft) monCntr += board->getTopLeftMonotonicity();
    int snakeBonus = board->getSnakeBonus();
 
-   return (-10.0 * monCntr +
-           -100.0 * board->maxTilePenalty() + 
+   float weights[5] = {-5.0, 9.0, 5.0, 1000.0, 10.0};
+   int phi[5] = {monCntr, openSpaces, snakeBonus, 1*maxTileInCorner, numAdjacent};
+   int numFeatures = sizeof(phi)/sizeof(int);
+   double score = 0;
+   for (int i=0; i<numFeatures; i++){
+      score += (double)(weights[i] * phi[i]);
+   }
+   if(board->maxTilePenalty()) score /= 2;
+   return score;
+   /*return (-13.0 * monCntr +
+           -30.0 * board->maxTilePenalty() + 
            7.0 * openSpaces +
            5.0 * snakeBonus +
            1000.0 * maxTileInCorner+
-           15.0 * numAdjacent);
+           10.0 * numAdjacent);*/
 }
 
 Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
