@@ -14,7 +14,7 @@ DEFAULT_PROB_CUTOFF = 1e-5
 # EM <=> "EXPECTIMAX", QL <=> "Q-Learning"
 PLAYER_NAMES = ['INTERACTIVE', 'GREEDY', 'CORNER', 'RANDOM', 'EM', 'QL']
 DEFAULT_PLAYER_NAME = PLAYER_NAMES[0]
-DEFAULT_SEQUENCES = [{'Iters': DEFAULT_ITERS}]
+DEFAULT_SEQUENCES = [{}]
 
 def generateSequenceParams(sequence, options):
    sequenceParams = {}
