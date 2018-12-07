@@ -126,21 +126,70 @@ int Board::getTopLeftMonotonicity() {
    int start = 0;
    int end = boardSize - 1;
    for (int j = 0; j < boardSize; j++){
-      for (int i = 0; i<boardSize-1; i++){
-         if (getPos(start+j, start+i) < getPos(start+j, start+i+1)){
-            monCntr += boardSize - i;
+      if (j%2 == 0){
+         for (int i = 0; i<boardSize-1; i++){
+            if (getPos(start+i, start+j) < getPos(start+i+1, start+j)){
+               monCntr += 5;
+            }
+         }
+      } else {
+         for (int i = 0; i<boardSize-1; i++){
+            if (getPos(start+i, start+j) > getPos(start+i+1, start+j)){
+               monCntr += 5;
+            }
          }
       }
    }
    for (int i = 0; i<boardSize-1; i++){
-      if (getPos(start+i, start) < getPos(start+i+1, start)){
-         monCntr += boardSize - i;
+      if (i%2==0){ //encourage zigzag
+         if (getPos(end, start+i) < getPos(end, start+i+1)){
+            monCntr += 3;
+         }
+      } else {
+         if (getPos(start, start+i) < getPos(start, start+i+1)){
+            monCntr += 3;
+         }
       }
    }
    return monCntr;
 }
 
-int Board::getTopRightMonotonicity(){
+int Board::getTopRightMonotonicity() {
+   int monCntr = 0;
+   int boardSize = getSize();
+   int start = 0;
+   int end = boardSize - 1;
+   for (int j = 0; j < boardSize; j++){
+      if (j%2 == 0){
+         for (int i = 0; i<boardSize-1; i++){
+            if (getPos(start+i, end+j) < getPos(start+i+1, end+j)){
+               monCntr += 5;
+            }
+         }
+      } else {
+         for (int i = 0; i<boardSize-1; i++){
+            if (getPos(start+i, end+j) > getPos(start+i+1, end+j)){
+               monCntr += 5;
+            }
+         }
+      }
+   }
+   for (int i = 0; i<boardSize-1; i++){
+      if (i%2==0){
+         if (getPos(end, end+i) < getPos(end, end+i+1)){
+            monCntr += 5;
+         }
+      } else {
+         if (getPos(start, start+i) < getPos(start, start+i+1)){
+            monCntr += 5;
+         }
+      }
+   }
+   return monCntr;
+}
+
+
+/*int Board::getTopRightMonotonicity(){
    int monCntr = 0;
    int boardSize = getSize();
    int start = 0;
@@ -158,7 +207,7 @@ int Board::getTopRightMonotonicity(){
       }
    }
    return monCntr;
-}
+}*/
 
 int Board::getBotLeftMonotonicity(){
    int monCntr = 0;
@@ -172,11 +221,12 @@ int Board::getBotLeftMonotonicity(){
          }
       }
    }
+   /*
    for (int i = 0; i<boardSize-1; i++){
       if (getPos(end-i, start) < getPos(end-i-1, start)){
          monCntr += boardSize - i;
       }
-   }
+   }*/
    return monCntr;
 }
 
@@ -192,11 +242,12 @@ int Board::getBotRightMonotonicity(){
          }
       }
    }
+   /*
    for (int i = 0; i<boardSize-1; i++){
       if (getPos(end-i, end) < getPos(end-i-1, end)){
          monCntr += boardSize - i;
       }
-   }
+   }*/
    return monCntr;
 }
 
@@ -399,18 +450,32 @@ float getHeuristicScore(Board* board) {
    bool topRight = (maxTile == board->getPos(start, end));
    bool botLeft  = (maxTile == board->getPos(end, start));
    bool botRight = (maxTile == board->getPos(end, end));
-   bool maxTileInCorner = topLeft || topRight || botLeft || botRight;
+   bool maxTileInCorner = topLeft; // || topRight || botLeft || botRight;
    int numAdjacent = board->getAdjacentTiles();
-   int monCntr = 0; //proxy for monotonicity of row and col with Max Val
-   if (topLeft) monCntr = board->getTopLeftMonotonicity();
-   if (topRight) monCntr = board->getTopRightMonotonicity();
-   if (botLeft) monCntr = board->getBotLeftMonotonicity();
-   if (botRight) monCntr = board->getBotRightMonotonicity();
+   int monCntr, zigzagCntr;
+   monCntr = zigzagCntr = 0; //proxy for monotonicity of row and col with Max Val
+   if (topLeft) {
+       monCntr = board->getTopLeftMonotonicity();
+       //zigzagCntr = board->getTopLeftZigZag();
+   }
+   /*
+   if (topRight) {
+       monCntr = board->getTopRightMonotonicity();
+       //zigzagCntr = board->getTopRightZigZag();
+   }
+   if (botLeft) {
+       monCntr = board->getBotLeftMonotonicity();
+       //zigzagCntr = board->getBotLeftZigZag();
+   }
+   if (botRight) {
+       monCntr = board->getBotRightMonotonicity();
+       //zigzagCntr = board->getBotRightZigZag();
+   }*/
 
    return (-10.0 * monCntr +
            10.0 * openSpaces +
-           20.0 * maxTileInCorner*maxTile +
-           10.0*numAdjacent);
+           10.0 * maxTileInCorner*maxTile +
+           10.0 * numAdjacent);
 }
 
 Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
