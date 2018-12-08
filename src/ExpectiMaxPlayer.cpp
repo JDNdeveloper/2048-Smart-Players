@@ -101,6 +101,14 @@ std::string Board::getString() {
    return os.str();
 }
 
+void Board::printBoard() {
+   for (int row = 0; row < getSize(); row++) {
+      for (int col = 0; col < getSize(); col++) {
+         std::cout << getPos(row, col) << "\t";
+      }
+      std::cout << std::endl;
+   }
+}
 
 int Board::getAdjacentTiles(){
    int numAdj = 0;
@@ -119,7 +127,7 @@ int Board::getAdjacentTiles(){
 bool Board::maxTilePenalty(){
    int maxTileCount = 1;
    int maxTile = getMaxTile();
-   for (int i=0; i<getSize(); i++){ 
+   for (int i=0; i<getSize(); i++){
       for (int j=0; j<getSize(); j++){
          if (getPos(i, j) == maxTile) maxTileCount++;
       }
@@ -436,8 +444,9 @@ Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
 #ifdef __linux__
    // cacheLock.unlock();
 #endif
+
    int heuristicScore = getHeuristicScore(board);
-   if (depth == 0 || prob*heuristicScore < probCutoff*500) {
+   if (depth == 0 || prob < probCutoff) {
 #ifdef __linux__
       // cacheLock.lock();
 #endif
@@ -527,6 +536,7 @@ Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
 #ifdef __linux__
          // cacheLock.unlock();
 #endif
+
          return Result(maxScore, maxMove);
       }
       break;

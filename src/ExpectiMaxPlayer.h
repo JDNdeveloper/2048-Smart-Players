@@ -76,6 +76,9 @@ class Board {
    inline int getPos(int, int);
    std::string getString();
 
+   // output helpers
+   void printBoard();
+
    int getSize() { return size; };
    int getTileSum();
    int getMaxTile();
