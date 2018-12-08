@@ -66,6 +66,7 @@ class Board {
    // byte-array direct interface
    inline void setRawPos(int, int, char);
    inline char getRawPos(int, int);
+   char* getSortedBoardValues();
 
    // byte-array wrapped interface
    inline void setPos(int, int, int);
@@ -85,7 +86,7 @@ class Board {
    bool isMonotonicDecreasingRow(int i);
    int isMonotonicRows();
    bool maxTilePenalty();
-   int getSnakeBonus();
+   int getSnakeBonus(char*);
    int getTopLeftMonotonicity();
    int getTopRightMonotonicity();
    int getBotLeftMonotonicity();

@@ -2,6 +2,7 @@
 #include <sstream>
 #include <iostream>
 #include <memory.h>
+#include <bits/stdc++.h>
 #include "ExpectiMaxPlayer.h"
 
 /* ExpectiMaxPlayer interface */
@@ -74,6 +75,13 @@ inline void Board::setRawPos(int row, int col, char val) {
 
 inline char Board::getRawPos(int row, int col) {
    return boardByteArray[getIndex(row, col)];
+}
+
+char* Board::getSortedBoardValues() {
+   char* boardValueArray = (char*) malloc(length * sizeof(char));
+   memmove(boardValueArray, boardByteArray, length * sizeof(char));
+   std::sort(boardValueArray, boardValueArray + length, std::greater<char>());
+   return boardValueArray;
 }
 
 inline void Board::setPos(int row, int col, int val) {
@@ -194,24 +202,24 @@ int Board::getTopRightMonotonicity(){
    }
 }
 
-int Board::getSnakeBonus(){
-   int start=0;
-   int snakeBonus = 0;
-   if (getPos(start, start) > getPos(start, start+1)){
-      for (int i=0; i<getSize()-1; i++){
-         if(i%2==0 && getPos(start, start+i) > getPos(start, start+i+1))
-            snakeBonus++;
-         else if(i%2==1 && getPos(start, start+i) < getPos(start, start+i+1))
-            snakeBonus++;
-      }
-   } else {
-      for (int i=0; i<getSize()-1; i++){
-         if(i%2==0 && getPos(start, start+i) < getPos(start, start+i+1))
-            snakeBonus++;
-         else if(i%2==1 && getPos(start, start+i) > getPos(start, start+i+1))
-            snakeBonus++;
+int Board::getSnakeBonus(char* sortedBoardValues){
+   int snakeCorrectPositions = 0;
+
+   int i = 0;
+   for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
+         int newCol = row % 2 == 0 ? col : (size - 1) - col;
+         int val = getRawPos(row, newCol);
+         if (val != sortedBoardValues[i])
+            goto stop;
+         snakeCorrectPositions++;
+         i++;
       }
    }
+ stop:
+
+   return snakeCorrectPositions > 1 ?
+      ((int) std::pow(10.0, (float) snakeCorrectPositions)) : 0;
 }
 
 
@@ -401,6 +409,7 @@ float getHeuristicScore(Board* board) {
    int boardSize = board->getSize();
    int start = 0;
    int end = boardSize - 1;
+   char* sortedBoardValues = board->getSortedBoardValues();
 
    //int score = board->getScore();
    int maxTile = board->getMaxTile();
@@ -413,10 +422,10 @@ float getHeuristicScore(Board* board) {
    int numAdjacent = board->getAdjacentTiles();
    int monCntr = board->isMonotonicRows();
    if (topLeft) monCntr += board->getTopLeftMonotonicity();
-   int snakeBonus = board->getSnakeBonus();
+   int snakeBonus = board->getSnakeBonus(sortedBoardValues);
 
    const int NUM_FEATURES = 5;
-   float weights[NUM_FEATURES] = {-10.0, 10.0, 1000.0, 100.0, 10.0};
+   float weights[NUM_FEATURES] = {-10.0, 100.0, 1.0, 100.0, 10.0};
    int phi[NUM_FEATURES] = {monCntr, openSpaces, snakeBonus,
                             maxTile*maxTileInCorner, numAdjacent};
    double score = 0;
@@ -425,6 +434,7 @@ float getHeuristicScore(Board* board) {
    }
    if(board->maxTilePenalty())
       score /= 2;
+   free(sortedBoardValues);
    return score;
 }
 
