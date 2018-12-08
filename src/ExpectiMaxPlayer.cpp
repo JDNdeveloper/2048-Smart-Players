@@ -203,23 +203,23 @@ int Board::getTopRightMonotonicity(){
 }
 
 int Board::getSnakeBonus(char* sortedBoardValues){
-   int snakeCorrectPositions = 0;
-
-   int i = 0;
-   for (int row = 0; row < size; row++) {
-      for (int col = 0; col < size; col++) {
-         int newCol = row % 2 == 0 ? col : (size - 1) - col;
-         int val = getRawPos(row, newCol);
-         if (val != sortedBoardValues[i])
-            goto stop;
-         snakeCorrectPositions++;
-         i++;
+   int start=0;
+   int snakeBonus = 0;
+   if (getPos(start, start) > getPos(start, start+1)){
+      for (int i=0; i<getSize()-1; i++){
+         if(i%2==0 && getPos(start, start+i) > getPos(start, start+i+1))
+            snakeBonus++;
+         else if(i%2==1 && getPos(start, start+i) < getPos(start, start+i+1))
+            snakeBonus++;
+      }
+   } else {
+      for (int i=0; i<getSize()-1; i++){
+         if(i%2==0 && getPos(start, start+i) < getPos(start, start+i+1))
+            snakeBonus++;
+         else if(i%2==1 && getPos(start, start+i) > getPos(start, start+i+1))
+            snakeBonus++;
       }
    }
- stop:
-
-   return snakeCorrectPositions > 1 ?
-      ((int) std::pow(10.0, (float) snakeCorrectPositions)) : 0;
 }
 
 
@@ -425,7 +425,7 @@ float getHeuristicScore(Board* board) {
    int snakeBonus = board->getSnakeBonus(sortedBoardValues);
 
    const int NUM_FEATURES = 5;
-   float weights[NUM_FEATURES] = {-10.0, 100.0, 1.0, 100.0, 10.0};
+   float weights[NUM_FEATURES] = {-10.0, 10.0, 1000.0, 100.0, 10.0};
    int phi[NUM_FEATURES] = {monCntr, openSpaces, snakeBonus,
                             maxTile*maxTileInCorner, numAdjacent};
    double score = 0;
