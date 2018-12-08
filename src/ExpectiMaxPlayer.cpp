@@ -415,16 +415,16 @@ float getHeuristicScore(Board* board) {
    if (topLeft) monCntr += board->getTopLeftMonotonicity();
    int snakeBonus = board->getSnakeBonus();
 
-   float weights[5] = {-10.0, 10.0, 10.0, 100.0, 10.0};
-   int phi[5] = {monCntr, openSpaces, snakeBonus, maxTile*maxTileInCorner,
-                 numAdjacent};
-   int numFeatures = sizeof(phi)/sizeof(int);
+   const int NUM_FEATURES = 5;
+   float weights[NUM_FEATURES] = {-10.0, 10.0, 1000.0, 100.0, 10.0};
+   int phi[NUM_FEATURES] = {monCntr, openSpaces, snakeBonus,
+                            maxTile*maxTileInCorner, numAdjacent};
    double score = 0;
-   for (int i=0; i<numFeatures; i++){
+   for (int i=0; i< NUM_FEATURES; i++){
       score += (double)(weights[i] * phi[i]);
    }
-   if(board->maxTilePenalty()) score /= 2;
-   if(score < 0) score = 0;
+   if(board->maxTilePenalty())
+      score /= 2;
    return score;
 }
 
@@ -436,8 +436,8 @@ Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
       return Result(stateIt->second, NO_MOVE);
    }
 
-   int heuristicScore = getHeuristicScore(board);
    if (depth == 0 || prob < probCutoff) {
+      int heuristicScore = getHeuristicScore(board);
       stateCache.insert({state, heuristicScore});
       return Result(heuristicScore, NO_MOVE);
    }
