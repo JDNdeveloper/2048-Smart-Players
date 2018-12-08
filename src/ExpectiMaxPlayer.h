@@ -2,10 +2,6 @@
 #include <iostream>
 #include <unordered_map>
 #include <vector>
-#ifdef __linux__
-#include <mutex>
-#include "ctpl_stl.h"
-#endif
 
 enum Move {
    NO_MOVE = -1,
@@ -113,10 +109,6 @@ class ExpectiMaxPlayer {
    Result getMoveRecursive(Board*, Player, int, double);
    int getMove(Board*);
  private:
-#ifdef __linux__
-   ctpl::thread_pool pool;
-   std::mutex cacheLock;
-#endif
    const bool debug;
    const int depth;
    const double probCutoff;
