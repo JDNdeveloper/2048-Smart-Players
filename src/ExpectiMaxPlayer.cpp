@@ -180,26 +180,84 @@ int Board::isMonotonicRows(){
    return monCntr;
 }
 
-int Board::getTopLeftMonotonicity(){
-   int monCntr, start, end, boardSize;
-   boardSize = getSize();
-   end = boardSize - 1;
-   start = monCntr = 0;
-   for(int i=0; i<boardSize; i++){
-      if (i%2==0) monCntr += isMonotonicDecreasingCol(i) ? 0:2;
-      else monCntr += isMonotonicIncreasingCol(i) ? 0:2;
+int Board::getTopLeftMonotonicity() {
+   int monCntr = 0;
+   int boardSize = getSize();
+   int start = 0;
+   int end = boardSize - 1;
+   for (int j = 0; j < boardSize; j++){
+      for (int i = 0; i<boardSize-1; i++){
+         if (getPos(start+j, start+i) < getPos(start+j, start+i+1)){
+            monCntr += boardSize - i;
+         }
+      }
    }
+   for (int i = 0; i<boardSize-1; i++){
+      if (getPos(start+i, start) < getPos(start+i+1, start)){
+         monCntr += boardSize - i;
+      }
+   }
+   return monCntr;
 }
 
 int Board::getTopRightMonotonicity(){
-   int monCntr, start, end, boardSize;
-   boardSize = getSize();
-   end = boardSize - 1;
-   start = monCntr = 0;
-   for(int i=0; i<boardSize; i++){
-      if (i%2==0) monCntr += isMonotonicDecreasingCol(boardSize - i) ? 0:2;
-      else monCntr += isMonotonicIncreasingCol(boardSize - i) ? 0:2;
+   int monCntr = 0;
+   int boardSize = getSize();
+   int start = 0;
+   int end = boardSize - 1;
+   for (int j = 0; j<boardSize-1; j++){
+      for (int i = 0; i<boardSize-1; i++){
+         if (getPos(start+j, end-i) < getPos(start+j, end-i-1)){
+            monCntr += boardSize - i;
+         }
+      }
    }
+   for (int i = 0; i<boardSize-1; i++){
+      if (getPos(start+i, end) < getPos(end+i+1, start)){
+         monCntr += boardSize - i;
+      }
+   }
+   return monCntr;
+}
+
+int Board::getBotLeftMonotonicity(){
+   int monCntr = 0;
+   int boardSize = getSize();
+   int start = 0;
+   int end = boardSize - 1;
+   for (int j = 0; j<boardSize-1; j++){
+      for (int i = 0; i<boardSize-1; i++){
+         if (getPos(end-j, start+i) < getPos(end-j, start+i+1)){
+            monCntr += boardSize - i;
+         }
+      }
+   }
+   for (int i = 0; i<boardSize-1; i++){
+      if (getPos(end-i, start) < getPos(end-i-1, start)){
+         monCntr += boardSize - i;
+      }
+   }
+   return monCntr;
+}
+
+int Board::getBotRightMonotonicity(){
+   int monCntr = 0;
+   int boardSize = getSize();
+   int start = 0;
+   int end = boardSize - 1;
+   for (int j = 0; j<boardSize-1; j++){
+      for (int i = 0; i<boardSize-1; i++){
+         if (getPos(end-j, end-i) < getPos(end-j, end-i-1)){
+            monCntr += boardSize - i;
+         }
+      }
+   }
+   for (int i = 0; i<boardSize-1; i++){
+      if (getPos(end-i, end) < getPos(end-i-1, end)){
+         monCntr += boardSize - i;
+      }
+   }
+   return monCntr;
 }
 
 int Board::getSnakeBonus(char* sortedBoardValues){
@@ -409,33 +467,26 @@ float getHeuristicScore(Board* board) {
    int boardSize = board->getSize();
    int start = 0;
    int end = boardSize - 1;
-   char* sortedBoardValues = board->getSortedBoardValues();
 
-   //int score = board->getScore();
+   int score = board->getScore();
    int maxTile = board->getMaxTile();
    int openSpaces = board->getNumOpenSpaces();
    bool topLeft  = (maxTile == board->getPos(start, start));
    bool topRight = (maxTile == board->getPos(start, end));
    bool botLeft  = (maxTile == board->getPos(end, start));
    bool botRight = (maxTile == board->getPos(end, end));
-   bool maxTileInCorner = topLeft || topRight; // || botLeft || botRight;
+   bool maxTileInCorner = topLeft || topRight || botLeft || botRight;
    int numAdjacent = board->getAdjacentTiles();
-   int monCntr = board->isMonotonicRows();
-   if (topLeft) monCntr += board->getTopLeftMonotonicity();
-   int snakeBonus = board->getSnakeBonus(sortedBoardValues);
+   int monCntr = 0; //proxy for monotonicity of row and col with Max Val
+   if (topLeft) monCntr = board->getTopLeftMonotonicity();
+   if (topRight) monCntr = board->getTopRightMonotonicity();
+   if (botLeft) monCntr = board->getBotLeftMonotonicity();
+   if (botRight) monCntr = board->getBotRightMonotonicity();
 
-   const int NUM_FEATURES = 5;
-   float weights[NUM_FEATURES] = {-10.0, 10.0, 1000.0, 100.0, 10.0};
-   int phi[NUM_FEATURES] = {monCntr, openSpaces, snakeBonus,
-                            maxTile*maxTileInCorner, numAdjacent};
-   double score = 0;
-   for (int i=0; i< NUM_FEATURES; i++){
-      score += (double)(weights[i] * phi[i]);
-   }
-   if(board->maxTilePenalty())
-      score /= 2;
-   free(sortedBoardValues);
-   return score;
+   return (-10.0 * monCntr +
+           10.0 * openSpaces +
+           20.0 * maxTileInCorner*maxTile +
+           10.0*numAdjacent);
 }
 
 Result ExpectiMaxPlayer::getMoveRecursive(Board* board, Player player,
