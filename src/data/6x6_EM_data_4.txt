@@ -1,0 +1,22 @@
+++ python -u Main.py 10 --player em --depth 6 --probCutoff 3e-4 --size 6
+Running sequence 1: {}
+
+Full parameters: {'probCutoff': 0.0003, 'load': False, 'playerName': 'EM', 'depth': 6, 'train': False, 'numIters': 10, 'debug': False, 'save': False, 'size': 6}
+
+Total runs: 1, 7087.541 seconds
+SCORES ::: Max: 4897264, Min: 4897264, Median: 4897264, Average: 4897264, Stdev: 0
+MAX TILES ::: Max: 131072, Min: 131072, Median: 131072, Average: 131072, Stdev: 0
+MAX TILES histogram ::: 131072: 1
+MOVES ::: Max: 145813, Min: 145813, Median: 145813, Average: 145813, Stdev: 0
+
+Total runs: 10, 82290.551 seconds
+SCORES ::: Max: 15112868, Min: 2692208, Median: 4504658, Average: 5842866, Stdev: 3482248
+MAX TILES ::: Max: 524288, Min: 65536, Median: 131072, Average: 203161, Stdev: 125890
+MAX TILES histogram ::: 65536: 1, 131072: 5, 262144: 3, 524288: 1
+MOVES ::: Max: 402458, Min: 87300, Median: 136715, Average: 169862, Stdev: 88608
+
+Total runtime after 1 sequence(s): 82290.555 seconds
+
+real	1371m30.715s
+user	1371m22.910s
+sys	0m1.360s
