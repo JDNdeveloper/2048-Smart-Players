@@ -1,0 +1,28 @@
+++ python -u Main.py 100 --player em --depth 9 --probCutoff 1e-6 --size 4
+Running sequence 1: {}
+
+Full parameters: {'probCutoff': 1e-06, 'load': False, 'playerName': 'EM', 'depth': 9, 'train': False, 'numIters': 100, 'debug': False, 'save': False, 'size': 4}
+
+Total runs: 1, 1268.936 seconds
+SCORES ::: Max: 31484, Min: 31484, Median: 31484, Average: 31484, Stdev: 0
+MAX TILES ::: Max: 2048, Min: 2048, Median: 2048, Average: 2048, Stdev: 0
+MAX TILES histogram ::: 2048: 1
+MOVES ::: Max: 1614, Min: 1614, Median: 1614, Average: 1614, Stdev: 0
+
+Total runs: 10, 14542.927 seconds
+SCORES ::: Max: 65788, Min: 12276, Median: 33306, Average: 38767, Stdev: 15863
+MAX TILES ::: Max: 4096, Min: 1024, Median: 2048, Average: 2560, Stdev: 1049
+MAX TILES histogram ::: 1024: 1, 2048: 6, 4096: 3
+MOVES ::: Max: 2921, Min: 735, Median: 1711, Average: 1896, Stdev: 642
+
+Total runs: 100, 153376.261 seconds
+SCORES ::: Max: 80668, Min: 7528, Median: 36120, Average: 41727, Stdev: 17098
+MAX TILES ::: Max: 4096, Min: 512, Median: 2048, Average: 2688, Stdev: 1127
+MAX TILES histogram ::: 512: 1, 1024: 10, 2048: 52, 4096: 37
+MOVES ::: Max: 3738, Min: 520, Median: 1861, Average: 2036, Stdev: 703
+
+Total runtime after 1 sequence(s): 153376.263 seconds
+
+real	2556m16.406s
+user	2555m59.041s
+sys	0m3.883s
