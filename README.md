@@ -11,6 +11,8 @@
 - `submission` contains all of our submission PDFs.
 - `src/data` contains all of our trials results.
 
+**NOTE:** Make sure to run `make` in `src/` before running `Main.py` with `--player EM` as it requires the `Expectimax` C++ library to run.
+
 # Running 2048
 
 `Main.py` is the driver for our program, and includes a detailed `python2 Main.py --help` output.
@@ -33,8 +35,8 @@ The parameters to these scripts are as follows:
 
 `./runEMTrials.sh <board_size> <trial_number> <num_iters> <depth> <prob_cutoff>`
 
-Example: `./runEMTrials.sh 4 7 100 6 1e-5`, runs a 4x4 for 100 iterations with depth 6 and probability cutoff 1e-5. The second parameter is a unique ID for the trial used for the output file. Results are outputted in `data/4x4_EM_data_7.txt`.
+Example: `./runEMTrials.sh 4 7 100 6 1e-5` runs a 4x4 Expectimax trial for 100 iterations with depth 6 and probability cutoff 1e-5. The second parameter is a unique ID for the trial used for the output file. Results are outputted in `data/4x4_EM_data_7.txt`.
 
 `./runQLTrials.sh <board_size> <trial_number>`
 
-Example: `./runQLTrials.sh 4 7`, runs a 4x4 QL trial (utilizing the sequence file `4x4_sequences.yaml`) with unique trial ID 7. Results are outputted in `data/4x4_QL_data_7.txt`.
+Example: `./runQLTrials.sh 4 7` runs a 4x4 QL trial (utilizing the sequence file `4x4_sequences.yaml`) with unique trial ID 7. Results are outputted in `data/4x4_QL_data_7.txt`.
