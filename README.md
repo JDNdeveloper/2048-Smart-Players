@@ -1,9 +1,13 @@
-2048 Solver (CS 221 Fall 2018 Project)
+2048 Game Engine with Q-Learning and Expectimax AI agents (CS 221 Fall 2018 Project)
 ========================
 
 [![Build Status](https://travis-ci.com/jaynavar/CS221_Project_RMJ.svg?token=DesaacDGQoqJ7q1qhzeY&branch=master)](https://travis-ci.com/jaynavar/CS221_Project_RMJ)
 
 **Authors:** Ruben Mayer (`rmayer99`), Magdy Saleh (`mksaleh`), Jayden Navarro (`jaynavar`)
+
+# Overview
+
+This repo contains a 2048 game engine (Python), with a Q-Learning agent (Python) and an Expectimax agent (C++).
 
 # Repo Hierarchy
 
