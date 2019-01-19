@@ -1,7 +1,7 @@
 2048 Game Engine with Q-Learning and Expectimax AI agents (CS 221 Fall 2018 Project)
 ========================
 
-[![Build Status](https://travis-ci.com/jaynavar/CS221_Project_RMJ.svg?token=DesaacDGQoqJ7q1qhzeY&branch=master)](https://travis-ci.com/jaynavar/CS221_Project_RMJ)
+[![Build Status](https://travis-ci.com/JDNdeveloper/2048-Smart-Players.svg?branch=master)](https://travis-ci.com/JDNdeveloper/2048-Smart-Players)
 
 **Authors:** Ruben Mayer (`rmayer99`), Magdy Saleh (`mksaleh`), Jayden Navarro (`jaynavar`)
 
